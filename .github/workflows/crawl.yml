@@ -1,0 +1,46 @@
+name: Daily YouTube Crawler
+
+on:
+  schedule:
+    # Chạy tự động vào 00:00 UTC mỗi ngày
+    - cron: '0 0 * * *'
+  
+  # Cho phép chạy thủ công (manual run) từ tab Actions trên GitHub
+  workflow_dispatch:
+
+jobs:
+  crawl-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Bạn có thể đổi sang version Python bạn đang dùng
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run YouTube Crawler Pipeline
+        env:
+          # Lấy API Key từ GitHub Secrets
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          # Thư mục output (mặc định là "data" theo script)
+          OUTPUT_DIR: data
+          # Chuyển thành "true" nếu bạn muốn crawl thêm comment
+          ENABLE_COMMENTS: "false" 
+        run: |
+          python 01_crawl_youtube.py
+
+      - name: Upload Crawled Data as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-crawl-data
+          path: data/
+          # Giữ file trên GitHub trong vòng 7 ngày để tránh tốn dung lượng vô ích
+          retention-days: 7
