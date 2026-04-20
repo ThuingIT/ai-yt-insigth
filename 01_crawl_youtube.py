@@ -212,7 +212,9 @@ def get_trending_video_ids(
         "maxResults":  min(max_results, 50),  # API giới hạn 50/request
     }
     if language:
-        params["relevanceLanguage"] = language
+        params["hl"] = language
+    # if language:
+    #    params["relevanceLanguage"] = language
 
     response = api_call_with_retry(youtube.videos().list, **params)
     if not response:
