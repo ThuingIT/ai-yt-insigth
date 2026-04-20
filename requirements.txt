@@ -1,0 +1,16 @@
+# YouTube Analytics Pipeline — Python dependencies
+# pip install -r requirements.txt
+
+# YouTube Data API v3
+google-api-python-client==2.131.0
+google-auth==2.29.0
+google-auth-httplib2==0.2.0
+
+# Supabase client (dùng trong 02_load_supabase.py)
+supabase==2.4.6
+
+# HTTP client (dùng trong 03_analyze_gemini.py)
+httpx==0.27.0
+
+# Jinja2 (dùng trong 04_generate_html.py)
+Jinja2==3.1.4
