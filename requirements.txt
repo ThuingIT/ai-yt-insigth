@@ -6,11 +6,14 @@ google-api-python-client==2.131.0
 google-auth==2.29.0
 google-auth-httplib2==0.2.0
 
-# Supabase client (dùng trong 02_load_supabase.py)
+# Supabase client
 supabase==2.4.6
 
-# HTTP client (dùng trong 03_analyze_gemini.py)
+# Gemini AI (theo cách đã test thành công)
+google-generativeai==0.8.3
+
+# HTTP client (dùng trong bước sau)
 httpx==0.27.0
 
-# Jinja2 (dùng trong 04_generate_html.py)
+# Jinja2 (04_generate_html.py)
 Jinja2==3.1.4
