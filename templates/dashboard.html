@@ -685,7 +685,7 @@ function fmtDate(d) {
 }
 
 // ── TREND VN ──────────────────────────────────────────
-const trendVN = {{ trend_vn_json }};
+const trendVN = {{ trend_vn_json | safe}};
 new Chart(document.getElementById('chartTrendVN'), {
   type: 'line',
   data: {
@@ -701,7 +701,7 @@ new Chart(document.getElementById('chartTrendVN'), {
 });
 
 // ── TREND GLOBAL ──────────────────────────────────────
-const trendGlobal = {{ trend_global_json }};
+const trendGlobal = {{ trend_global_json | safe}};
 new Chart(document.getElementById('chartTrendGlobal'), {
   type: 'line',
   data: {
@@ -717,7 +717,7 @@ new Chart(document.getElementById('chartTrendGlobal'), {
 });
 
 // ── WOW CHART ─────────────────────────────────────────
-const wowData = {{ wow_json }};
+const wowData = {{ wow_json | safe}};
 const wowTypes = [...new Set([
   ...Object.keys(wowData.VN?.current || {}),
   ...Object.keys(wowData.Global?.current || {})
@@ -753,8 +753,8 @@ new Chart(document.getElementById('chartWoW'), {
 });
 
 // ── MONTHLY CHART ─────────────────────────────────────
-const mVN     = {{ monthly_vn_json }};
-const mGlobal = {{ monthly_global_json }};
+const mVN     = {{ monthly_vn_json | safe}};
+const mGlobal = {{ monthly_global_json | safe}};
 const allMonths = [...new Set([
   ...mVN.map(d => d.month), ...mGlobal.map(d => d.month)
 ])].sort();
@@ -779,7 +779,7 @@ new Chart(document.getElementById('chartMonthly'), {
 });
 
 // ── POST TIME (VN) ────────────────────────────────────
-const ptVN = {{ post_time_vn_json }};
+const ptVN = {{ post_time_vn_json | safe}};
 const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
 new Chart(document.getElementById('chartPostTime'), {
   type: 'bar',
@@ -806,7 +806,7 @@ new Chart(document.getElementById('chartPostTime'), {
 });
 
 // ── CATEGORY DONUT VN ─────────────────────────────────
-const catVN = {{ cat_vn_json }};
+const catVN = {{ cat_vn_json | safe}};
 const PIE_COLORS = [
   '#22c55e','#3b82f6','#f59e0b','#a855f7','#14b8a6',
   '#ef4444','#f97316','#06b6d4','#8b5cf6'
@@ -836,7 +836,7 @@ new Chart(document.getElementById('chartCatVN'), {
 });
 
 // ── CATEGORY DONUT GLOBAL ─────────────────────────────
-const catGlobal = {{ cat_global_json }};
+const catGlobal = {{ cat_global_json | safe}};
 new Chart(document.getElementById('chartCatGlobal'), {
   type: 'doughnut',
   data: {
