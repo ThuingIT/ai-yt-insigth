@@ -1,16 +1,27 @@
-name: Daily YouTube Crawler
+name: Daily YouTube Data Pipeline
 
 on:
   schedule:
-    # Chạy tự động vào 00:00 UTC mỗi ngày
+    # Chạy vào 00:00 UTC mỗi ngày (khoảng 7h sáng giờ VN)
     - cron: '0 0 * * *'
-  
-  # Cho phép chạy thủ công (manual run) từ tab Actions trên GitHub
   workflow_dispatch:
+    # Cho phép bấm nút chạy thủ công
 
 jobs:
-  crawl-data:
+  run-all-steps:
     runs-on: ubuntu-latest
+    
+    # Khai báo biến môi trường dùng chung cho toàn bộ các bước trong Job này
+    env:
+      OUTPUT_DIR: data
+      # Sử dụng ID của chính lần chạy GitHub Actions này làm ID chung cho cả 3 script
+      PIPELINE_RUN_ID: ${{ github.run_id }}
+      
+      # Gọi các Secret Keys đã lưu trên GitHub
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
       - name: Checkout repository
@@ -19,28 +30,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' # Bạn có thể đổi sang version Python bạn đang dùng
+          python-version: '3.10'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run YouTube Crawler Pipeline
-        env:
-          # Lấy API Key từ GitHub Secrets
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          # Thư mục output (mặc định là "data" theo script)
-          OUTPUT_DIR: data
-          # Chuyển thành "true" nếu bạn muốn crawl thêm comment
-          ENABLE_COMMENTS: "false" 
-        run: |
-          python 01_crawl_youtube.py
+      # Bước 1: Crawl dữ liệu từ YouTube. Kết quả sinh ra data/crawl_vn.json và data/crawl_global.json
+      - name: Run Step 01 - Crawl YouTube
+        run: python 01_crawl_youtube.py
 
-      - name: Upload Crawled Data as Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: youtube-crawl-data
-          path: data/
-          # Giữ file trên GitHub trong vòng 7 ngày để tránh tốn dung lượng vô ích
-          retention-days: 7
+      # Bước 2: Đẩy dữ liệu lên Supabase. Kết quả sinh ra data/load_summary.json
+      - name: Run Step 02 - Load to Supabase
+        run: python 02_load_supabase.py
+
+      # Bước 3: Phân tích bằng Gemini, đọc file summary từ bước 2
+      - name: Run Step 03 - Analyze with Gemini
+        run: python 03_analyze_gemini.py
