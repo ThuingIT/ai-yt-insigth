@@ -325,6 +325,139 @@ def fetch_monthly_chart(sb: Client, stream: str) -> list:
 # HTML RENDERER
 # ============================================================
 
+def fetch_top_by_content_type(sb: Client, stream: str, content_type: str, top_n: int = 10) -> list:
+    """Top N video của 1 content_type cụ thể (video/stream/shorts)."""
+    res = (
+        sb.table("daily_delta")
+        .select("video_id, views_gain, likes_gain, views_total, content_type")
+        .eq("stream", stream)
+        .eq("date", TODAY.isoformat())
+        .eq("content_type", content_type)
+        .order("views_total", desc=True)
+        .limit(top_n)
+        .execute()
+    )
+    rows = res.data or []
+    enriched = []
+    for r in rows:
+        v = sb.table("videos").select(
+            "title, thumbnail_url, views, likes, comments_count, category_name, published_at"
+        ).eq("id", r["video_id"]).maybe_single().execute()
+        er = 0.0
+        if v.data and v.data.get("views", 0) > 0:
+            er = round((v.data.get("likes", 0) + v.data.get("comments_count", 0))
+                       / v.data["views"] * 100, 2)
+        gain = r["views_gain"] if r["views_gain"] is not None else (r.get("views_total") or 0)
+        enriched.append({
+            "video_id":     r["video_id"],
+            "title":        v.data.get("title", "?") if v.data else "?",
+            "thumbnail":    v.data.get("thumbnail_url", "") if v.data else "",
+            "category":     v.data.get("category_name", "") if v.data else "",
+            "content_type": r["content_type"],
+            "views_gain":   gain,
+            "total_views":  v.data.get("views", 0) if v.data else 0,
+            "er_pct":       er,
+            "yt_url":       f"https://youtube.com/watch?v={r['video_id']}",
+        })
+    return enriched
+
+
+def fetch_category_performance(sb: Client, stream: str) -> list:
+    """
+    Per-category: tổng views_gain, avg ER, số video, top video.
+    Trả về list sorted by total_views_gain desc.
+    """
+    res = (
+        sb.table("daily_delta")
+        .select("video_id, views_gain, views_total, content_type")
+        .eq("stream", stream)
+        .eq("date", TODAY.isoformat())
+        .execute()
+    )
+    delta_map = {
+        r["video_id"]: (r["views_gain"] if r["views_gain"] is not None else (r.get("views_total") or 0))
+        for r in (res.data or [])
+    }
+    if not delta_map:
+        return []
+
+    vid_res = (
+        sb.table("videos")
+        .select("id, category_name, views, likes, comments_count, title, thumbnail_url, content_type")
+        .in_("id", list(delta_map.keys()))
+        .execute()
+    )
+
+    by_cat: dict = {}
+    for v in (vid_res.data or []):
+        cat  = v.get("category_name") or "Other"
+        gain = delta_map.get(v["id"], 0)
+        er   = (v["likes"] + v["comments_count"]) / v["views"] * 100 if v["views"] > 0 else 0
+        if cat not in by_cat:
+            by_cat[cat] = {"category": cat, "total_gain": 0, "er_vals": [],
+                           "video_count": 0, "stream_count": 0, "top_video": None}
+        by_cat[cat]["total_gain"] += gain
+        by_cat[cat]["er_vals"].append(er)
+        by_cat[cat]["video_count"] += 1
+        if v.get("content_type") == "stream":
+            by_cat[cat]["stream_count"] += 1
+        if by_cat[cat]["top_video"] is None or gain > delta_map.get(by_cat[cat]["top_video"]["video_id"], 0):
+            by_cat[cat]["top_video"] = {
+                "video_id": v["id"],
+                "title":    v.get("title", ""),
+                "thumbnail": v.get("thumbnail_url", ""),
+                "views_gain": gain,
+                "yt_url":   f"https://youtube.com/watch?v={v['id']}",
+            }
+
+    result = []
+    for cat, d in by_cat.items():
+        result.append({
+            "category":     cat,
+            "total_gain":   d["total_gain"],
+            "avg_er":       round(sum(d["er_vals"]) / len(d["er_vals"]), 2) if d["er_vals"] else 0,
+            "video_count":  d["video_count"],
+            "stream_count": d["stream_count"],
+            "top_video":    d["top_video"],
+        })
+    result.sort(key=lambda x: x["total_gain"], reverse=True)
+    return result[:8]
+
+
+def fetch_stream_vs_video_stats(sb: Client, stream: str) -> dict:
+    """
+    So sánh trực tiếp Video vs Stream:
+    - Tổng views gain, avg ER, số lượng, % tổng
+    """
+    res = (
+        sb.table("videos")
+        .select("content_type, views, likes, comments_count")
+        .eq("stream", stream)
+        .execute()
+    )
+    data: dict = {}
+    for r in (res.data or []):
+        ct  = r["content_type"]
+        er  = (r["likes"] + r["comments_count"]) / r["views"] * 100 if r["views"] > 0 else 0
+        v   = r["views"]
+        if ct not in data:
+            data[ct] = {"count": 0, "total_views": 0, "er_vals": []}
+        data[ct]["count"]       += 1
+        data[ct]["total_views"] += v
+        data[ct]["er_vals"].append(er)
+
+    result = {}
+    grand_total = sum(d["total_views"] for d in data.values()) or 1
+    for ct, d in data.items():
+        result[ct] = {
+            "count":       d["count"],
+            "total_views": d["total_views"],
+            "pct_views":   round(d["total_views"] / grand_total * 100, 1),
+            "avg_er":      round(sum(d["er_vals"]) / len(d["er_vals"]), 2) if d["er_vals"] else 0,
+        }
+    return result
+
+
 def fetch_intraday_chart(sb: Client, stream: str) -> list:
     """
     Views_delta_1h theo từng giờ trong ngày hôm nay (từ intraday_chart view).
@@ -448,6 +581,21 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
     monthly_vn     = fetch_monthly_chart(sb, "VN")
     monthly_global = fetch_monthly_chart(sb, "Global")
 
+    log.info("Fetching top by content type...")
+    top_vn_video   = fetch_top_by_content_type(sb, "VN",     "video",  10)
+    top_vn_stream  = fetch_top_by_content_type(sb, "VN",     "stream", 10)
+    top_vn_shorts  = fetch_top_by_content_type(sb, "VN",     "shorts", 10)
+    top_gl_video   = fetch_top_by_content_type(sb, "Global", "video",  10)
+    top_gl_stream  = fetch_top_by_content_type(sb, "Global", "stream", 10)
+
+    log.info("Fetching category performance...")
+    cat_perf_vn     = fetch_category_performance(sb, "VN")
+    cat_perf_global = fetch_category_performance(sb, "Global")
+
+    log.info("Fetching stream vs video stats...")
+    svv_vn     = fetch_stream_vs_video_stats(sb, "VN")
+    svv_global = fetch_stream_vs_video_stats(sb, "Global")
+
     log.info("Fetching intraday charts...")
     intraday_vn     = fetch_intraday_chart(sb, "VN")
     intraday_global = fetch_intraday_chart(sb, "Global")
@@ -460,9 +608,41 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
     momentum_vn     = fetch_momentum_summary(sb, "VN")
     momentum_global = fetch_momentum_summary(sb, "Global")
 
-    # Tier1 & Tier2 từ analysis_output.json
-    tier1  = analysis.get("tier1", {})
-    tier2  = analysis.get("tier2", {})
+    # Tier1 & Tier2: ưu tiên Supabase insights, fallback sang analysis_output.json
+    tier1 = analysis.get("tier1", {})
+    tier2 = analysis.get("tier2", {})
+
+    # FIX: Lấy Gemini narrative từ Supabase insights (tồn tại cả khi hourly run)
+    def _insight_field(itype: str, field: str, default=""):
+        row = insights.get(itype, {})
+        if field == "narrative":
+            return row.get("narrative") or default
+        return (row.get("payload") or {}).get(field, default)
+
+    weekly_narrative = (
+        tier2.get("weekly_narrative")                           # daily run: từ analysis_output.json
+        or _insight_field("weekly_summary", "narrative")        # hourly run: từ Supabase
+        or ""
+    )
+    anomalies = (
+        tier2.get("anomalies")
+        or [r for itype in ["anomaly", "viral_alert"]
+            for r in [insights.get(itype, {}).get("payload", {})]
+            if r]
+        or []
+    )
+    recommendations = (
+        tier2.get("recommendations")
+        or (insights.get("recommendation", {}).get("payload") or {}).get("recommendations", [])
+    )
+    content_gaps = (
+        tier2.get("content_gaps")
+        or (insights.get("content_gap", {}).get("payload") or {}).get("gaps", [])
+    )
+    trend_forecast = (
+        tier2.get("trend_forecast")
+        or ""
+    )
 
     return {
         # Meta
@@ -494,12 +674,13 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
         "er_vn":        tier1.get("VN", {}).get("er_by_type", {}),
         "er_global":    tier1.get("Global", {}).get("er_by_type", {}),
 
-        # Tier2 Gemini
-        "weekly_narrative": tier2.get("weekly_narrative", ""),
-        "anomalies":        tier2.get("anomalies", []),
-        "recommendations":  tier2.get("recommendations", []),
-        "content_gaps":     tier2.get("content_gaps", []),
-        "trend_forecast":   tier2.get("trend_forecast", ""),
+        # Tier2 Gemini (fixed: loads from Supabase when hourly run)
+        "weekly_narrative": weekly_narrative,
+        "anomalies":        anomalies,
+        "recommendations":  recommendations,
+        "content_gaps":     content_gaps,
+        "trend_forecast":   trend_forecast,
+        "gemini_generated_at": (insights.get("weekly_summary") or {}).get("generated_at", ""),
 
         # Insights từ Supabase (bổ sung cho display)
         "insights": insights,
@@ -516,8 +697,26 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
         "momentum_vn":     momentum_vn,
         "momentum_global": momentum_global,
 
-        # Last updated time (hiển thị trên dashboard)
+        # Last updated time
         "last_updated_ts": datetime.now(timezone.utc).strftime("%H:%M UTC"),
+
+        # Top by content type
+        "top_vn_video":   top_vn_video,
+        "top_vn_stream":  top_vn_stream,
+        "top_vn_shorts":  top_vn_shorts,
+        "top_gl_video":   top_gl_video,
+        "top_gl_stream":  top_gl_stream,
+
+        # Category performance
+        "cat_perf_vn_json":     json.dumps(cat_perf_vn,     ensure_ascii=False, default=str),
+        "cat_perf_global_json": json.dumps(cat_perf_global, ensure_ascii=False, default=str),
+
+        # Stream vs Video stats
+        "svv_vn_json":     json.dumps(svv_vn,     ensure_ascii=False),
+        "svv_global_json": json.dumps(svv_global, ensure_ascii=False),
+        # Jinja2 can't do json.loads — pass dict directly too
+        "svv_vn_data":     svv_vn,
+        "svv_global_data": svv_global,
     }
 
 
