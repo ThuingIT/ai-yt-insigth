@@ -91,9 +91,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: crawl
     timeout-minutes: 15
-    outputs:
-      # Truyền lại run_id để các job sau không cần depends on crawl trực tiếp
-      run_id: ${{ needs.crawl.outputs.run_id }}
 
     steps:
       - uses: actions/checkout@v4
@@ -133,10 +130,8 @@ jobs:
   analyze:
     name: "03 · Analyze + Gemini"
     runs-on: ubuntu-latest
-    needs: load   # load đã export run_id → không cần depends crawl trực tiếp
+    needs: load
     timeout-minutes: 20
-    outputs:
-      run_id: ${{ needs.load.outputs.run_id }}
     if: ${{ github.event.inputs.skip_gemini != 'true' }}
 
     steps:
@@ -153,7 +148,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: daily-load-summary-${{ needs.load.outputs.run_id }}
+          name: daily-load-summary-${{ needs.crawl.outputs.run_id }}
           path: ${{ env.OUTPUT_DIR }}
 
       - name: Run analysis (Tier1 + Tier2 Gemini)
@@ -162,12 +157,12 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
           OUTPUT_DIR:           ${{ env.OUTPUT_DIR }}
-          PIPELINE_RUN_ID:      ${{ needs.load.outputs.run_id }}
+          PIPELINE_RUN_ID:      ${{ needs.crawl.outputs.run_id }}
         run: python 03_analyze_gemini.py
 
       - uses: actions/upload-artifact@v4
         with:
-          name: daily-analysis-${{ needs.load.outputs.run_id }}
+          name: daily-analysis-${{ needs.crawl.outputs.run_id }}
           path: ${{ env.OUTPUT_DIR }}/analysis_output.json
           retention-days: 14
 
@@ -177,7 +172,7 @@ jobs:
   publish:
     name: "04 · Publish Dashboard"
     runs-on: ubuntu-latest
-    needs: analyze  # analyze đã export run_id → không cần depends crawl/load
+    needs: analyze
     timeout-minutes: 10
     permissions:
       contents: write
@@ -202,7 +197,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: daily-analysis-${{ needs.analyze.outputs.run_id }}
+          name: daily-analysis-${{ needs.crawl.outputs.run_id }}
           path: ${{ env.OUTPUT_DIR }}
 
       - name: Generate HTML dashboard
