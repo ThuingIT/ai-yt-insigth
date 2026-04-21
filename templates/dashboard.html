@@ -917,7 +917,7 @@ function switchTab(prefix, id, btn, activeClass='active') {
 }
 
 // ── Trend VN ─────────────────────────────────────────────
-const tVN = {{ trend_vn_json }};
+const tVN = {{ trend_vn_json | safe}};
 if(tVN.length) new Chart(document.getElementById('cTrendVN'),{
   type:'line', data:{
     labels:tVN.map(d=>fmtD(d.date)),
@@ -928,7 +928,7 @@ if(tVN.length) new Chart(document.getElementById('cTrendVN'),{
 });
 
 // ── Trend Global ──────────────────────────────────────────
-const tGL = {{ trend_global_json }};
+const tGL = {{ trend_global_json | safe}};
 if(tGL.length) new Chart(document.getElementById('cTrendGlobal'),{
   type:'line', data:{
     labels:tGL.map(d=>fmtD(d.date)),
@@ -939,7 +939,7 @@ if(tGL.length) new Chart(document.getElementById('cTrendGlobal'),{
 });
 
 // ── WoW ──────────────────────────────────────────────────
-const wowD = {{ wow_json }};
+const wowD = {{ wow_json | safe}};
 const wowTypes = [...new Set([...Object.keys(wowD.VN?.current||{}),
                                ...Object.keys(wowD.Global?.current||{})])];
 new Chart(document.getElementById('cWoW'),{
@@ -955,7 +955,7 @@ new Chart(document.getElementById('cWoW'),{
 });
 
 // ── Monthly ───────────────────────────────────────────────
-const mVN = {{ monthly_vn_json }}, mGL = {{ monthly_global_json }};
+const mVN = {{ monthly_vn_json | safe}}, mGL = {{ monthly_global_json | safe}};
 const allM = [...new Set([...mVN.map(d=>d.month),...mGL.map(d=>d.month)])].sort();
 new Chart(document.getElementById('cMonthly'),{
   type:'bar', data:{
@@ -968,7 +968,7 @@ new Chart(document.getElementById('cMonthly'),{
 });
 
 // ── Post Time ─────────────────────────────────────────────
-const ptVN = {{ post_time_vn_json }};
+const ptVN = {{ post_time_vn_json | safe}};
 const hrs = Array.from({length:24},(_,i)=>`${i}h`);
 new Chart(document.getElementById('cPostTime'),{
   type:'bar', data:{
@@ -986,7 +986,7 @@ new Chart(document.getElementById('cPostTime'),{
 });
 
 // ── Category Donuts ───────────────────────────────────────
-const catVN = {{ cat_vn_json }}, catGL = {{ cat_global_json }};
+const catVN = {{ cat_vn_json | safe}}, catGL = {{ cat_global_json | safe}};
 [['cCatVN',catVN],['cCatGlobal',catGL]].forEach(([id,data])=>{
   new Chart(document.getElementById(id),{
     type:'doughnut', data:{
@@ -1003,7 +1003,7 @@ const catVN = {{ cat_vn_json }}, catGL = {{ cat_global_json }};
 });
 
 // ── Intraday VN ───────────────────────────────────────────
-const ivn = {{ intraday_vn_json }};
+const ivn = {{ intraday_vn_json | safe}};
 const ivnEl = document.getElementById('cIntradayVN');
 if(ivn.length && ivnEl) {
   new Chart(ivnEl,{type:'bar',data:{
@@ -1018,7 +1018,7 @@ if(ivn.length && ivnEl) {
 }
 
 // ── Intraday Global ───────────────────────────────────────
-const igl = {{ intraday_global_json }};
+const igl = {{ intraday_global_json | safe}};
 const iglEl = document.getElementById('cIntradayGlobal');
 if(igl.length && iglEl) {
   new Chart(iglEl,{type:'bar',data:{
@@ -1060,16 +1060,16 @@ function renderCatList(data, containerId, maxGain, col){
   }).join('');
 }
 
-const catPerfVN = {{ cat_perf_vn_json }};
-const catPerfGL = {{ cat_perf_global_json }};
+const catPerfVN = {{ cat_perf_vn_json | safe}};
+const catPerfGL = {{ cat_perf_global_json | safe}};
 const maxVN = catPerfVN.length ? catPerfVN[0].total_gain : 1;
 const maxGL = catPerfGL.length ? catPerfGL[0].total_gain : 1;
 renderCatList(catPerfVN, 'cat-vn-list', maxVN, '#10b981');
 renderCatList(catPerfGL, 'cat-global-list', maxGL, '#3b82f6');
 
 // ── Stream vs Video data ──────────────────────────────────
-const svvVN = {{ svv_vn_json }};
-const svvGL = {{ svv_global_json }};
+const svvVN = {{ svv_vn_json | safe}};
+const svvGL = {{ svv_global_json | safe}};
 // Already rendered via Jinja template via svv_vn_data/svv_global_data aliases
 </script>
 </body>
