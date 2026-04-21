@@ -11,9 +11,14 @@ Input:
 
 Output (Supabase tables):
     channels, videos, stream_details, daily_delta, comments
+    hourly_snapshot  ← MỚI: upsert khi mode=hourly
 
 Output (file):
     data/load_summary.json  ← đọc bởi bước 03_analyze
+
+Mode routing (đọc từ "mode" field trong crawl JSON):
+    mode=hourly → upsert hourly_snapshot + tính views_delta_1h + momentum
+    mode=daily  → full upsert như cũ + update daily_delta momentum fields
 
 Cách chạy:
     export SUPABASE_URL="https://xxxx.supabase.co"
@@ -211,6 +216,122 @@ def compute_daily_delta(sb: Client, video_ids: list[str],
 
 
 # ============================================================
+# HOURLY SNAPSHOT LOADER
+# ============================================================
+
+def load_hourly_snapshot(sb: Client, videos_map: dict[str, dict]) -> list[dict]:
+    """
+    Tạo hourly_snapshot rows cho lần crawl này.
+
+    Logic tính views_delta_1h:
+        1. Lấy snapshot GẦN NHẤT trong vòng 2 giờ qua (để tránh gap nếu 1 lần chạy bị delay)
+        2. delta = views_hiện_tại - views_snapshot_trước
+        3. NULL nếu chưa có snapshot nào trước đó trong ngày hôm nay
+
+    Tại sao dùng 2h thay vì 1h?
+        GitHub Actions không chạy chính xác đúng giờ — có thể delay 5-10 phút.
+        Dùng 2h window để không bỏ sót baseline khi có delay.
+    """
+    from datetime import datetime as dt
+
+    if not videos_map:
+        return []
+
+    now_ts  = datetime.now(timezone.utc)
+    video_ids = list(videos_map.keys())
+
+    # Query snapshots gần nhất trong 2 giờ qua
+    cutoff = (now_ts - timedelta(hours=2)).isoformat()
+    prev_map: dict[str, dict] = {}
+
+    for i in range(0, len(video_ids), BATCH_SIZE):
+        batch = video_ids[i : i + BATCH_SIZE]
+        res = (
+            sb.table("hourly_snapshot")
+            .select("video_id, snapshot_at, views, likes")
+            .in_("video_id", batch)
+            .gte("snapshot_at", cutoff)
+            .lt("snapshot_at", now_ts.isoformat())   # Chỉ trước lần crawl này
+            .order("snapshot_at", desc=True)
+            .execute()
+        )
+        for row in (res.data or []):
+            vid = row["video_id"]
+            if vid not in prev_map:   # Giữ cái mới nhất
+                prev_map[vid] = row
+
+    rows       = []
+    new_count  = 0
+    gain_count = 0
+
+    for vid_id, video in videos_map.items():
+        prev = prev_map.get(vid_id)
+
+        if prev:
+            views_delta = max(0, video["views"] - prev["views"])
+            likes_delta = max(0, video["likes"] - prev["likes"])
+            gain_count += 1
+        else:
+            views_delta = None  # Lần đầu trong ngày → NULL
+            likes_delta = None
+            new_count += 1
+
+        rows.append({
+            "video_id":        vid_id,
+            "snapshot_at":     now_ts.isoformat(),
+            "views":           video["views"],
+            "likes":           video["likes"],
+            "comments":        video["comments_count"],
+            "views_delta_1h":  views_delta,
+            "likes_delta_1h":  likes_delta,
+            "stream":          video["stream"],
+            "content_type":    video["content_type"],
+            "region":          video.get("region"),
+        })
+
+    log.info(f"  [hourly] {gain_count} với delta, {new_count} mới (no baseline)")
+    return rows
+
+
+def update_daily_momentum(sb: Client, video_ids: list[str]):
+    """
+    Sau khi upsert hourly_snapshot, gọi Postgres function để tính lại
+    momentum_status cho từng video và update vào daily_delta hôm nay.
+
+    Dùng RPC thay vì loop Python để tránh N+1 query.
+    """
+    if not video_ids:
+        return
+
+    log.info(f"  [momentum] Tính lại momentum cho {len(video_ids)} videos...")
+
+    updated = 0
+    for i in range(0, len(video_ids), BATCH_SIZE):
+        batch = video_ids[i : i + BATCH_SIZE]
+
+        # Gọi compute_momentum_status từ Postgres function (đã tạo trong migration SQL)
+        for vid_id in batch:
+            try:
+                result = sb.rpc("compute_momentum_status", {
+                    "p_video_id": vid_id,
+                    "p_as_of":    datetime.now(timezone.utc).isoformat(),
+                }).execute()
+
+                momentum = result.data
+
+                if momentum:
+                    # Update daily_delta hôm nay
+                    sb.table("daily_delta").update({
+                        "momentum_status": momentum,
+                    }).eq("video_id", vid_id).eq("date", TODAY.isoformat()).execute()
+                    updated += 1
+            except Exception as e:
+                log.debug(f"  [momentum] Skip {vid_id}: {e}")
+
+    log.info(f"  [momentum] Updated {updated}/{len(video_ids)} videos")
+
+
+# ============================================================
 # LOAD SINGLE STREAM
 # ============================================================
 
@@ -305,16 +426,31 @@ def load_stream(sb: Client, json_path: str) -> dict:
             total += batch_upsert(sb, "comments", comment_rows,
                                    on_conflict="id", label=f"{stream}/comments")
 
+        # ── 6. Hourly snapshot (chỉ khi mode=hourly) ────────
+        mode = data.get("mode", "daily")
+        hourly_count = 0
+        if mode == "hourly":
+            snapshot_rows = load_hourly_snapshot(sb, videos_map)
+            hourly_count  = batch_upsert(sb, "hourly_snapshot", snapshot_rows,
+                                          on_conflict="video_id,snapshot_at",
+                                          label=f"{stream}/hourly_snapshot")
+            total += hourly_count
+            # Tính lại momentum sau khi có snapshot mới
+            update_daily_momentum(sb, video_ids)
+
         log_finish(sb, log_id, records=total)
-        log.info(f"[{stream}] Load done: {total} total records")
+        log.info(f"[{stream}] Load done: {total} records | mode={mode} | "
+                 f"hourly_snapshots={hourly_count}")
 
         return {
-            "stream":      stream,
-            "videos":      len(videos),
-            "channels":    len(channels),
-            "delta_rows":  len(delta_rows),
-            "comments":    len(comments),
-            "total":       total,
+            "stream":           stream,
+            "mode":             mode,
+            "videos":           len(videos),
+            "channels":         len(channels),
+            "delta_rows":       len(delta_rows),
+            "hourly_snapshots": hourly_count,
+            "comments":         len(comments),
+            "total":            total,
         }
 
     except Exception as e:

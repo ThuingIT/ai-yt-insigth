@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Analytics Dashboard · {{ today }}</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ── RESET & BASE ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#171b26;--bg3:#1e2336;--border:#2a2f45;
+  --text:#e8eaf0;--text2:#9ea8c4;--text3:#5a6280;
+  --vn:#22c55e;--vn-dim:#16532d;
+  --global:#3b82f6;--global-dim:#1e3a6e;
+  --accent:#f59e0b;--accent-dim:#78400b;
+  --red:#ef4444;--purple:#a855f7;--teal:#14b8a6;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;
+  font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── LAYOUT ──────────────────────────────────────────── */
+.wrapper{max-width:1400px;margin:0 auto;padding:24px 20px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-auto{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+/* ── CARD ─────────────────────────────────────────────── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow)}
+.card-sm{padding:14px 16px}
+
+/* ── HEADER ──────────────────────────────────────────── */
+.header{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.header-logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#ef4444,#b91c1c);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:20px}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+.header-meta{text-align:right;color:var(--text2);font-size:12px;line-height:1.8}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;
+  padding:3px 10px;border-radius:20px;font-weight:500}
+.badge-vn{background:var(--vn-dim);color:var(--vn)}
+.badge-global{background:var(--global-dim);color:var(--global)}
+.badge-ai{background:#3b1f7a;color:var(--purple)}
+.badge-red{background:#450a0a;color:var(--red)}
+.badge-amber{background:var(--accent-dim);color:var(--accent)}
+
+/* ── SECTION TITLE ───────────────────────────────────── */
+.section-title{font-size:11px;font-weight:600;color:var(--text3);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── KPI CARDS ───────────────────────────────────────── */
+.kpi-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.kpi-card{padding:18px 20px;border-left:3px solid transparent}
+.kpi-card.vn{border-color:var(--vn)}
+.kpi-card.global{border-color:var(--global)}
+.kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.06em;margin-bottom:6px}
+.kpi-value{font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1}
+.kpi-sub{font-size:12px;color:var(--text2);margin-top:6px}
+.kpi-change{font-size:12px;font-weight:500;margin-top:4px}
+.up{color:var(--vn)}
+.down{color:var(--red)}
+
+/* ── STREAM TABS ─────────────────────────────────────── */
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{padding:6px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);
+  cursor:pointer;font-size:13px;transition:.15s;background:transparent;color:var(--text2)}
+.tab.active-vn{background:var(--vn-dim);border-color:var(--vn);color:var(--vn)}
+.tab.active-global{background:var(--global-dim);border-color:var(--global);color:var(--global)}
+.tab:hover{border-color:var(--text3)}
+
+/* ── CHART CONTAINERS ────────────────────────────────── */
+.chart-wrap{position:relative;height:220px}
+.chart-wrap-lg{height:280px}
+
+/* ── TOP VIDEOS TABLE ────────────────────────────────── */
+.video-table{width:100%;border-collapse:collapse}
+.video-table th{font-size:11px;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.06em;padding:8px 12px;border-bottom:1px solid var(--border);
+  text-align:left;white-space:nowrap}
+.video-table td{padding:10px 12px;border-bottom:1px solid var(--border);
+  vertical-align:middle}
+.video-table tr:last-child td{border:none}
+.video-table tr:hover td{background:var(--bg3)}
+.video-thumb{width:56px;height:40px;object-fit:cover;border-radius:4px;
+  background:var(--bg3)}
+.video-title-wrap{max-width:320px}
+.video-title{font-size:13px;font-weight:500;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
+.video-cat{font-size:11px;color:var(--text3);margin-top:2px}
+.video-link{color:inherit;text-decoration:none}
+.video-link:hover .video-title{color:var(--accent);text-decoration:underline}
+.num{font-family:monospace;font-size:13px;color:var(--text2)}
+.num-gain{color:var(--vn);font-weight:600}
+.ct-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.ct-video{background:#1e3a6e;color:#93c5fd}
+.ct-stream{background:#3b1f7a;color:#c4b5fd}
+.ct-shorts{background:#78400b;color:#fcd34d}
+
+/* ── ER METER ────────────────────────────────────────── */
+.er-row{display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--border)}
+.er-row:last-child{border:none}
+.er-label{width:70px;font-size:12px;color:var(--text2)}
+.er-bar-wrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.er-bar{height:100%;border-radius:4px;transition:width .6s}
+.er-val{width:50px;text-align:right;font-size:12px;font-weight:600;font-family:monospace}
+
+/* ── VIRAL ALERT ─────────────────────────────────────── */
+.viral-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;
+  border-bottom:1px solid var(--border)}
+.viral-item:last-child{border:none}
+.viral-rank{width:32px;height:32px;border-radius:50%;background:var(--accent-dim);
+  color:var(--accent);display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;flex-shrink:0}
+.viral-info{flex:1;min-width:0}
+.viral-title{font-size:13px;font-weight:500;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.viral-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.vi-badge{font-size:11px;font-weight:700;color:var(--red);
+  background:#450a0a;padding:2px 8px;border-radius:10px;flex-shrink:0}
+
+/* ── AI NARRATIVE ────────────────────────────────────── */
+.ai-card{border-left:3px solid var(--purple);background:var(--bg2)}
+.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ai-header-icon{font-size:18px}
+.ai-narrative{font-size:14px;line-height:1.8;color:var(--text2)}
+.ai-forecast{margin-top:12px;padding:12px;background:var(--bg3);
+  border-radius:var(--radius-sm);font-size:13px;color:var(--text)}
+
+/* ── RECOMMENDATION ──────────────────────────────────── */
+.rec-item{padding:12px 14px;background:var(--bg3);border-radius:var(--radius-sm);
+  margin-bottom:8px;border-left:3px solid transparent}
+.rec-item:last-child{margin:0}
+.rec-item.high{border-color:var(--red)}
+.rec-item.medium{border-color:var(--accent)}
+.rec-item.low{border-color:var(--teal)}
+.rec-action{font-size:13px;font-weight:500;margin-bottom:4px}
+.rec-reason{font-size:12px;color:var(--text2)}
+.rec-meta{display:flex;gap:8px;margin-top:6px}
+
+/* ── CONTENT GAP ─────────────────────────────────────── */
+.gap-item{display:flex;align-items:center;gap:12px;padding:10px 0;
+  border-bottom:1px solid var(--border)}
+.gap-item:last-child{border:none}
+.gap-score{width:36px;height:36px;border-radius:var(--radius-sm);
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0}
+.gap-info{flex:1;min-width:0}
+.gap-topic{font-size:13px;font-weight:500}
+.gap-evidence{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* ── TREND LAG ───────────────────────────────────────── */
+.lag-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.lag-tag{padding:4px 12px;border-radius:20px;background:var(--global-dim);
+  color:var(--global);font-size:12px;border:1px solid var(--global-dim)}
+
+/* ── WOW LEGEND ──────────────────────────────────────── */
+.wow-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.wow-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.wow-dot{width:10px;height:10px;border-radius:50%}
+
+/* ── EMPTY STATE ─────────────────────────────────────── */
+.empty{text-align:center;color:var(--text3);padding:32px;font-size:13px}
+
+/* ── MOMENTUM BADGES ─────────────────────────────────── */
+.momentum-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;
+  font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.m-accelerating{background:#16532d;color:#22c55e}
+.m-peaking{background:#78400b;color:#f59e0b}
+.m-decelerating{background:#7c2d12;color:#f97316}
+.m-fading{background:#1e293b;color:#94a3b8}
+.m-new{background:#1e2336;color:#5a6280}
+.momentum-bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.momentum-count{text-align:center;padding:10px 14px;background:var(--bg3);
+  border-radius:var(--radius-sm);flex:1;min-width:80px}
+.momentum-count .mc-num{font-size:22px;font-weight:700;line-height:1}
+.momentum-count .mc-label{font-size:10px;color:var(--text2);margin-top:3px}
+
+/* ── HOT RIGHT NOW ────────────────────────────────────── */
+.hot-item{display:flex;align-items:center;gap:10px;padding:9px 0;
+  border-bottom:1px solid var(--border)}
+.hot-item:last-child{border:none}
+.hot-rank{font-size:12px;font-weight:700;color:var(--text3);width:18px;
+  text-align:center;flex-shrink:0}
+.hot-thumb{width:48px;height:34px;object-fit:cover;border-radius:4px;
+  background:var(--bg3);flex-shrink:0}
+.hot-info{flex:1;min-width:0}
+.hot-title{font-size:12px;font-weight:500;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.hot-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.hot-delta{font-size:13px;font-weight:700;color:var(--vn);
+  white-space:nowrap;flex-shrink:0}
+
+/* ── INTRADAY PULSE indicator ─────────────────────────── */
+.pulse-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--vn);margin-right:5px;animation:pulse-anim 2s infinite}
+@keyframes pulse-anim{0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(1.3)}}
+
+/* ── FOOTER ──────────────────────────────────────────── */
+.footer{margin-top:40px;text-align:center;color:var(--text3);font-size:12px;
+  padding-bottom:24px;line-height:2}
+
+/* ── SCROLLBAR ───────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <div class="logo-icon">▶</div>
+    <div>
+      <h1>YouTube Analytics</h1>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">
+        <span class="badge badge-vn">🇻🇳 Vietnam Top 50</span>
+        <span class="badge badge-global" style="margin-left:6px">🌐 Global Sampled</span>
+        <span class="badge badge-ai" style="margin-left:6px">✦ Gemini 2.5</span>
+      </div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div>Cập nhật lúc <strong>{{ generated_at }}</strong></div>
+    <div>Dữ liệu ngày <strong>{{ today }}</strong></div>
+    <div style="color:var(--text3);font-size:11px">run_id: {{ run_id[:8] }}...</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 1: KPI OVERVIEW
+════════════════════════════════════ -->
+<p class="section-title">Tổng quan hôm nay</p>
+<div class="grid kpi-grid" style="margin-bottom:20px">
+
+  <div class="card kpi-card vn">
+    <div class="kpi-label">🇻🇳 Videos theo dõi (VN)</div>
+    <div class="kpi-value">{{ "{:,}".format(kpi.VN.total_videos) }}</div>
+    <div class="kpi-sub">{{ kpi.VN.active_today }} video active hôm nay</div>
+  </div>
+
+  <div class="card kpi-card vn">
+    <div class="kpi-label">
+      Views gain hôm nay (VN)
+      {% if kpi.VN.is_first_day %}
+        <span class="badge badge-amber" style="margin-left:6px;font-size:10px">Ngày đầu — dùng total</span>
+      {% endif %}
+    </div>
+    <div class="kpi-value">{{ "{:,.0f}".format(kpi.VN.views_gained_today) }}</div>
+    <div class="kpi-sub">+{{ "{:,.0f}".format(kpi.VN.likes_gained_today) }} likes</div>
+  </div>
+
+  <div class="card kpi-card vn">
+    <div class="kpi-label">Avg Engagement Rate (VN)</div>
+    <div class="kpi-value">{{ kpi.VN.avg_er }}%</div>
+    <div class="kpi-sub">(likes + comments) / views</div>
+  </div>
+
+  <div class="card kpi-card global">
+    <div class="kpi-label">🌐 Videos theo dõi (Global)</div>
+    <div class="kpi-value">{{ "{:,}".format(kpi.Global.total_videos) }}</div>
+    <div class="kpi-sub">{{ kpi.Global.active_today }} video active hôm nay</div>
+  </div>
+
+  <div class="card kpi-card global">
+    <div class="kpi-label">
+      Views gain hôm nay (Global)
+      {% if kpi.Global.is_first_day %}
+        <span class="badge badge-amber" style="margin-left:6px;font-size:10px">Ngày đầu — dùng total</span>
+      {% endif %}
+    </div>
+    <div class="kpi-value">{{ "{:,.0f}".format(kpi.Global.views_gained_today) }}</div>
+    <div class="kpi-sub">+{{ "{:,.0f}".format(kpi.Global.likes_gained_today) }} likes</div>
+  </div>
+
+  <div class="card kpi-card global">
+    <div class="kpi-label">Avg Engagement Rate (Global)</div>
+    <div class="kpi-value">{{ kpi.Global.avg_er }}%</div>
+    <div class="kpi-sub">(likes + comments) / views</div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 2: GEMINI AI NARRATIVE
+════════════════════════════════════ -->
+<p class="section-title">Phân tích AI — Gemini 2.5</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card ai-card">
+    <div class="ai-header">
+      <span class="ai-header-icon">✦</span>
+      <strong>Tóm tắt tuần này</strong>
+      <span class="badge badge-ai">Gemini 2.5 Flash</span>
+    </div>
+    {% if weekly_narrative %}
+    <div class="ai-narrative">{{ weekly_narrative }}</div>
+    {% if trend_forecast %}
+    <div class="ai-forecast">
+      <span style="color:var(--accent);font-weight:600">📈 Dự báo tuần tới:</span>
+      {{ trend_forecast }}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty">Chưa có narrative — chạy bước 03 để tạo</div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:14px"><strong>🚨 Anomalies phát hiện</strong></div>
+    {% if anomalies %}
+      {% for a in anomalies %}
+      <div style="padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
+        margin-bottom:8px;border-left:3px solid {% if a.severity=='high' %}var(--red)
+        {% elif a.severity=='medium' %}var(--accent){% else %}var(--teal){% endif %}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:600;color:var(--text)">{{ a.type | replace('_',' ') | title }}</span>
+          <span class="badge {% if a.severity=='high' %}badge-red{% else %}badge-amber{% endif %}">
+            {{ a.severity }}
+          </span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">{{ a.description }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="empty">Không có anomaly hôm nay</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 3: TREND CHARTS
+════════════════════════════════════ -->
+<p class="section-title">Xu hướng views (30 ngày)</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong>🇻🇳 Vietnam — Daily Views Gain</strong>
+      <span class="badge badge-vn">30 ngày</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chartTrendVN"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong>🌐 Global — Daily Views Gain</strong>
+      <span class="badge badge-global">30 ngày</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chartTrendGlobal"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 4: WoW + MONTHLY
+════════════════════════════════════ -->
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="margin-bottom:14px"><strong>📊 Week-over-Week Growth</strong></div>
+    <div class="chart-wrap">
+      <canvas id="chartWoW"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:14px"><strong>📅 Monthly Views Gained (VN vs Global)</strong></div>
+    <div class="chart-wrap">
+      <canvas id="chartMonthly"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 5: ENGAGEMENT + CATEGORY
+════════════════════════════════════ -->
+<div class="grid grid-3" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="margin-bottom:14px"><strong>💡 Engagement Rate by Type</strong></div>
+    {% for stream, er_data in [('VN', er_vn), ('Global', er_global)] %}
+    <div style="margin-bottom:12px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">{{ stream }}</div>
+      {% for ct, er in er_data.items() %}
+      <div class="er-row">
+        <div class="er-label">
+          <span class="ct-badge ct-{{ ct }}">{{ ct }}</span>
+        </div>
+        <div class="er-bar-wrap">
+          <div class="er-bar" style="width:{{ [er * 10, 100] | min }}%;
+            background:{% if stream == 'VN' %}var(--vn){% else %}var(--global){% endif %}"></div>
+        </div>
+        <div class="er-val">{{ er }}%</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:14px"><strong>🥧 Category Distribution (VN)</strong></div>
+    <div style="position:relative;height:180px">
+      <canvas id="chartCatVN"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:14px"><strong>🥧 Category Distribution (Global)</strong></div>
+    <div style="position:relative;height:180px">
+      <canvas id="chartCatGlobal"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 6: OPTIMAL POST TIME
+════════════════════════════════════ -->
+<p class="section-title">Giờ đăng bài tối ưu (30 ngày · theo avg views gain)</p>
+<div class="card" style="margin-bottom:20px">
+  <div class="chart-wrap">
+    <canvas id="chartPostTime"></canvas>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 7: TOP VIDEOS
+════════════════════════════════════ -->
+<p class="section-title">Top 10 video hôm nay</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card" style="padding:0">
+    <div style="padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;
+      justify-content:space-between;align-items:center">
+      <strong>🇻🇳 Vietnam</strong>
+      <span class="badge badge-vn">by views gain</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="video-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Thumbnail</th>
+            <th>Video</th>
+            <th>Type</th>
+            <th>Views Gain</th>
+            <th>ER</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in top_vn %}
+          <tr>
+            <td><span class="num">{{ loop.index }}</span></td>
+            <td>
+              {% if v.thumbnail %}
+              <img src="{{ v.thumbnail }}" class="video-thumb" alt="" loading="lazy">
+              {% else %}
+              <div class="video-thumb"></div>
+              {% endif %}
+            </td>
+            <td class="video-title-wrap">
+              <a href="{{ v.yt_url }}" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">{{ v.title }}</div>
+              </a>
+              <div class="video-cat">{{ v.category }}</div>
+            </td>
+            <td><span class="ct-badge ct-{{ v.content_type }}">{{ v.content_type }}</span></td>
+            <td><span class="num-gain">+{{ "{:,}".format(v.views_gain) }}</span></td>
+            <td><span class="num">{{ v.er_pct }}%</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="empty">Chưa có dữ liệu</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0">
+    <div style="padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;
+      justify-content:space-between;align-items:center">
+      <strong>🌐 Global</strong>
+      <span class="badge badge-global">by views gain</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="video-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Thumbnail</th>
+            <th>Video</th>
+            <th>Type</th>
+            <th>Views Gain</th>
+            <th>ER</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in top_global %}
+          <tr>
+            <td><span class="num">{{ loop.index }}</span></td>
+            <td>
+              {% if v.thumbnail %}
+              <img src="{{ v.thumbnail }}" class="video-thumb" alt="" loading="lazy">
+              {% else %}
+              <div class="video-thumb"></div>
+              {% endif %}
+            </td>
+            <td class="video-title-wrap">
+              <a href="{{ v.yt_url }}" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">{{ v.title }}</div>
+              </a>
+              <div class="video-cat">{{ v.category }}</div>
+            </td>
+            <td><span class="ct-badge ct-{{ v.content_type }}">{{ v.content_type }}</span></td>
+            <td><span class="num-gain">+{{ "{:,}".format(v.views_gain) }}</span></td>
+            <td><span class="num">{{ v.er_pct }}%</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="empty">Chưa có dữ liệu</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 8: VIRAL ALERTS
+════════════════════════════════════ -->
+{% if viral_vn or viral_global %}
+<p class="section-title">🚨 Viral Early Warning (Virality Index ≥ 5×)</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between">
+      <strong>🇻🇳 Vietnam Viral</strong>
+      <span class="badge badge-red">{{ viral_vn | length }} videos</span>
+    </div>
+    {% for v in viral_vn %}
+    <div class="viral-item">
+      <div class="viral-rank">{{ loop.index }}</div>
+      <div class="viral-info">
+        <div class="viral-title">{{ v.title }}</div>
+        <div class="viral-meta">
+          Views gain hôm nay: +{{ "{:,}".format(v.views_gain) }} ·
+          Baseline: {{ "{:,}".format(v.avg_baseline | int) }}/ngày
+        </div>
+      </div>
+      <div class="vi-badge">{{ v.virality_index }}×</div>
+    </div>
+    {% else %}
+    <div class="empty">Không có video viral hôm nay</div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between">
+      <strong>🌐 Global Viral</strong>
+      <span class="badge badge-red">{{ viral_global | length }} videos</span>
+    </div>
+    {% for v in viral_global %}
+    <div class="viral-item">
+      <div class="viral-rank">{{ loop.index }}</div>
+      <div class="viral-info">
+        <div class="viral-title">{{ v.title }}</div>
+        <div class="viral-meta">
+          Views gain: +{{ "{:,}".format(v.views_gain) }} · Category: {{ v.category }}
+        </div>
+      </div>
+      <div class="vi-badge">{{ v.virality_index }}×</div>
+    </div>
+    {% else %}
+    <div class="empty">Không có video viral hôm nay</div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endif %}
+
+<!-- ════════════════════════════════════
+     SECTION 9: CONTENT GAP + RECOMMENDATIONS
+════════════════════════════════════ -->
+<p class="section-title">Cơ hội & Khuyến nghị</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+      <strong>🌏 Content Gap — Trend Global chưa có ở VN</strong>
+      <span class="badge badge-global">Gemini</span>
+    </div>
+    {% if content_gaps %}
+      {% for g in content_gaps %}
+      <div class="gap-item">
+        <div class="gap-score">{{ g.opportunity_score }}</div>
+        <div class="gap-info">
+          <div class="gap-topic">{{ g.topic }}</div>
+          <div class="gap-evidence">{{ g.evidence }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="empty">Chưa có data content gap</div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+      <strong>💡 Recommendations</strong>
+      <span class="badge badge-ai">Gemini</span>
+    </div>
+    {% if recommendations %}
+      {% for r in recommendations %}
+      <div class="rec-item {{ r.priority }}">
+        <div class="rec-action">{{ r.action }}</div>
+        <div class="rec-reason">{{ r.reasoning }}</div>
+        <div class="rec-meta">
+          <span class="badge {% if r.priority == 'high' %}badge-red
+            {% elif r.priority == 'medium' %}badge-amber
+            {% else %}badge-ai{% endif %}">{{ r.priority }}</span>
+          <span class="badge" style="background:var(--bg3);color:var(--text2)">{{ r.target }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="empty">Chưa có recommendations</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION 10: TREND LAG RADAR
+════════════════════════════════════ -->
+{% if trend_lag and trend_lag.lag_tags %}
+<p class="section-title">🕐 Trend Lag Radar — Global → VN</p>
+<div class="card" style="margin-bottom:20px">
+  <div class="grid grid-3" style="margin-bottom:16px">
+    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <div style="font-size:24px;font-weight:700;color:var(--global)">{{ trend_lag.global_only }}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics chỉ có ở Global</div>
+    </div>
+    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <div style="font-size:24px;font-weight:700;color:var(--accent)">{{ trend_lag.overlap }}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics overlap VN & Global</div>
+    </div>
+    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <div style="font-size:24px;font-weight:700;color:var(--vn)">{{ trend_lag.vn_only }}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics chỉ có ở VN</div>
+    </div>
+  </div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:8px">
+    Topics đang trending ở Global nhưng chưa xuất hiện tại VN (cơ hội nội dung):
+  </div>
+  <div class="lag-tags">
+    {% for tag in trend_lag.lag_tags %}
+    <span class="lag-tag"># {{ tag }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- ════════════════════════════════════
+     SECTION NEW-1: MOMENTUM STATUS
+════════════════════════════════════ -->
+<p class="section-title">Momentum — trạng thái tăng trưởng hiện tại</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <strong>🇻🇳 Vietnam Momentum</strong>
+      <span style="font-size:11px;color:var(--text2)">Tính từ hourly snapshots</span>
+    </div>
+    <div class="momentum-bar">
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#22c55e">{{ momentum_vn.accelerating }}</div>
+        <div class="mc-label">Accelerating ↑↑</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f59e0b">{{ momentum_vn.peaking }}</div>
+        <div class="mc-label">Peaking ▲</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f97316">{{ momentum_vn.decelerating }}</div>
+        <div class="mc-label">Decelerating ↓</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#94a3b8">{{ momentum_vn.fading }}</div>
+        <div class="mc-label">Fading →</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:var(--text3)">{{ momentum_vn.new }}</div>
+        <div class="mc-label">New (no data)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <strong>🌐 Global Momentum</strong>
+      <span style="font-size:11px;color:var(--text2)">Tính từ hourly snapshots</span>
+    </div>
+    <div class="momentum-bar">
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#22c55e">{{ momentum_global.accelerating }}</div>
+        <div class="mc-label">Accelerating ↑↑</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f59e0b">{{ momentum_global.peaking }}</div>
+        <div class="mc-label">Peaking ▲</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f97316">{{ momentum_global.decelerating }}</div>
+        <div class="mc-label">Decelerating ↓</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#94a3b8">{{ momentum_global.fading }}</div>
+        <div class="mc-label">Fading →</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:var(--text3)">{{ momentum_global.new }}</div>
+        <div class="mc-label">New (no data)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION NEW-2: INTRADAY CHART
+════════════════════════════════════ -->
+<p class="section-title">
+  <span class="pulse-dot"></span>
+  Intraday Views — từng giờ hôm nay (cập nhật mỗi giờ)
+</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong>🇻🇳 Vietnam — Views/giờ hôm nay</strong>
+      <span style="font-size:11px;color:var(--text2)">Cập nhật: {{ last_updated_ts }}</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chartIntradayVN"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong>🌐 Global — Views/giờ hôm nay</strong>
+      <span style="font-size:11px;color:var(--text2)">Hourly snapshot</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chartIntradayGlobal"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION NEW-3: HOT RIGHT NOW
+════════════════════════════════════ -->
+<p class="section-title">
+  <span class="pulse-dot"></span>
+  Hot right now — tăng mạnh nhất trong 2 giờ qua
+</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card" style="padding:0">
+    <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;
+      justify-content:space-between;align-items:center">
+      <strong>🇻🇳 Vietnam</strong>
+      <span class="badge badge-vn">views gain / 1h</span>
+    </div>
+    <div style="padding:4px 18px 8px">
+      {% if hot_vn %}
+        {% for v in hot_vn %}
+        <div class="hot-item">
+          <span class="hot-rank">{{ loop.index }}</span>
+          {% if v.thumbnail %}
+          <img src="{{ v.thumbnail }}" class="hot-thumb" alt="" loading="lazy">
+          {% else %}
+          <div class="hot-thumb"></div>
+          {% endif %}
+          <div class="hot-info">
+            <a href="{{ v.yt_url }}" target="_blank" rel="noopener" class="video-link">
+              <div class="hot-title">{{ v.title }}</div>
+            </a>
+            <div class="hot-meta">
+              <span class="momentum-badge m-{{ v.momentum }}">{{ v.momentum }}</span>
+              &nbsp;{{ v.category }}
+            </div>
+          </div>
+          <div class="hot-delta">+{{ "{:,.0f}".format(v.views_delta_1h) }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty" style="padding:20px">Chưa có hourly data — chạy hourly.yml để bắt đầu</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card" style="padding:0">
+    <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;
+      justify-content:space-between;align-items:center">
+      <strong>🌐 Global</strong>
+      <span class="badge badge-global">views gain / 1h</span>
+    </div>
+    <div style="padding:4px 18px 8px">
+      {% if hot_global %}
+        {% for v in hot_global %}
+        <div class="hot-item">
+          <span class="hot-rank">{{ loop.index }}</span>
+          {% if v.thumbnail %}
+          <img src="{{ v.thumbnail }}" class="hot-thumb" alt="" loading="lazy">
+          {% else %}
+          <div class="hot-thumb"></div>
+          {% endif %}
+          <div class="hot-info">
+            <a href="{{ v.yt_url }}" target="_blank" rel="noopener" class="video-link">
+              <div class="hot-title">{{ v.title }}</div>
+            </a>
+            <div class="hot-meta">
+              <span class="momentum-badge m-{{ v.momentum }}">{{ v.momentum }}</span>
+              &nbsp;{{ v.category }}
+            </div>
+          </div>
+          <div class="hot-delta" style="color:var(--global)">+{{ "{:,.0f}".format(v.views_delta_1h) }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty" style="padding:20px">Chưa có hourly data</div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div>YouTube Analytics Pipeline · Tự động cập nhật hàng ngày lúc 06:00 ICT</div>
+  <div style="margin-top:4px">
+    Dữ liệu từ <strong>YouTube Data API v3</strong> ·
+    Phân tích bởi <strong>Gemini 2.5 Flash</strong> ·
+    Lưu trữ tại <strong>Supabase</strong> ·
+    Deploy qua <strong>GitHub Actions → Pages</strong>
+  </div>
+  <div style="margin-top:4px;color:var(--text3)">{{ generated_at }}</div>
+</div>
+
+</div><!-- /wrapper -->
+
+<!-- ════════════════════════════════════
+     CHARTS INITIALIZATION
+════════════════════════════════════ -->
+<script>
+const COLORS = {
+  vn:      '#22c55e', vnAlpha:  'rgba(34,197,94,.15)',
+  global:  '#3b82f6', globalAlpha: 'rgba(59,130,246,.15)',
+  amber:   '#f59e0b', amberAlpha:  'rgba(245,158,11,.15)',
+  purple:  '#a855f7', teal: '#14b8a6', red: '#ef4444',
+  text2:   '#9ea8c4', border: '#2a2f45', bg3: '#1e2336',
+};
+
+const CHART_DEFAULTS = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: {
+    legend: { labels: { color: COLORS.text2, font: { size: 11 }, boxWidth: 10, padding: 12 } },
+    tooltip: {
+      backgroundColor: '#1e2336', borderColor: '#2a2f45', borderWidth: 1,
+      titleColor: '#e8eaf0', bodyColor: '#9ea8c4', padding: 10,
+    }
+  },
+  scales: {
+    x: { grid: { color: COLORS.border }, ticks: { color: COLORS.text2, font: { size: 11 } } },
+    y: { grid: { color: COLORS.border }, ticks: { color: COLORS.text2, font: { size: 11 },
+      callback: v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v
+    } }
+  }
+};
+
+function fmtDate(d) {
+  const dt = new Date(d);
+  return `${dt.getDate()}/${dt.getMonth()+1}`;
+}
+
+// ── TREND VN ──────────────────────────────────────────
+const trendVN = {{ trend_vn_json }};
+new Chart(document.getElementById('chartTrendVN'), {
+  type: 'line',
+  data: {
+    labels: trendVN.map(d => fmtDate(d.date)),
+    datasets: [{
+      label: 'Views Gain/ngày (VN)',
+      data: trendVN.map(d => d.views),
+      borderColor: COLORS.vn, backgroundColor: COLORS.vnAlpha,
+      borderWidth: 2, pointRadius: 2, fill: true, tension: .4,
+    }]
+  },
+  options: CHART_DEFAULTS
+});
+
+// ── TREND GLOBAL ──────────────────────────────────────
+const trendGlobal = {{ trend_global_json }};
+new Chart(document.getElementById('chartTrendGlobal'), {
+  type: 'line',
+  data: {
+    labels: trendGlobal.map(d => fmtDate(d.date)),
+    datasets: [{
+      label: 'Views Gain/ngày (Global)',
+      data: trendGlobal.map(d => d.views),
+      borderColor: COLORS.global, backgroundColor: COLORS.globalAlpha,
+      borderWidth: 2, pointRadius: 2, fill: true, tension: .4,
+    }]
+  },
+  options: CHART_DEFAULTS
+});
+
+// ── WOW CHART ─────────────────────────────────────────
+const wowData = {{ wow_json }};
+const wowTypes = [...new Set([
+  ...Object.keys(wowData.VN?.current || {}),
+  ...Object.keys(wowData.Global?.current || {})
+])];
+new Chart(document.getElementById('chartWoW'), {
+  type: 'bar',
+  data: {
+    labels: wowTypes,
+    datasets: [
+      {
+        label: 'VN Tuần này',
+        data: wowTypes.map(t => wowData.VN?.current?.[t] || 0),
+        backgroundColor: COLORS.vn, borderRadius: 4,
+      },
+      {
+        label: 'VN Tuần trước',
+        data: wowTypes.map(t => wowData.VN?.previous?.[t] || 0),
+        backgroundColor: COLORS.vnAlpha.replace('.15', '.5'), borderRadius: 4,
+      },
+      {
+        label: 'Global Tuần này',
+        data: wowTypes.map(t => wowData.Global?.current?.[t] || 0),
+        backgroundColor: COLORS.global, borderRadius: 4,
+      },
+      {
+        label: 'Global Tuần trước',
+        data: wowTypes.map(t => wowData.Global?.previous?.[t] || 0),
+        backgroundColor: COLORS.globalAlpha.replace('.15', '.5'), borderRadius: 4,
+      },
+    ]
+  },
+  options: { ...CHART_DEFAULTS, scales: { ...CHART_DEFAULTS.scales } }
+});
+
+// ── MONTHLY CHART ─────────────────────────────────────
+const mVN     = {{ monthly_vn_json }};
+const mGlobal = {{ monthly_global_json }};
+const allMonths = [...new Set([
+  ...mVN.map(d => d.month), ...mGlobal.map(d => d.month)
+])].sort();
+new Chart(document.getElementById('chartMonthly'), {
+  type: 'bar',
+  data: {
+    labels: allMonths,
+    datasets: [
+      {
+        label: '🇻🇳 VN',
+        data: allMonths.map(m => mVN.find(d => d.month === m)?.views || 0),
+        backgroundColor: COLORS.vn, borderRadius: 4,
+      },
+      {
+        label: '🌐 Global',
+        data: allMonths.map(m => mGlobal.find(d => d.month === m)?.views || 0),
+        backgroundColor: COLORS.global, borderRadius: 4,
+      }
+    ]
+  },
+  options: { ...CHART_DEFAULTS }
+});
+
+// ── POST TIME (VN) ────────────────────────────────────
+const ptVN = {{ post_time_vn_json }};
+const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
+new Chart(document.getElementById('chartPostTime'), {
+  type: 'bar',
+  data: {
+    labels: hours,
+    datasets: [
+      {
+        label: '🇻🇳 VN — Avg Views Gain',
+        data: hours.map((_, i) => ptVN[String(i)] || 0),
+        backgroundColor: hours.map((_, i) => {
+          const v = ptVN[String(i)] || 0;
+          const max = Math.max(...Object.values(ptVN));
+          const alpha = max > 0 ? 0.3 + (v/max)*0.7 : 0.3;
+          return `rgba(34,197,94,${alpha.toFixed(2)})`;
+        }),
+        borderRadius: 4,
+      },
+    ]
+  },
+  options: {
+    ...CHART_DEFAULTS,
+    plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
+  }
+});
+
+// ── CATEGORY DONUT VN ─────────────────────────────────
+const catVN = {{ cat_vn_json }};
+const PIE_COLORS = [
+  '#22c55e','#3b82f6','#f59e0b','#a855f7','#14b8a6',
+  '#ef4444','#f97316','#06b6d4','#8b5cf6'
+];
+new Chart(document.getElementById('chartCatVN'), {
+  type: 'doughnut',
+  data: {
+    labels: Object.keys(catVN),
+    datasets: [{
+      data: Object.values(catVN),
+      backgroundColor: PIE_COLORS,
+      borderWidth: 0,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '62%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 }
+      },
+      tooltip: CHART_DEFAULTS.plugins.tooltip,
+    }
+  }
+});
+
+// ── CATEGORY DONUT GLOBAL ─────────────────────────────
+const catGlobal = {{ cat_global_json }};
+new Chart(document.getElementById('chartCatGlobal'), {
+  type: 'doughnut',
+  data: {
+    labels: Object.keys(catGlobal),
+    datasets: [{
+      data: Object.values(catGlobal),
+      backgroundColor: PIE_COLORS,
+      borderWidth: 0,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '62%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 }
+      },
+      tooltip: CHART_DEFAULTS.plugins.tooltip,
+    }
+  }
+});
+// ── INTRADAY VN ──────────────────────────────────────
+const intradayVN = {{ intraday_vn_json }};
+if (intradayVN.length > 0) {
+  new Chart(document.getElementById('chartIntradayVN'), {
+    type: 'bar',
+    data: {
+      labels: intradayVN.map(d => d.hour),
+      datasets: [{
+        label: 'Views gained (VN)',
+        data: intradayVN.map(d => d.views),
+        backgroundColor: intradayVN.map(d => {
+          const max = Math.max(...intradayVN.map(x => x.views));
+          const alpha = max > 0 ? 0.35 + (d.views/max)*0.65 : 0.4;
+          return `rgba(34,197,94,${alpha.toFixed(2)})`;
+        }),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
+    }
+  });
+} else {
+  const ctx = document.getElementById('chartIntradayVN');
+  if (ctx) {
+    ctx.parentElement.innerHTML =
+      '<div class="empty" style="padding:40px">Chưa có hourly data — cần chạy hourly.yml ít nhất 1 lần</div>';
+  }
+}
+
+// ── INTRADAY GLOBAL ───────────────────────────────────
+const intradayGlobal = {{ intraday_global_json }};
+if (intradayGlobal.length > 0) {
+  new Chart(document.getElementById('chartIntradayGlobal'), {
+    type: 'bar',
+    data: {
+      labels: intradayGlobal.map(d => d.hour),
+      datasets: [{
+        label: 'Views gained (Global)',
+        data: intradayGlobal.map(d => d.views),
+        backgroundColor: intradayGlobal.map(d => {
+          const max = Math.max(...intradayGlobal.map(x => x.views));
+          const alpha = max > 0 ? 0.35 + (d.views/max)*0.65 : 0.4;
+          return `rgba(59,130,246,${alpha.toFixed(2)})`;
+        }),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
+    }
+  });
+} else {
+  const ctx = document.getElementById('chartIntradayGlobal');
+  if (ctx) {
+    ctx.parentElement.innerHTML =
+      '<div class="empty" style="padding:40px">Chưa có hourly data</div>';
+  }
+}
+</script>
+</body>
+</html>

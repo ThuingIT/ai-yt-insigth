@@ -11,20 +11,25 @@ Output:
     data/crawl_vn.json
     data/crawl_global.json
 
-Quota YouTube API ước tính mỗi lần chạy:
-    VN:     videos.list chart × 1 + videos.list detail × 1 = ~5 units
-    Global: videos.list chart × 5 + videos.list detail × 1 = ~10 units
-    Tổng:   ~15 units / ngày  (giới hạn: 10,000 units/ngày)
+Modes:
+    --mode daily   (default) — Crawl đầy đủ VN + Global, optional comments
+    --mode hourly  — Chỉ VN top 50, không comments, nhanh hơn 50%
+                     Output thêm field "mode": "hourly" trong JSON
+                     để 02_load biết upsert vào hourly_snapshot
+
+Quota YouTube API:
+    daily  mode: ~15 units/lần
+    hourly mode: ~5  units/lần → 5×24 = 120 units/ngày nếu chạy mỗi giờ
 
 Cách chạy:
     export YOUTUBE_API_KEY="AIza..."
-    export OUTPUT_DIR="data"          # optional, default: data
-    export ENABLE_COMMENTS="false"    # optional, default: false (tốn thêm quota)
-    python 01_crawl_youtube.py
+    export OUTPUT_DIR="data"
+    python 01_crawl_youtube.py --mode hourly
+    python 01_crawl_youtube.py --mode daily --stream both
 
 Trong GitHub Actions:
-    - YOUTUBE_API_KEY lưu trong GitHub Secrets
-    - OUTPUT_DIR = "data" (artifact được dùng bởi job 02_load)
+    - hourly.yml: python 01_crawl_youtube.py --mode hourly
+    - daily.yml:  python 01_crawl_youtube.py --mode daily
 """
 
 import os
@@ -51,6 +56,10 @@ ENABLE_COMMENTS: bool = os.environ.get("ENABLE_COMMENTS", "false").lower() == "t
 
 # ID duy nhất cho lần chạy pipeline này (dùng chung với 02_load, 03_analyze)
 RUN_ID: str = os.environ.get("PIPELINE_RUN_ID", str(uuid.uuid4()))
+
+# Mode crawl — được set bởi argparse, default "daily"
+# Hourly mode: chỉ VN, không comments, ghi thêm "mode":"hourly" vào JSON output
+CRAWL_MODE: str = "daily"  # Overwritten bởi main()
 
 # Vietnam stream: chỉ top 50 trending
 VN_CONFIG = {
@@ -212,9 +221,7 @@ def get_trending_video_ids(
         "maxResults":  min(max_results, 50),  # API giới hạn 50/request
     }
     if language:
-        params["hl"] = language
-    # if language:
-    #    params["relevanceLanguage"] = language
+        params["relevanceLanguage"] = language
 
     response = api_call_with_retry(youtube.videos().list, **params)
     if not response:
@@ -571,15 +578,33 @@ def crawl_global(youtube) -> dict:
 # ============================================================
 
 def main():
+    global CRAWL_MODE
+
     parser = argparse.ArgumentParser(description="01_crawl_youtube — YouTube Data API v3 crawler")
-    parser.add_argument("--stream", choices=["vn", "global", "both"], default="both",
-                        help="Chỉ chạy 1 stream (mặc định: cả hai)")
+    parser.add_argument(
+        "--mode",
+        choices=["daily", "hourly"],
+        default="daily",
+        help="daily = full pipeline (VN+Global+comments optional) | "
+             "hourly = chỉ VN, nhanh, không comments"
+    )
+    parser.add_argument(
+        "--stream",
+        choices=["vn", "global", "both"],
+        default=None,  # None = auto theo mode
+        help="Override stream (mặc định: hourly→vn, daily→both)"
+    )
     parser.add_argument("--dry-run", action="store_true",
                         help="Log config và thoát, không gọi API")
     args = parser.parse_args()
 
+    CRAWL_MODE = args.mode
+
+    # Mặc định stream theo mode nếu không override
+    stream = args.stream or ("vn" if CRAWL_MODE == "hourly" else "both")
+
     if args.dry_run:
-        log.info("=== DRY RUN ===")
+        log.info(f"=== DRY RUN | mode={CRAWL_MODE} | stream={stream} ===")
         log.info(f"OUTPUT_DIR:      {OUTPUT_DIR}")
         log.info(f"RUN_ID:          {RUN_ID}")
         log.info(f"VN top results:  {VN_CONFIG['max_results']}")
@@ -589,40 +614,51 @@ def main():
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    log.info(f"=== 01_crawl_youtube START | run_id={RUN_ID} ===")
+    log.info(f"=== 01_crawl_youtube START | mode={CRAWL_MODE} | run_id={RUN_ID} ===")
     log.info(f"Output dir: {OUTPUT_DIR}")
 
-    # Khởi tạo YouTube API client
-    youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
+    youtube      = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
+    total_quota  = 0
+    results      = {}
 
-    total_quota = 0
-    results     = {}
-
-    # Stream A: Vietnam
-    if args.stream in ("vn", "both"):
+    # Hourly mode: chỉ VN, không crawl Global để tiết kiệm quota
+    if CRAWL_MODE == "hourly":
+        log.info("[hourly] Mode: chỉ crawl VN, bỏ qua Global và comments")
         vn_data = crawl_vn(youtube)
+        vn_data["mode"] = "hourly"              # ← Flag để 02_load upsert đúng bảng
         vn_path = os.path.join(OUTPUT_DIR, "crawl_vn.json")
         with open(vn_path, "w", encoding="utf-8") as f:
             json.dump(vn_data, f, ensure_ascii=False, indent=2, default=str)
         total_quota += vn_data["quota_used"]
         results["vn"] = vn_data["summary"]
-        log.info(f"[VN] Đã lưu → {vn_path}")
+        log.info(f"[VN/hourly] Đã lưu → {vn_path}")
 
-    # Stream B: Global
-    if args.stream in ("global", "both"):
-        global_data = crawl_global(youtube)
-        global_path = os.path.join(OUTPUT_DIR, "crawl_global.json")
-        with open(global_path, "w", encoding="utf-8") as f:
-            json.dump(global_data, f, ensure_ascii=False, indent=2, default=str)
-        total_quota += global_data["quota_used"]
-        results["global"] = global_data["summary"]
-        log.info(f"[Global] Đã lưu → {global_path}")
+    else:
+        # Daily mode: full pipeline như cũ
+        if stream in ("vn", "both"):
+            vn_data = crawl_vn(youtube)
+            vn_data["mode"] = "daily"
+            vn_path = os.path.join(OUTPUT_DIR, "crawl_vn.json")
+            with open(vn_path, "w", encoding="utf-8") as f:
+                json.dump(vn_data, f, ensure_ascii=False, indent=2, default=str)
+            total_quota += vn_data["quota_used"]
+            results["vn"] = vn_data["summary"]
+            log.info(f"[VN] Đã lưu → {vn_path}")
 
-    # Summary
+        if stream in ("global", "both"):
+            global_data = crawl_global(youtube)
+            global_data["mode"] = "daily"
+            global_path = os.path.join(OUTPUT_DIR, "crawl_global.json")
+            with open(global_path, "w", encoding="utf-8") as f:
+                json.dump(global_data, f, ensure_ascii=False, indent=2, default=str)
+            total_quota += global_data["quota_used"]
+            results["global"] = global_data["summary"]
+            log.info(f"[Global] Đã lưu → {global_path}")
+
     log.info("=== SUMMARY ===")
-    for stream, summary in results.items():
-        log.info(f"  {stream.upper()}: {summary}")
-    log.info(f"  Tổng quota dùng: ~{total_quota} / 10,000 units/ngày")
+    for s, summary in results.items():
+        log.info(f"  {s.upper()}: {summary}")
+    log.info(f"  Mode: {CRAWL_MODE} | Quota: ~{total_quota} units")
     log.info(f"=== 01_crawl_youtube DONE | run_id={RUN_ID} ===")
 
 
