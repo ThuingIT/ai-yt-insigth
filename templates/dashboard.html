@@ -173,6 +173,41 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 /* ── EMPTY STATE ─────────────────────────────────────── */
 .empty{text-align:center;color:var(--text3);padding:32px;font-size:13px}
 
+/* ── MOMENTUM BADGES ─────────────────────────────────── */
+.momentum-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;
+  font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.m-accelerating{background:#16532d;color:#22c55e}
+.m-peaking{background:#78400b;color:#f59e0b}
+.m-decelerating{background:#7c2d12;color:#f97316}
+.m-fading{background:#1e293b;color:#94a3b8}
+.m-new{background:#1e2336;color:#5a6280}
+.momentum-bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.momentum-count{text-align:center;padding:10px 14px;background:var(--bg3);
+  border-radius:var(--radius-sm);flex:1;min-width:80px}
+.momentum-count .mc-num{font-size:22px;font-weight:700;line-height:1}
+.momentum-count .mc-label{font-size:10px;color:var(--text2);margin-top:3px}
+
+/* ── HOT RIGHT NOW ────────────────────────────────────── */
+.hot-item{display:flex;align-items:center;gap:10px;padding:9px 0;
+  border-bottom:1px solid var(--border)}
+.hot-item:last-child{border:none}
+.hot-rank{font-size:12px;font-weight:700;color:var(--text3);width:18px;
+  text-align:center;flex-shrink:0}
+.hot-thumb{width:48px;height:34px;object-fit:cover;border-radius:4px;
+  background:var(--bg3);flex-shrink:0}
+.hot-info{flex:1;min-width:0}
+.hot-title{font-size:12px;font-weight:500;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.hot-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.hot-delta{font-size:13px;font-weight:700;color:var(--vn);
+  white-space:nowrap;flex-shrink:0}
+
+/* ── INTRADAY PULSE indicator ─────────────────────────── */
+.pulse-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--vn);margin-right:5px;animation:pulse-anim 2s infinite}
+@keyframes pulse-anim{0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(1.3)}}
+
 /* ── FOOTER ──────────────────────────────────────────── */
 .footer{margin-top:40px;text-align:center;color:var(--text3);font-size:12px;
   padding-bottom:24px;line-height:2}
@@ -219,7 +254,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
   </div>
 
   <div class="card kpi-card vn">
-    <div class="kpi-label">Views gain hôm nay (VN)</div>
+    <div class="kpi-label">
+      Views gain hôm nay (VN)
+      {% if kpi.VN.is_first_day %}
+        <span class="badge badge-amber" style="margin-left:6px;font-size:10px">Ngày đầu — dùng total</span>
+      {% endif %}
+    </div>
     <div class="kpi-value">{{ "{:,.0f}".format(kpi.VN.views_gained_today) }}</div>
     <div class="kpi-sub">+{{ "{:,.0f}".format(kpi.VN.likes_gained_today) }} likes</div>
   </div>
@@ -237,7 +277,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
   </div>
 
   <div class="card kpi-card global">
-    <div class="kpi-label">Views gain hôm nay (Global)</div>
+    <div class="kpi-label">
+      Views gain hôm nay (Global)
+      {% if kpi.Global.is_first_day %}
+        <span class="badge badge-amber" style="margin-left:6px;font-size:10px">Ngày đầu — dùng total</span>
+      {% endif %}
+    </div>
     <div class="kpi-value">{{ "{:,.0f}".format(kpi.Global.views_gained_today) }}</div>
     <div class="kpi-sub">+{{ "{:,.0f}".format(kpi.Global.likes_gained_today) }} likes</div>
   </div>
@@ -636,6 +681,182 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 </div>
 {% endif %}
 
+<!-- ════════════════════════════════════
+     SECTION NEW-1: MOMENTUM STATUS
+════════════════════════════════════ -->
+<p class="section-title">Momentum — trạng thái tăng trưởng hiện tại</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <strong>🇻🇳 Vietnam Momentum</strong>
+      <span style="font-size:11px;color:var(--text2)">Tính từ hourly snapshots</span>
+    </div>
+    <div class="momentum-bar">
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#22c55e">{{ momentum_vn.accelerating }}</div>
+        <div class="mc-label">Accelerating ↑↑</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f59e0b">{{ momentum_vn.peaking }}</div>
+        <div class="mc-label">Peaking ▲</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f97316">{{ momentum_vn.decelerating }}</div>
+        <div class="mc-label">Decelerating ↓</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#94a3b8">{{ momentum_vn.fading }}</div>
+        <div class="mc-label">Fading →</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:var(--text3)">{{ momentum_vn.new }}</div>
+        <div class="mc-label">New (no data)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <strong>🌐 Global Momentum</strong>
+      <span style="font-size:11px;color:var(--text2)">Tính từ hourly snapshots</span>
+    </div>
+    <div class="momentum-bar">
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#22c55e">{{ momentum_global.accelerating }}</div>
+        <div class="mc-label">Accelerating ↑↑</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f59e0b">{{ momentum_global.peaking }}</div>
+        <div class="mc-label">Peaking ▲</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#f97316">{{ momentum_global.decelerating }}</div>
+        <div class="mc-label">Decelerating ↓</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:#94a3b8">{{ momentum_global.fading }}</div>
+        <div class="mc-label">Fading →</div>
+      </div>
+      <div class="momentum-count">
+        <div class="mc-num" style="color:var(--text3)">{{ momentum_global.new }}</div>
+        <div class="mc-label">New (no data)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION NEW-2: INTRADAY CHART
+════════════════════════════════════ -->
+<p class="section-title">
+  <span class="pulse-dot"></span>
+  Intraday Views — từng giờ hôm nay (cập nhật mỗi giờ)
+</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong>🇻🇳 Vietnam — Views/giờ hôm nay</strong>
+      <span style="font-size:11px;color:var(--text2)">Cập nhật: {{ last_updated_ts }}</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chartIntradayVN"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong>🌐 Global — Views/giờ hôm nay</strong>
+      <span style="font-size:11px;color:var(--text2)">Hourly snapshot</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chartIntradayGlobal"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     SECTION NEW-3: HOT RIGHT NOW
+════════════════════════════════════ -->
+<p class="section-title">
+  <span class="pulse-dot"></span>
+  Hot right now — tăng mạnh nhất trong 2 giờ qua
+</p>
+<div class="grid grid-2" style="margin-bottom:20px">
+
+  <div class="card" style="padding:0">
+    <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;
+      justify-content:space-between;align-items:center">
+      <strong>🇻🇳 Vietnam</strong>
+      <span class="badge badge-vn">views gain / 1h</span>
+    </div>
+    <div style="padding:4px 18px 8px">
+      {% if hot_vn %}
+        {% for v in hot_vn %}
+        <div class="hot-item">
+          <span class="hot-rank">{{ loop.index }}</span>
+          {% if v.thumbnail %}
+          <img src="{{ v.thumbnail }}" class="hot-thumb" alt="" loading="lazy">
+          {% else %}
+          <div class="hot-thumb"></div>
+          {% endif %}
+          <div class="hot-info">
+            <a href="{{ v.yt_url }}" target="_blank" rel="noopener" class="video-link">
+              <div class="hot-title">{{ v.title }}</div>
+            </a>
+            <div class="hot-meta">
+              <span class="momentum-badge m-{{ v.momentum }}">{{ v.momentum }}</span>
+              &nbsp;{{ v.category }}
+            </div>
+          </div>
+          <div class="hot-delta">+{{ "{:,.0f}".format(v.views_delta_1h) }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty" style="padding:20px">Chưa có hourly data — chạy hourly.yml để bắt đầu</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card" style="padding:0">
+    <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;
+      justify-content:space-between;align-items:center">
+      <strong>🌐 Global</strong>
+      <span class="badge badge-global">views gain / 1h</span>
+    </div>
+    <div style="padding:4px 18px 8px">
+      {% if hot_global %}
+        {% for v in hot_global %}
+        <div class="hot-item">
+          <span class="hot-rank">{{ loop.index }}</span>
+          {% if v.thumbnail %}
+          <img src="{{ v.thumbnail }}" class="hot-thumb" alt="" loading="lazy">
+          {% else %}
+          <div class="hot-thumb"></div>
+          {% endif %}
+          <div class="hot-info">
+            <a href="{{ v.yt_url }}" target="_blank" rel="noopener" class="video-link">
+              <div class="hot-title">{{ v.title }}</div>
+            </a>
+            <div class="hot-meta">
+              <span class="momentum-badge m-{{ v.momentum }}">{{ v.momentum }}</span>
+              &nbsp;{{ v.category }}
+            </div>
+          </div>
+          <div class="hot-delta" style="color:var(--global)">+{{ "{:,.0f}".format(v.views_delta_1h) }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty" style="padding:20px">Chưa có hourly data</div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
 <!-- FOOTER -->
 <div class="footer">
   <div>YouTube Analytics Pipeline · Tự động cập nhật hàng ngày lúc 06:00 ICT</div>
@@ -685,7 +906,7 @@ function fmtDate(d) {
 }
 
 // ── TREND VN ──────────────────────────────────────────
-const trendVN = {{ trend_vn_json | safe}};
+const trendVN = {{ trend_vn_json }};
 new Chart(document.getElementById('chartTrendVN'), {
   type: 'line',
   data: {
@@ -701,7 +922,7 @@ new Chart(document.getElementById('chartTrendVN'), {
 });
 
 // ── TREND GLOBAL ──────────────────────────────────────
-const trendGlobal = {{ trend_global_json | safe}};
+const trendGlobal = {{ trend_global_json }};
 new Chart(document.getElementById('chartTrendGlobal'), {
   type: 'line',
   data: {
@@ -717,7 +938,7 @@ new Chart(document.getElementById('chartTrendGlobal'), {
 });
 
 // ── WOW CHART ─────────────────────────────────────────
-const wowData = {{ wow_json | safe}};
+const wowData = {{ wow_json }};
 const wowTypes = [...new Set([
   ...Object.keys(wowData.VN?.current || {}),
   ...Object.keys(wowData.Global?.current || {})
@@ -753,8 +974,8 @@ new Chart(document.getElementById('chartWoW'), {
 });
 
 // ── MONTHLY CHART ─────────────────────────────────────
-const mVN     = {{ monthly_vn_json | safe}};
-const mGlobal = {{ monthly_global_json | safe}};
+const mVN     = {{ monthly_vn_json }};
+const mGlobal = {{ monthly_global_json }};
 const allMonths = [...new Set([
   ...mVN.map(d => d.month), ...mGlobal.map(d => d.month)
 ])].sort();
@@ -779,7 +1000,7 @@ new Chart(document.getElementById('chartMonthly'), {
 });
 
 // ── POST TIME (VN) ────────────────────────────────────
-const ptVN = {{ post_time_vn_json | safe}};
+const ptVN = {{ post_time_vn_json }};
 const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
 new Chart(document.getElementById('chartPostTime'), {
   type: 'bar',
@@ -806,7 +1027,7 @@ new Chart(document.getElementById('chartPostTime'), {
 });
 
 // ── CATEGORY DONUT VN ─────────────────────────────────
-const catVN = {{ cat_vn_json | safe}};
+const catVN = {{ cat_vn_json }};
 const PIE_COLORS = [
   '#22c55e','#3b82f6','#f59e0b','#a855f7','#14b8a6',
   '#ef4444','#f97316','#06b6d4','#8b5cf6'
@@ -836,7 +1057,7 @@ new Chart(document.getElementById('chartCatVN'), {
 });
 
 // ── CATEGORY DONUT GLOBAL ─────────────────────────────
-const catGlobal = {{ cat_global_json | safe}};
+const catGlobal = {{ cat_global_json }};
 new Chart(document.getElementById('chartCatGlobal'), {
   type: 'doughnut',
   data: {
@@ -860,6 +1081,67 @@ new Chart(document.getElementById('chartCatGlobal'), {
     }
   }
 });
+// ── INTRADAY VN ──────────────────────────────────────
+const intradayVN = {{ intraday_vn_json }};
+if (intradayVN.length > 0) {
+  new Chart(document.getElementById('chartIntradayVN'), {
+    type: 'bar',
+    data: {
+      labels: intradayVN.map(d => d.hour),
+      datasets: [{
+        label: 'Views gained (VN)',
+        data: intradayVN.map(d => d.views),
+        backgroundColor: intradayVN.map(d => {
+          const max = Math.max(...intradayVN.map(x => x.views));
+          const alpha = max > 0 ? 0.35 + (d.views/max)*0.65 : 0.4;
+          return `rgba(34,197,94,${alpha.toFixed(2)})`;
+        }),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
+    }
+  });
+} else {
+  const ctx = document.getElementById('chartIntradayVN');
+  if (ctx) {
+    ctx.parentElement.innerHTML =
+      '<div class="empty" style="padding:40px">Chưa có hourly data — cần chạy hourly.yml ít nhất 1 lần</div>';
+  }
+}
+
+// ── INTRADAY GLOBAL ───────────────────────────────────
+const intradayGlobal = {{ intraday_global_json }};
+if (intradayGlobal.length > 0) {
+  new Chart(document.getElementById('chartIntradayGlobal'), {
+    type: 'bar',
+    data: {
+      labels: intradayGlobal.map(d => d.hour),
+      datasets: [{
+        label: 'Views gained (Global)',
+        data: intradayGlobal.map(d => d.views),
+        backgroundColor: intradayGlobal.map(d => {
+          const max = Math.max(...intradayGlobal.map(x => x.views));
+          const alpha = max > 0 ? 0.35 + (d.views/max)*0.65 : 0.4;
+          return `rgba(59,130,246,${alpha.toFixed(2)})`;
+        }),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
+    }
+  });
+} else {
+  const ctx = document.getElementById('chartIntradayGlobal');
+  if (ctx) {
+    ctx.parentElement.innerHTML =
+      '<div class="empty" style="padding:40px">Chưa có hourly data</div>';
+  }
+}
 </script>
 </body>
 </html>
