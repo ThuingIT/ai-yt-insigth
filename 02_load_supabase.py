@@ -37,7 +37,7 @@ import os
 import json
 import uuid
 import logging
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone, date, timedelta
 from typing import Optional
 
 from supabase import create_client, Client
