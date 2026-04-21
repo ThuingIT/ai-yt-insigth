@@ -62,31 +62,38 @@ log = logging.getLogger("04_html")
 def fetch_kpi_cards(sb: Client) -> dict:
     """
     KPI tổng hợp cho 2 stream.
-    Trả về: total_videos, total_views_gained_today, top_category, avg_er
+
+    FIX Day 1 Problem: Không filter NOT NULL nữa.
+    Dùng views_gain nếu có, fallback sang views_total nếu NULL.
     """
     result = {}
     for stream in ("VN", "Global"):
-        # Tổng views gain hôm nay
+        # Lấy TẤT CẢ rows hôm nay (kể cả NULL gain)
         gain_res = (
             sb.table("daily_delta")
-            .select("views_gain, likes_gain, comments_gain, content_type")
+            .select("views_gain, likes_gain, comments_gain, views_total, likes_total, comments_total, content_type")
             .eq("stream", stream)
             .eq("date", TODAY.isoformat())
-            .not_.is_("views_gain", "null")
             .execute()
         )
         rows = gain_res.data or []
-        total_views_gain    = sum(r["views_gain"] or 0 for r in rows)
-        total_likes_gain    = sum(r["likes_gain"] or 0 for r in rows)
-        total_comments_gain = sum(r["comments_gain"] or 0 for r in rows)
 
-        # Phân bố content type hôm nay
+        # COALESCE: ưu tiên gain, fallback sang total (Day 1 case)
+        def _v(r, gain_col, total_col):
+            v = r.get(gain_col)
+            return v if v is not None else (r.get(total_col) or 0)
+
+        total_views_gain    = sum(_v(r, "views_gain",    "views_total")    for r in rows)
+        total_likes_gain    = sum(_v(r, "likes_gain",    "likes_total")    for r in rows)
+        total_comments_gain = sum(_v(r, "comments_gain", "comments_total") for r in rows)
+
         type_counts = {}
         for r in rows:
             ct = r["content_type"]
             type_counts[ct] = type_counts.get(ct, 0) + 1
 
-        # Tổng số video trong DB của stream này
+        all_null = all(r.get("views_gain") is None for r in rows) if rows else False
+
         vid_res = (
             sb.table("videos")
             .select("id", count="exact")
@@ -95,7 +102,6 @@ def fetch_kpi_cards(sb: Client) -> dict:
         )
         total_videos = vid_res.count or 0
 
-        # ER trung bình
         er_res = (
             sb.table("videos")
             .select("views, likes, comments_count")
@@ -111,13 +117,14 @@ def fetch_kpi_cards(sb: Client) -> dict:
         avg_er = round(sum(er_vals) / len(er_vals), 2) if er_vals else 0
 
         result[stream] = {
-            "total_videos":       total_videos,
-            "views_gained_today": total_views_gain,
-            "likes_gained_today": total_likes_gain,
+            "total_videos":          total_videos,
+            "views_gained_today":    total_views_gain,
+            "likes_gained_today":    total_likes_gain,
             "comments_gained_today": total_comments_gain,
-            "avg_er":             avg_er,
-            "active_today":       len(rows),
-            "type_counts":        type_counts,
+            "avg_er":                avg_er,
+            "active_today":          len(rows),
+            "type_counts":           type_counts,
+            "is_first_day":          all_null,
         }
 
     return result
@@ -126,37 +133,37 @@ def fetch_kpi_cards(sb: Client) -> dict:
 def fetch_trend_line(sb: Client, stream: str, days: int = 30) -> list:
     """
     Views gain tổng theo ngày (30 ngày gần nhất) cho stream.
-    Dùng vẽ line chart.
+    FIX: Lấy cả views_total để fallback khi views_gain NULL (Day 1).
     """
     from_date = (TODAY - timedelta(days=days)).isoformat()
     res = (
         sb.table("daily_delta")
-        .select("date, views_gain")
+        .select("date, views_gain, views_total")
         .eq("stream", stream)
         .gte("date", from_date)
-        .not_.is_("views_gain", "null")
         .order("date", desc=False)
         .execute()
     )
 
-    # Group by date
+    # Group by date — COALESCE gain → total
     by_date: dict = {}
     for r in (res.data or []):
         d = r["date"]
-        by_date[d] = by_date.get(d, 0) + (r["views_gain"] or 0)
+        val = r["views_gain"] if r["views_gain"] is not None else (r["views_total"] or 0)
+        by_date[d] = by_date.get(d, 0) + val
 
     return [{"date": d, "views": v} for d, v in sorted(by_date.items())]
 
 
 def fetch_top_videos(sb: Client, stream: str, top_n: int = 10) -> list:
     """Top N video theo views_gain hôm nay với full info."""
+    # FIX: Lấy cả views_total, sort theo COALESCE(views_gain, views_total)
     res = (
         sb.table("daily_delta")
-        .select("video_id, views_gain, likes_gain, content_type")
+        .select("video_id, views_gain, likes_gain, views_total, likes_total, content_type")
         .eq("stream", stream)
         .eq("date", TODAY.isoformat())
-        .not_.is_("views_gain", "null")
-        .order("views_gain", desc=True)
+        .order("views_total", desc=True)   # Sort theo total thay vì gain để tránh bug NULL sort
         .limit(top_n)
         .execute()
     )
@@ -173,14 +180,17 @@ def fetch_top_videos(sb: Client, stream: str, top_n: int = 10) -> list:
             er = round((v.data.get("likes", 0) + v.data.get("comments_count", 0))
                        / v.data["views"] * 100, 2)
 
+        # COALESCE: dùng gain nếu có, fallback sang total
+        disp_gain = r["views_gain"] if r["views_gain"] is not None else (r.get("views_total") or 0)
+        disp_likes = r.get("likes_gain") if r.get("likes_gain") is not None else (r.get("likes_total") or 0)
         enriched.append({
             "video_id":     r["video_id"],
             "title":        v.data.get("title", "Không rõ") if v.data else "Không rõ",
             "thumbnail":    v.data.get("thumbnail_url", "") if v.data else "",
             "category":     v.data.get("category_name", "") if v.data else "",
             "content_type": r["content_type"],
-            "views_gain":   r["views_gain"],
-            "likes_gain":   r.get("likes_gain", 0),
+            "views_gain":   disp_gain,
+            "likes_gain":   disp_likes,
             "total_views":  v.data.get("views", 0) if v.data else 0,
             "er_pct":       er,
             "yt_url":       f"https://youtube.com/watch?v={r['video_id']}",

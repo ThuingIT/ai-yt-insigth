@@ -133,8 +133,14 @@ def compute_daily_delta(sb: Client, video_ids: list[str],
     views YouTube là số tích lũy không giảm nên:
         views_gain = views_hôm_nay - views_ngày_gần_nhất_trước_đó
 
-    Nếu video chưa có baseline (lần đầu thấy) → gain = NULL
-    Nếu gain < 0 (data lỗi) → clamp về 0
+    FIX "Day 1 Problem":
+        Ngày đầu tiên thấy video (chưa có baseline), dùng views_total làm gain.
+        Lý do: dashboard cần có data để hiển thị ngay từ ngày đầu,
+                và "tất cả views tích lũy đến nay" là baseline hợp lý cho ngày đầu.
+        Cột is_first_day_estimate KHÔNG tồn tại trong schema — ta dùng
+        views_gain = views_total và ghi log để phân biệt.
+
+    Nếu gain < 0 (data lỗi từ API) → clamp về 0.
     """
     if not video_ids:
         return []
@@ -171,12 +177,19 @@ def compute_daily_delta(sb: Client, video_ids: list[str],
         prev         = prev_snapshots.get(vid_id)
 
         if prev:
+            # Ngày thứ 2 trở đi: tính delta thực sự
             views_gain    = max(0, views_now    - prev["views_total"])
             likes_gain    = max(0, likes_now    - prev["likes_total"])
             comments_gain = max(0, comments_now - prev["comments_total"])
             gain_count += 1
         else:
-            views_gain = likes_gain = comments_gain = None
+            # ── FIX Day 1 Problem ──────────────────────────────────────
+            # Ngày đầu tiên thấy video: dùng views_total làm gain.
+            # Dashboard sẽ hiển thị data ngay từ ngày đầu, không bị trắng.
+            # Khi so sánh WoW/MoM sau này, ngày đầu sẽ tự nhiên "blend" vào.
+            views_gain    = views_now    # ← CHANGED từ None
+            likes_gain    = likes_now    # ← CHANGED từ None
+            comments_gain = comments_now # ← CHANGED từ None
             new_count += 1
 
         delta_rows.append({
@@ -193,7 +206,7 @@ def compute_daily_delta(sb: Client, video_ids: list[str],
             "region":         video.get("region"),
         })
 
-    log.info(f"  [delta] {gain_count} với baseline, {new_count} video mới (no baseline)")
+    log.info(f"  [delta] {gain_count} có baseline, {new_count} video mới (dùng views_total làm gain)")
     return delta_rows
 
 

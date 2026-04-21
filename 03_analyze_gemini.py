@@ -129,13 +129,13 @@ def save_insight(sb: Client, insight_type: str, scope: str, payload: dict,
 
 def t1_top_videos_by_gain(sb: Client, stream: str, top_n: int = 10) -> list:
     """Top N video có views_gain cao nhất hôm nay."""
+    # FIX Day 1: bỏ filter NOT NULL, sort theo views_total
     res = (
         sb.table("daily_delta")
-        .select("video_id, views_gain, likes_gain, comments_gain, content_type, region")
+        .select("video_id, views_gain, likes_gain, comments_gain, views_total, content_type, region")
         .eq("stream", stream)
         .eq("date", TODAY.isoformat())
-        .not_.is_("views_gain", "null")
-        .order("views_gain", desc=True)
+        .order("views_total", desc=True)
         .limit(top_n)
         .execute()
     )
@@ -154,6 +154,7 @@ def t1_top_videos_by_gain(sb: Client, stream: str, top_n: int = 10) -> list:
                 / vid.data["views"] * 100, 2
             )
 
+        disp_gain = row["views_gain"] if row["views_gain"] is not None else (row.get("views_total") or 0)
         enriched.append({
             "video_id":      row["video_id"],
             "title":         vid.data.get("title", "") if vid.data else "",
@@ -161,7 +162,7 @@ def t1_top_videos_by_gain(sb: Client, stream: str, top_n: int = 10) -> list:
             "category":      vid.data.get("category_name", "") if vid.data else "",
             "content_type":  row["content_type"],
             "region":        row.get("region"),
-            "views_gain":    row["views_gain"],
+            "views_gain":    disp_gain,
             "likes_gain":    row.get("likes_gain"),
             "comments_gain": row.get("comments_gain"),
             "er_pct":        er,
@@ -196,15 +197,18 @@ def t1_engagement_by_type(sb: Client, stream: str) -> dict:
 
 def t1_virality_index(sb: Client, stream: str) -> list:
     """Videos có Virality Index >= VIRAL_THRESHOLD hôm nay."""
+    # FIX: lấy tất cả, dùng COALESCE gain → total
     today_res = (
         sb.table("daily_delta")
-        .select("video_id, views_gain")
+        .select("video_id, views_gain, views_total")
         .eq("stream", stream)
         .eq("date", TODAY.isoformat())
-        .not_.is_("views_gain", "null")
         .execute()
     )
-    today_gains = {r["video_id"]: r["views_gain"] for r in (today_res.data or [])}
+    today_gains = {
+        r["video_id"]: (r["views_gain"] if r["views_gain"] is not None else (r["views_total"] or 0))
+        for r in (today_res.data or [])
+    }
     if not today_gains:
         return []
 
