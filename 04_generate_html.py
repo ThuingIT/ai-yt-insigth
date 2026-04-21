@@ -325,6 +325,98 @@ def fetch_monthly_chart(sb: Client, stream: str) -> list:
 # HTML RENDERER
 # ============================================================
 
+def fetch_intraday_chart(sb: Client, stream: str) -> list:
+    """
+    Views_delta_1h theo từng giờ trong ngày hôm nay (từ intraday_chart view).
+    Fallback: query trực tiếp hourly_snapshot nếu view chưa refresh.
+    """
+    try:
+        res = (
+            sb.table("intraday_chart")
+            .select("hour_bucket, total_views_gained, active_videos")
+            .eq("stream", stream)
+            .gte("hour_bucket", TODAY.isoformat())
+            .order("hour_bucket", desc=False)
+            .execute()
+        )
+        rows = res.data or []
+        return [
+            {
+                "hour":   r["hour_bucket"][11:16],  # "HH:MM"
+                "views":  r["total_views_gained"] or 0,
+                "videos": r["active_videos"] or 0,
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        log.warning(f"intraday_chart fallback: {e}")
+        # Fallback: query hourly_snapshot trực tiếp
+        res = (
+            sb.table("hourly_snapshot")
+            .select("snapshot_at, views_delta_1h")
+            .eq("stream", stream)
+            .gte("snapshot_at", TODAY.isoformat())
+            .not_.is_("views_delta_1h", "null")
+            .order("snapshot_at", desc=False)
+            .execute()
+        )
+        by_hour: dict = {}
+        for r in (res.data or []):
+            h = r["snapshot_at"][11:13] + ":00"
+            by_hour[h] = by_hour.get(h, 0) + (r["views_delta_1h"] or 0)
+        return [{"hour": h, "views": v, "videos": 0} for h, v in sorted(by_hour.items())]
+
+
+def fetch_hot_right_now(sb: Client, stream: str, limit: int = 8) -> list:
+    """
+    Top N video có views_delta_1h cao nhất trong 2 giờ qua.
+    Dùng Postgres RPC get_hot_right_now() đã tạo trong migration SQL.
+    """
+    try:
+        res = sb.rpc("get_hot_right_now", {
+            "p_stream":    stream,
+            "p_limit":     limit,
+            "p_hours_ago": 2,
+        }).execute()
+        rows = res.data or []
+        return [
+            {
+                "video_id":       r["video_id"],
+                "title":          r["title"] or "Không rõ",
+                "thumbnail":      r["thumbnail_url"] or "",
+                "category":       r["category_name"] or "",
+                "content_type":   r["content_type"],
+                "views_delta_1h": r["views_delta_1h"] or 0,
+                "total_views":    r["total_views"] or 0,
+                "momentum":       r["momentum_status"] or "new",
+                "yt_url":         f"https://youtube.com/watch?v={r['video_id']}",
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        log.warning(f"get_hot_right_now error: {e}")
+        return []
+
+
+def fetch_momentum_summary(sb: Client, stream: str) -> dict:
+    """
+    Đếm số video theo momentum_status hôm nay.
+    Trả về {accelerating: N, peaking: N, decelerating: N, fading: N, new: N}
+    """
+    res = (
+        sb.table("daily_delta")
+        .select("momentum_status")
+        .eq("stream", stream)
+        .eq("date", TODAY.isoformat())
+        .execute()
+    )
+    counts: dict = {"accelerating": 0, "peaking": 0, "decelerating": 0, "fading": 0, "new": 0}
+    for r in (res.data or []):
+        status = r.get("momentum_status") or "new"
+        counts[status] = counts.get(status, 0) + 1
+    return counts
+
+
 def build_template_context(sb: Client, analysis: dict) -> dict:
     """Tổng hợp tất cả dữ liệu cần thiết cho Jinja2 template."""
     log.info("Fetching KPI cards...")
@@ -355,6 +447,18 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
     log.info("Fetching monthly chart...")
     monthly_vn     = fetch_monthly_chart(sb, "VN")
     monthly_global = fetch_monthly_chart(sb, "Global")
+
+    log.info("Fetching intraday charts...")
+    intraday_vn     = fetch_intraday_chart(sb, "VN")
+    intraday_global = fetch_intraday_chart(sb, "Global")
+
+    log.info("Fetching hot right now...")
+    hot_vn     = fetch_hot_right_now(sb, "VN", limit=8)
+    hot_global = fetch_hot_right_now(sb, "Global", limit=8)
+
+    log.info("Fetching momentum summary...")
+    momentum_vn     = fetch_momentum_summary(sb, "VN")
+    momentum_global = fetch_momentum_summary(sb, "Global")
 
     # Tier1 & Tier2 từ analysis_output.json
     tier1  = analysis.get("tier1", {})
@@ -399,6 +503,21 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
 
         # Insights từ Supabase (bổ sung cho display)
         "insights": insights,
+
+        # Intraday (hourly data)
+        "intraday_vn_json":     json.dumps(intraday_vn,     ensure_ascii=False),
+        "intraday_global_json": json.dumps(intraday_global, ensure_ascii=False),
+
+        # Hot right now
+        "hot_vn":     hot_vn,
+        "hot_global": hot_global,
+
+        # Momentum summary
+        "momentum_vn":     momentum_vn,
+        "momentum_global": momentum_global,
+
+        # Last updated time (hiển thị trên dashboard)
+        "last_updated_ts": datetime.now(timezone.utc).strftime("%H:%M UTC"),
     }
 
 
