@@ -173,41 +173,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 /* ── EMPTY STATE ─────────────────────────────────────── */
 .empty{text-align:center;color:var(--text3);padding:32px;font-size:13px}
 
-/* ── MOMENTUM BADGES ─────────────────────────────────── */
-.momentum-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;
-  font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
-.m-accelerating{background:#16532d;color:#22c55e}
-.m-peaking{background:#78400b;color:#f59e0b}
-.m-decelerating{background:#7c2d12;color:#f97316}
-.m-fading{background:#1e293b;color:#94a3b8}
-.m-new{background:#1e2336;color:#5a6280}
-.momentum-bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.momentum-count{text-align:center;padding:10px 14px;background:var(--bg3);
-  border-radius:var(--radius-sm);flex:1;min-width:80px}
-.momentum-count .mc-num{font-size:22px;font-weight:700;line-height:1}
-.momentum-count .mc-label{font-size:10px;color:var(--text2);margin-top:3px}
-
-/* ── HOT RIGHT NOW ────────────────────────────────────── */
-.hot-item{display:flex;align-items:center;gap:10px;padding:9px 0;
-  border-bottom:1px solid var(--border)}
-.hot-item:last-child{border:none}
-.hot-rank{font-size:12px;font-weight:700;color:var(--text3);width:18px;
-  text-align:center;flex-shrink:0}
-.hot-thumb{width:48px;height:34px;object-fit:cover;border-radius:4px;
-  background:var(--bg3);flex-shrink:0}
-.hot-info{flex:1;min-width:0}
-.hot-title{font-size:12px;font-weight:500;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis}
-.hot-meta{font-size:11px;color:var(--text2);margin-top:2px}
-.hot-delta{font-size:13px;font-weight:700;color:var(--vn);
-  white-space:nowrap;flex-shrink:0}
-
-/* ── INTRADAY PULSE indicator ─────────────────────────── */
-.pulse-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
-  background:var(--vn);margin-right:5px;animation:pulse-anim 2s infinite}
-@keyframes pulse-anim{0%,100%{opacity:1;transform:scale(1)}
-  50%{opacity:.5;transform:scale(1.3)}}
-
 /* ── FOOTER ──────────────────────────────────────────── */
 .footer{margin-top:40px;text-align:center;color:var(--text3);font-size:12px;
   padding-bottom:24px;line-height:2}
@@ -235,9 +200,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
     </div>
   </div>
   <div class="header-meta">
-    <div>Cập nhật lúc <strong>21/04/2026 11:44 UTC</strong></div>
+    <div>Cập nhật lúc <strong>06:00 ICT</strong></div>
     <div>Dữ liệu ngày <strong>21/04/2026</strong></div>
-    <div style="color:var(--text3);font-size:11px">run_id: b7c543f5...</div>
+    <div style="color:var(--text3);font-size:11px">run_id: a3f9c12b...</div>
   </div>
 </div>
 
@@ -249,43 +214,37 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 
   <div class="card kpi-card vn">
     <div class="kpi-label">🇻🇳 Videos theo dõi (VN)</div>
-    <div class="kpi-value">50</div>
-    <div class="kpi-sub">50 video active hôm nay</div>
+    <div class="kpi-value">1,247</div>
+    <div class="kpi-sub">84 video active hôm nay</div>
   </div>
 
   <div class="card kpi-card vn">
-    <div class="kpi-label">
-      Views gain hôm nay (VN)
-      
-    </div>
-    <div class="kpi-value">68,669,198</div>
-    <div class="kpi-sub">+1,551,367 likes</div>
+    <div class="kpi-label">Views gain hôm nay (VN)</div>
+    <div class="kpi-value">4,832,100</div>
+    <div class="kpi-sub">+128,400 likes</div>
   </div>
 
   <div class="card kpi-card vn">
     <div class="kpi-label">Avg Engagement Rate (VN)</div>
-    <div class="kpi-value">2.24%</div>
+    <div class="kpi-value">3.72%</div>
     <div class="kpi-sub">(likes + comments) / views</div>
   </div>
 
   <div class="card kpi-card global">
     <div class="kpi-label">🌐 Videos theo dõi (Global)</div>
-    <div class="kpi-value">44</div>
-    <div class="kpi-sub">44 video active hôm nay</div>
+    <div class="kpi-value">3,015</div>
+    <div class="kpi-sub">201 video active hôm nay</div>
   </div>
 
   <div class="card kpi-card global">
-    <div class="kpi-label">
-      Views gain hôm nay (Global)
-      
-    </div>
-    <div class="kpi-value">28,640,893</div>
-    <div class="kpi-sub">+898,301 likes</div>
+    <div class="kpi-label">Views gain hôm nay (Global)</div>
+    <div class="kpi-value">18,940,500</div>
+    <div class="kpi-sub">+512,300 likes</div>
   </div>
 
   <div class="card kpi-card global">
     <div class="kpi-label">Avg Engagement Rate (Global)</div>
-    <div class="kpi-value">4.76%</div>
+    <div class="kpi-value">2.45%</div>
     <div class="kpi-sub">(likes + comments) / views</div>
   </div>
 
@@ -303,16 +262,45 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
       <strong>Tóm tắt tuần này</strong>
       <span class="badge badge-ai">Gemini 2.5 Flash</span>
     </div>
-    
-    <div class="empty">Chưa có narrative — chạy bước 03 để tạo</div>
-    
+    <div class="ai-narrative">
+      Tuần 16/2026 ghi nhận tăng trưởng views mạnh tại thị trường VN (+18% WoW), đặc biệt nhóm <strong style="color:var(--text)">Shorts</strong> đạt đỉnh engagement rate 5.1%. Nội dung <em>công nghệ AI</em> và <em>tài chính cá nhân</em> tiếp tục dẫn đầu lượt xem, trong khi gaming giảm nhẹ 4% so với tuần trước.
+      Ở thị trường Global, các kênh tier 1 (>10M subs) ghi nhận views/video giảm trung bình 7% — phản ánh xu hướng phân tán sang nền tảng ngắn.
+    </div>
+    <div class="ai-forecast">
+      <span style="color:var(--accent);font-weight:600">📈 Dự báo tuần tới:</span>
+      Views VN dự kiến duy trì 4.5–5.2M/ngày. Nội dung liên quan WWDC 2026 và SEA Games sẽ spike mạnh cuối tuần.
+    </div>
   </div>
 
   <div class="card">
     <div style="margin-bottom:14px"><strong>🚨 Anomalies phát hiện</strong></div>
-    
-    <div class="empty">Không có anomaly hôm nay</div>
-    
+
+    <div style="padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
+      margin-bottom:8px;border-left:3px solid var(--red)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:var(--text)">Views Spike</span>
+        <span class="badge badge-red">high</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2)">Kênh TechVN tăng 1,240% views trong 6h — nghi do viral TikTok cross-post</div>
+    </div>
+
+    <div style="padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
+      margin-bottom:8px;border-left:3px solid var(--accent)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:var(--text)">Engagement Drop</span>
+        <span class="badge badge-amber">medium</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2)">3 kênh gaming VN có ER giảm >40% WoW — có thể liên quan thuật toán</div>
+    </div>
+
+    <div style="padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
+      border-left:3px solid var(--teal)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:var(--text)">New Channel</span>
+        <span class="badge badge-ai">low</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2)">2 kênh mới lọt top 20 VN lần đầu tiên — cả hai đều thuộc niche tài chính</div>
+    </div>
   </div>
 
 </div>
@@ -373,17 +361,44 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 
   <div class="card">
     <div style="margin-bottom:14px"><strong>💡 Engagement Rate by Type</strong></div>
-    
+
     <div style="margin-bottom:12px">
       <div style="font-size:11px;color:var(--text3);margin-bottom:8px">VN</div>
-      
+      <div class="er-row">
+        <div class="er-label"><span class="ct-badge ct-video">video</span></div>
+        <div class="er-bar-wrap"><div class="er-bar" style="width:37%;background:var(--vn)"></div></div>
+        <div class="er-val">3.7%</div>
+      </div>
+      <div class="er-row">
+        <div class="er-label"><span class="ct-badge ct-stream">stream</span></div>
+        <div class="er-bar-wrap"><div class="er-bar" style="width:29%;background:var(--vn)"></div></div>
+        <div class="er-val">2.9%</div>
+      </div>
+      <div class="er-row">
+        <div class="er-label"><span class="ct-badge ct-shorts">shorts</span></div>
+        <div class="er-bar-wrap"><div class="er-bar" style="width:51%;background:var(--vn)"></div></div>
+        <div class="er-val">5.1%</div>
+      </div>
     </div>
-    
-    <div style="margin-bottom:12px">
+
+    <div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Global</div>
-      
+      <div class="er-row">
+        <div class="er-label"><span class="ct-badge ct-video">video</span></div>
+        <div class="er-bar-wrap"><div class="er-bar" style="width:24%;background:var(--global)"></div></div>
+        <div class="er-val">2.4%</div>
+      </div>
+      <div class="er-row">
+        <div class="er-label"><span class="ct-badge ct-stream">stream</span></div>
+        <div class="er-bar-wrap"><div class="er-bar" style="width:18%;background:var(--global)"></div></div>
+        <div class="er-val">1.8%</div>
+      </div>
+      <div class="er-row">
+        <div class="er-label"><span class="ct-badge ct-shorts">shorts</span></div>
+        <div class="er-bar-wrap"><div class="er-bar" style="width:41%;background:var(--global)"></div></div>
+        <div class="er-val">4.1%</div>
+      </div>
     </div>
-    
   </div>
 
   <div class="card">
@@ -437,187 +452,71 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
           </tr>
         </thead>
         <tbody>
-          
           <tr>
             <td><span class="num">1</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#16532d,#22c55e)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=QF5YpZI1wnk" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">I Survived 100 Days in Skyblock</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">Tôi đã dùng AI để kiếm 100 triệu trong 30 ngày</div>
               </a>
-              <div class="video-cat">Gaming</div>
+              <div class="video-cat">Tài chính cá nhân</div>
             </td>
             <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+41,822,560</span></td>
-            <td><span class="num">1.68%</span></td>
+            <td><span class="num-gain">+482,300</span></td>
+            <td><span class="num">5.2%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">2</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/6hNenqz0ISA/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#1e3a6e,#3b82f6)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=6hNenqz0ISA" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Sớm Như Vậy / buitruonglinh</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">Review iPhone 17 Ultra sau 3 tháng sử dụng</div>
               </a>
-              <div class="video-cat">Music</div>
+              <div class="video-cat">Công nghệ</div>
             </td>
             <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+4,025,845</span></td>
-            <td><span class="num">1.37%</span></td>
+            <td><span class="num-gain">+341,800</span></td>
+            <td><span class="num">4.1%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">3</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#78400b,#f59e0b)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=U6BDbXIah-Y" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">#shorts Mẹo nấu ăn cực nhanh mà ngon</div>
               </a>
-              <div class="video-cat">Music</div>
+              <div class="video-cat">Ẩm thực</div>
             </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+3,343,605</span></td>
-            <td><span class="num">18.55%</span></td>
+            <td><span class="ct-badge ct-shorts">shorts</span></td>
+            <td><span class="num-gain">+298,450</span></td>
+            <td><span class="num">6.8%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">4</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/he4RarbyIfQ/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#3b1f7a,#a855f7)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=he4RarbyIfQ" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">bqThanh và Ốc Chơi POPPY PLAYTIME PHẦN 0 Khởi Đầu Của Nhà Máy Biến Trẻ Em Thành Đồ Chơi</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">LIVE: Rank Challenger — Road to Top 1 VN</div>
               </a>
-              <div class="video-cat">Gaming</div>
+              <div class="video-cat">Gaming / LMHT</div>
             </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+1,359,743</span></td>
-            <td><span class="num">1.0%</span></td>
+            <td><span class="ct-badge ct-stream">stream</span></td>
+            <td><span class="num-gain">+214,700</span></td>
+            <td><span class="num">3.9%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">5</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/Hn02lBrVxMk/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#164e63,#14b8a6)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=Hn02lBrVxMk" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Bình Luận Tiếng Việt: BRO vs NS l l KRX vs T1 | LCK 2026</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">Sự thật về bong bóng bất động sản 2026</div>
               </a>
-              <div class="video-cat">Gaming</div>
-            </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+1,229,622</span></td>
-            <td><span class="num">0.52%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">6</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/2wEWRtl5hbM/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=2wEWRtl5hbM" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">FPT x FLASH vs ONE STAR ESPORTS | GIAI ĐOẠN 2 | ĐTDV MÙA XUÂN 2026</div>
-              </a>
-              <div class="video-cat">Gaming</div>
-            </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+1,151,018</span></td>
-            <td><span class="num">0.53%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">7</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/d5L6cqcOkrs/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=d5L6cqcOkrs" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">BI HUỲNH ĐẬP TRỨNG MỞ TRÁI ÁC QUỶ PVP CÙNG ĐỒNG BỌN TRONG BLOX FRUITS</div>
-              </a>
-              <div class="video-cat">Gaming</div>
+              <div class="video-cat">Kinh tế / BĐS</div>
             </td>
             <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+943,854</span></td>
-            <td><span class="num">1.83%</span></td>
+            <td><span class="num-gain">+198,220</span></td>
+            <td><span class="num">4.7%</span></td>
           </tr>
-          
-          <tr>
-            <td><span class="num">8</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/3lLPt34meDA/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=3lLPt34meDA" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">BÓNG PHÙ HOA - PHƯƠNG MỸ CHI ft RHYDER | LUMINARHY CONCERT</div>
-              </a>
-              <div class="video-cat">Music</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+861,945</span></td>
-            <td><span class="num">3.37%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">9</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/bZZn2B11b_c/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=bZZn2B11b_c" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Thanh Tân - VƯƠNG BÌNH song ca THÙY CHI | bản ghi hình trình diễn</div>
-              </a>
-              <div class="video-cat">Music</div>
-            </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+799,164</span></td>
-            <td><span class="num">1.73%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">10</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/FmyJa95ktJg/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=FmyJa95ktJg" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">[TRỰC TIẾP] VÒNG CHUNG KẾT: NK, SGLX, FPT, TKO – TỨ LINH HỘI TỤ CÙNG TRANH ĐẤU | FVPL SPRING 2026</div>
-              </a>
-              <div class="video-cat">Gaming</div>
-            </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+767,350</span></td>
-            <td><span class="num">0.64%</span></td>
-          </tr>
-          
         </tbody>
       </table>
     </div>
@@ -642,187 +541,71 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
           </tr>
         </thead>
         <tbody>
-          
           <tr>
             <td><span class="num">1</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/Os4JVfZp4jg/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#450a0a,#ef4444)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=Os4JVfZp4jg" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">PATI PATNI AUR WOH DO (Teaser) | Ayushmann, Wamiqa, Sara, Rakul | Mudassar, Bhushan K, Juno | 15 May</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">OpenAI o4 vs Gemini 2.5 Ultra — The Final Test</div>
               </a>
-              <div class="video-cat">Music</div>
+              <div class="video-cat">AI / Technology</div>
             </td>
             <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+5,325,229</span></td>
-            <td><span class="num">0.94%</span></td>
+            <td><span class="num-gain">+2,841,000</span></td>
+            <td><span class="num">4.9%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">2</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/1o5O2YvV3HU/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#1e3a6e,#3b82f6)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=1o5O2YvV3HU" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">NCT WISH 엔시티 위시 &#39;Ode to Love&#39; MV</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">The Real Reason Nvidia Stock Is Crashing</div>
               </a>
-              <div class="video-cat">Music</div>
+              <div class="video-cat">Finance</div>
             </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+3,609,665</span></td>
-            <td><span class="num">2.45%</span></td>
+            <td><span class="ct-badge ct-video">video</span></td>
+            <td><span class="num-gain">+1,920,400</span></td>
+            <td><span class="num">3.6%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">3</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/iSWP2feb4rw/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#78400b,#f59e0b)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=iSWP2feb4rw" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Practical Magic 2 | Official Teaser Trailer</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">#shorts This dog learned to open the fridge 😂</div>
               </a>
-              <div class="video-cat">Film &amp; Animation</div>
+              <div class="video-cat">Entertainment / Animals</div>
             </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+3,583,397</span></td>
-            <td><span class="num">0.38%</span></td>
+            <td><span class="ct-badge ct-shorts">shorts</span></td>
+            <td><span class="num-gain">+1,654,800</span></td>
+            <td><span class="num">7.2%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">4</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/QHdajZktFEU/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#3b1f7a,#a855f7)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=QHdajZktFEU" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Bangles (Official #Video) Sanju Rathod Ft. Isha Malviya | G-Spark | #Marathi Pop 2026 | बांगडी</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">I Spent $10,000 Testing Every AI Coding Tool</div>
               </a>
-              <div class="video-cat">Music</div>
+              <div class="video-cat">Programming</div>
             </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+3,495,160</span></td>
-            <td><span class="num">4.25%</span></td>
+            <td><span class="ct-badge ct-video">video</span></td>
+            <td><span class="num-gain">+1,340,100</span></td>
+            <td><span class="num">5.5%</span></td>
           </tr>
-          
           <tr>
             <td><span class="num">5</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/cYFevn5frf0/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
+            <td><div class="video-thumb" style="background:linear-gradient(135deg,#164e63,#14b8a6)"></div></td>
             <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=cYFevn5frf0" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">SUPER TROOPERS 3 | Official Trailer | Searchlight Pictures</div>
-              </a>
-              <div class="video-cat">Entertainment</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+1,428,062</span></td>
-            <td><span class="num">0.85%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">6</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/M-KI3GV3beQ/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=M-KI3GV3beQ" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Snow Man &#39;SAVE YOUR HEART&#39; Dance Practice</div>
-              </a>
-              <div class="video-cat">Music</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+1,208,091</span></td>
-            <td><span class="num">6.87%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">7</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/Bgy00eaFyhE/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=Bgy00eaFyhE" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Raja Shivaji Hindi Trailer | Riteish D | Genelia D | Sanjay D | In Cinemas 1 May 2026</div>
-              </a>
-              <div class="video-cat">Entertainment</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+774,661</span></td>
-            <td><span class="num">4.72%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">8</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/Rinm-EETs0U/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=Rinm-EETs0U" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">This Drain Clearing Game is INCREDIBLY Satisfying</div>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
+                <div class="video-title">LIVE: GTA VI Launch Day Gameplay — Hour 1</div>
               </a>
               <div class="video-cat">Gaming</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+708,647</span></td>
-            <td><span class="num">6.63%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">9</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/MEFzMcNMs8M/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=MEFzMcNMs8M" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Surviving Elemental Ore Chunk Battle in Minecraft..</div>
-              </a>
-              <div class="video-cat">Gaming</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+617,870</span></td>
-            <td><span class="num">1.73%</span></td>
-          </tr>
-          
-          <tr>
-            <td><span class="num">10</span></td>
-            <td>
-              
-              <img src="https://i.ytimg.com/vi/7zW_k7iw8rs/mqdefault.jpg" class="video-thumb" alt="" loading="lazy">
-              
-            </td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com/watch?v=7zW_k7iw8rs" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">monday fun day</div>
-              </a>
-              <div class="video-cat">Entertainment</div>
             </td>
             <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+561,506</span></td>
-            <td><span class="num">1.96%</span></td>
+            <td><span class="num-gain">+1,107,500</span></td>
+            <td><span class="num">3.1%</span></td>
           </tr>
-          
         </tbody>
       </table>
     </div>
@@ -833,7 +616,64 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 <!-- ════════════════════════════════════
      SECTION 8: VIRAL ALERTS
 ════════════════════════════════════ -->
+<p class="section-title">🚨 Viral Early Warning (Virality Index ≥ 5×)</p>
+<div class="grid grid-2" style="margin-bottom:20px">
 
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between">
+      <strong>🇻🇳 Vietnam Viral</strong>
+      <span class="badge badge-red">3 videos</span>
+    </div>
+    <div class="viral-item">
+      <div class="viral-rank">1</div>
+      <div class="viral-info">
+        <div class="viral-title">Tôi đã dùng AI để kiếm 100 triệu trong 30 ngày</div>
+        <div class="viral-meta">Views gain hôm nay: +482,300 · Baseline: 38,200/ngày</div>
+      </div>
+      <div class="vi-badge">12.6×</div>
+    </div>
+    <div class="viral-item">
+      <div class="viral-rank">2</div>
+      <div class="viral-info">
+        <div class="viral-title">Sự thật về bong bóng bất động sản 2026</div>
+        <div class="viral-meta">Views gain hôm nay: +198,220 · Baseline: 28,400/ngày</div>
+      </div>
+      <div class="vi-badge">7.0×</div>
+    </div>
+    <div class="viral-item">
+      <div class="viral-rank">3</div>
+      <div class="viral-info">
+        <div class="viral-title">#shorts Mẹo nấu ăn cực nhanh mà ngon</div>
+        <div class="viral-meta">Views gain hôm nay: +298,450 · Baseline: 51,200/ngày</div>
+      </div>
+      <div class="vi-badge">5.8×</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between">
+      <strong>🌐 Global Viral</strong>
+      <span class="badge badge-red">2 videos</span>
+    </div>
+    <div class="viral-item">
+      <div class="viral-rank">1</div>
+      <div class="viral-info">
+        <div class="viral-title">OpenAI o4 vs Gemini 2.5 Ultra — The Final Test</div>
+        <div class="viral-meta">Views gain: +2,841,000 · Category: AI / Technology</div>
+      </div>
+      <div class="vi-badge">19.4×</div>
+    </div>
+    <div class="viral-item">
+      <div class="viral-rank">2</div>
+      <div class="viral-info">
+        <div class="viral-title">#shorts This dog learned to open the fridge 😂</div>
+        <div class="viral-meta">Views gain: +1,654,800 · Category: Entertainment</div>
+      </div>
+      <div class="vi-badge">8.1×</div>
+    </div>
+  </div>
+
+</div>
 
 <!-- ════════════════════════════════════
      SECTION 9: CONTENT GAP + RECOMMENDATIONS
@@ -846,9 +686,34 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
       <strong>🌏 Content Gap — Trend Global chưa có ở VN</strong>
       <span class="badge badge-global">Gemini</span>
     </div>
-    
-    <div class="empty">Chưa có data content gap</div>
-    
+    <div class="gap-item">
+      <div class="gap-score">9</div>
+      <div class="gap-info">
+        <div class="gap-topic">AI Coding Assistants — So sánh thực chiến</div>
+        <div class="gap-evidence">GitHub Copilot vs Cursor vs Claude Code trending mạnh ở US, chưa có kênh VN khai thác sâu</div>
+      </div>
+    </div>
+    <div class="gap-item">
+      <div class="gap-score">8</div>
+      <div class="gap-info">
+        <div class="gap-topic">Personal Finance với lạm phát 2026</div>
+        <div class="gap-evidence">40+ video >1M views toàn cầu về hedge lạm phát, VN chỉ có 3 video cũ dưới 100K</div>
+      </div>
+    </div>
+    <div class="gap-item">
+      <div class="gap-score">7</div>
+      <div class="gap-info">
+        <div class="gap-topic">GTA VI Review & Tips (tiếng Việt)</div>
+        <div class="gap-evidence">Game vừa ra, demand tìm kiếm tiếng Việt tăng 1,400% nhưng supply gần như bằng 0</div>
+      </div>
+    </div>
+    <div class="gap-item">
+      <div class="gap-score">6</div>
+      <div class="gap-info">
+        <div class="gap-topic">SEA Games 2026 Preview & Analysis</div>
+        <div class="gap-evidence">VN chuẩn bị đăng cai SEA Games, nội dung phân tích thể thao đang thiếu hụt trầm trọng</div>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -856,9 +721,30 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
       <strong>💡 Recommendations</strong>
       <span class="badge badge-ai">Gemini</span>
     </div>
-    
-    <div class="empty">Chưa có recommendations</div>
-    
+    <div class="rec-item high">
+      <div class="rec-action">Sản xuất ngay video "AI Coding Tool So Sánh 2026"</div>
+      <div class="rec-reason">Niche chưa có người khai thác, search volume tăng 340% MoM, monetization cao</div>
+      <div class="rec-meta">
+        <span class="badge badge-red">high</span>
+        <span class="badge" style="background:var(--bg3);color:var(--text2)">Kênh Tech</span>
+      </div>
+    </div>
+    <div class="rec-item medium">
+      <div class="rec-action">Tăng tần suất Shorts lên 2 video/ngày trong tuần này</div>
+      <div class="rec-reason">ER Shorts đang ở đỉnh 5.1%, algorithm đang boost loại nội dung này</div>
+      <div class="rec-meta">
+        <span class="badge badge-amber">medium</span>
+        <span class="badge" style="background:var(--bg3);color:var(--text2)">Tất cả kênh</span>
+      </div>
+    </div>
+    <div class="rec-item low">
+      <div class="rec-action">Review lại upload schedule — dịch sang khung 20:00–21:00</div>
+      <div class="rec-reason">Phân tích post time cho thấy khung giờ tối có avg views gain cao hơn 28%</div>
+      <div class="rec-meta">
+        <span class="badge badge-ai">low</span>
+        <span class="badge" style="background:var(--bg3);color:var(--text2)">VN stream</span>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -866,276 +752,39 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 <!-- ════════════════════════════════════
      SECTION 10: TREND LAG RADAR
 ════════════════════════════════════ -->
-
-
-<!-- ════════════════════════════════════
-     SECTION NEW-1: MOMENTUM STATUS
-════════════════════════════════════ -->
-<p class="section-title">Momentum — trạng thái tăng trưởng hiện tại</p>
-<div class="grid grid-2" style="margin-bottom:20px">
-
-  <div class="card">
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-      <strong>🇻🇳 Vietnam Momentum</strong>
-      <span style="font-size:11px;color:var(--text2)">Tính từ hourly snapshots</span>
+<p class="section-title">🕐 Trend Lag Radar — Global → VN</p>
+<div class="card" style="margin-bottom:20px">
+  <div class="grid grid-3" style="margin-bottom:16px">
+    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <div style="font-size:24px;font-weight:700;color:var(--global)">23</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics chỉ có ở Global</div>
     </div>
-    <div class="momentum-bar">
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#22c55e">50</div>
-        <div class="mc-label">Accelerating ↑↑</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#f59e0b">0</div>
-        <div class="mc-label">Peaking ▲</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#f97316">0</div>
-        <div class="mc-label">Decelerating ↓</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#94a3b8">0</div>
-        <div class="mc-label">Fading →</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:var(--text3)">0</div>
-        <div class="mc-label">New (no data)</div>
-      </div>
+    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <div style="font-size:24px;font-weight:700;color:var(--accent)">11</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics overlap VN & Global</div>
+    </div>
+    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <div style="font-size:24px;font-weight:700;color:var(--vn)">8</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics chỉ có ở VN</div>
     </div>
   </div>
-
-  <div class="card">
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-      <strong>🌐 Global Momentum</strong>
-      <span style="font-size:11px;color:var(--text2)">Tính từ hourly snapshots</span>
-    </div>
-    <div class="momentum-bar">
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#22c55e">0</div>
-        <div class="mc-label">Accelerating ↑↑</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#f59e0b">0</div>
-        <div class="mc-label">Peaking ▲</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#f97316">0</div>
-        <div class="mc-label">Decelerating ↓</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:#94a3b8">0</div>
-        <div class="mc-label">Fading →</div>
-      </div>
-      <div class="momentum-count">
-        <div class="mc-num" style="color:var(--text3)">44</div>
-        <div class="mc-label">New (no data)</div>
-      </div>
-    </div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:8px">
+    Topics đang trending ở Global nhưng chưa xuất hiện tại VN (cơ hội nội dung):
   </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION NEW-2: INTRADAY CHART
-════════════════════════════════════ -->
-<p class="section-title">
-  <span class="pulse-dot"></span>
-  Intraday Views — từng giờ hôm nay (cập nhật mỗi giờ)
-</p>
-<div class="grid grid-2" style="margin-bottom:20px">
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <strong>🇻🇳 Vietnam — Views/giờ hôm nay</strong>
-      <span style="font-size:11px;color:var(--text2)">Cập nhật: 11:44 UTC</span>
-    </div>
-    <div class="chart-wrap">
-      <canvas id="chartIntradayVN"></canvas>
-    </div>
+  <div class="lag-tags">
+    <span class="lag-tag"># GTA VI</span>
+    <span class="lag-tag"># AI agents 2026</span>
+    <span class="lag-tag"># quantum computing</span>
+    <span class="lag-tag"># WWDC 2026</span>
+    <span class="lag-tag"># inflation hedge</span>
+    <span class="lag-tag"># humanoid robots</span>
+    <span class="lag-tag"># deepfake detection</span>
+    <span class="lag-tag"># weight loss GLP-1</span>
+    <span class="lag-tag"># space tourism</span>
+    <span class="lag-tag"># coding with AI</span>
+    <span class="lag-tag"># creator economy 2026</span>
+    <span class="lag-tag"># longevity science</span>
   </div>
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <strong>🌐 Global — Views/giờ hôm nay</strong>
-      <span style="font-size:11px;color:var(--text2)">Hourly snapshot</span>
-    </div>
-    <div class="chart-wrap">
-      <canvas id="chartIntradayGlobal"></canvas>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION NEW-3: HOT RIGHT NOW
-════════════════════════════════════ -->
-<p class="section-title">
-  <span class="pulse-dot"></span>
-  Hot right now — tăng mạnh nhất trong 2 giờ qua
-</p>
-<div class="grid grid-2" style="margin-bottom:20px">
-
-  <div class="card" style="padding:0">
-    <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;
-      justify-content:space-between;align-items:center">
-      <strong>🇻🇳 Vietnam</strong>
-      <span class="badge badge-vn">views gain / 1h</span>
-    </div>
-    <div style="padding:4px 18px 8px">
-      
-        
-        <div class="hot-item">
-          <span class="hot-rank">1</span>
-          
-          <img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=U6BDbXIah-Y" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Music
-            </div>
-          </div>
-          <div class="hot-delta">+95,604</div>
-        </div>
-        
-        <div class="hot-item">
-          <span class="hot-rank">2</span>
-          
-          <img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=U6BDbXIah-Y" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Music
-            </div>
-          </div>
-          <div class="hot-delta">+62,860</div>
-        </div>
-        
-        <div class="hot-item">
-          <span class="hot-rank">3</span>
-          
-          <img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=QF5YpZI1wnk" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">I Survived 100 Days in Skyblock</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Gaming
-            </div>
-          </div>
-          <div class="hot-delta">+59,032</div>
-        </div>
-        
-        <div class="hot-item">
-          <span class="hot-rank">4</span>
-          
-          <img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=QF5YpZI1wnk" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">I Survived 100 Days in Skyblock</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Gaming
-            </div>
-          </div>
-          <div class="hot-delta">+41,997</div>
-        </div>
-        
-        <div class="hot-item">
-          <span class="hot-rank">5</span>
-          
-          <img src="https://i.ytimg.com/vi/6hNenqz0ISA/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=6hNenqz0ISA" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">Sớm Như Vậy / buitruonglinh</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Music
-            </div>
-          </div>
-          <div class="hot-delta">+12,513</div>
-        </div>
-        
-        <div class="hot-item">
-          <span class="hot-rank">6</span>
-          
-          <img src="https://i.ytimg.com/vi/t8NUyxDsJsw/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=t8NUyxDsJsw" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">( Tập 2) Yummie Giả Con Rơi Hiha Suy Vong Trong Minecraft 🤣🤩</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Gaming
-            </div>
-          </div>
-          <div class="hot-delta">+9,629</div>
-        </div>
-        
-        <div class="hot-item">
-          <span class="hot-rank">7</span>
-          
-          <img src="https://i.ytimg.com/vi/6hNenqz0ISA/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=6hNenqz0ISA" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">Sớm Như Vậy / buitruonglinh</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Music
-            </div>
-          </div>
-          <div class="hot-delta">+8,713</div>
-        </div>
-        
-        <div class="hot-item">
-          <span class="hot-rank">8</span>
-          
-          <img src="https://i.ytimg.com/vi/CD_BFGQkIgY/mqdefault.jpg" class="hot-thumb" alt="" loading="lazy">
-          
-          <div class="hot-info">
-            <a href="https://youtube.com/watch?v=CD_BFGQkIgY" target="_blank" rel="noopener" class="video-link">
-              <div class="hot-title">SỰ ƯU TIÊN CỦA EM - LÊ GIA BẢO x THÁI HỌC | KIỀU CHI COVER</div>
-            </a>
-            <div class="hot-meta">
-              <span class="momentum-badge m-accelerating">accelerating</span>
-              &nbsp;Music
-            </div>
-          </div>
-          <div class="hot-delta">+7,742</div>
-        </div>
-        
-      
-    </div>
-  </div>
-
-  <div class="card" style="padding:0">
-    <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;
-      justify-content:space-between;align-items:center">
-      <strong>🌐 Global</strong>
-      <span class="badge badge-global">views gain / 1h</span>
-    </div>
-    <div style="padding:4px 18px 8px">
-      
-        <div class="empty" style="padding:20px">Chưa có hourly data</div>
-      
-    </div>
-  </div>
-
 </div>
 
 <!-- FOOTER -->
@@ -1147,7 +796,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
     Lưu trữ tại <strong>Supabase</strong> ·
     Deploy qua <strong>GitHub Actions → Pages</strong>
   </div>
-  <div style="margin-top:4px;color:var(--text3)">21/04/2026 11:44 UTC</div>
+  <div style="margin-top:4px;color:var(--text3)">21/04/2026 06:00 ICT</div>
 </div>
 
 </div><!-- /wrapper -->
@@ -1181,20 +830,31 @@ const CHART_DEFAULTS = {
   }
 };
 
-function fmtDate(d) {
-  const dt = new Date(d);
-  return `${dt.getDate()}/${dt.getMonth()+1}`;
+// ── MOCK DATA ─────────────────────────────────────────
+function genDates(days) {
+  const arr = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date('2026-04-21');
+    d.setDate(d.getDate() - i);
+    arr.push(`${d.getDate()}/${d.getMonth()+1}`);
+  }
+  return arr;
 }
 
+function randArr(len, min, max) {
+  return Array.from({length: len}, () => Math.floor(Math.random() * (max - min) + min));
+}
+
+const dates30 = genDates(30);
+
 // ── TREND VN ──────────────────────────────────────────
-const trendVN = [{&#34;date&#34;: &#34;2026-04-21&#34;, &#34;views&#34;: 68669198}];
 new Chart(document.getElementById('chartTrendVN'), {
   type: 'line',
   data: {
-    labels: trendVN.map(d => fmtDate(d.date)),
+    labels: dates30,
     datasets: [{
       label: 'Views Gain/ngày (VN)',
-      data: trendVN.map(d => d.views),
+      data: randArr(30, 3200000, 5800000),
       borderColor: COLORS.vn, backgroundColor: COLORS.vnAlpha,
       borderWidth: 2, pointRadius: 2, fill: true, tension: .4,
     }]
@@ -1203,14 +863,13 @@ new Chart(document.getElementById('chartTrendVN'), {
 });
 
 // ── TREND GLOBAL ──────────────────────────────────────
-const trendGlobal = [{&#34;date&#34;: &#34;2026-04-21&#34;, &#34;views&#34;: 28640893}];
 new Chart(document.getElementById('chartTrendGlobal'), {
   type: 'line',
   data: {
-    labels: trendGlobal.map(d => fmtDate(d.date)),
+    labels: dates30,
     datasets: [{
       label: 'Views Gain/ngày (Global)',
-      data: trendGlobal.map(d => d.views),
+      data: randArr(30, 14000000, 22000000),
       borderColor: COLORS.global, backgroundColor: COLORS.globalAlpha,
       borderWidth: 2, pointRadius: 2, fill: true, tension: .4,
     }]
@@ -1219,87 +878,58 @@ new Chart(document.getElementById('chartTrendGlobal'), {
 });
 
 // ── WOW CHART ─────────────────────────────────────────
-const wowData = {&#34;VN&#34;: {&#34;current&#34;: {}, &#34;previous&#34;: {}}, &#34;Global&#34;: {&#34;current&#34;: {}, &#34;previous&#34;: {}}};
-const wowTypes = [...new Set([
-  ...Object.keys(wowData.VN?.current || {}),
-  ...Object.keys(wowData.Global?.current || {})
-])];
+const wowTypes = ['video', 'stream', 'shorts'];
 new Chart(document.getElementById('chartWoW'), {
   type: 'bar',
   data: {
     labels: wowTypes,
     datasets: [
-      {
-        label: 'VN Tuần này',
-        data: wowTypes.map(t => wowData.VN?.current?.[t] || 0),
-        backgroundColor: COLORS.vn, borderRadius: 4,
-      },
-      {
-        label: 'VN Tuần trước',
-        data: wowTypes.map(t => wowData.VN?.previous?.[t] || 0),
-        backgroundColor: COLORS.vnAlpha.replace('.15', '.5'), borderRadius: 4,
-      },
-      {
-        label: 'Global Tuần này',
-        data: wowTypes.map(t => wowData.Global?.current?.[t] || 0),
-        backgroundColor: COLORS.global, borderRadius: 4,
-      },
-      {
-        label: 'Global Tuần trước',
-        data: wowTypes.map(t => wowData.Global?.previous?.[t] || 0),
-        backgroundColor: COLORS.globalAlpha.replace('.15', '.5'), borderRadius: 4,
-      },
+      { label: 'VN Tuần này',    data: [2840000, 920000, 1470000], backgroundColor: COLORS.vn,     borderRadius: 4 },
+      { label: 'VN Tuần trước',  data: [2410000, 880000, 1100000], backgroundColor: 'rgba(34,197,94,.4)', borderRadius: 4 },
+      { label: 'Global Tuần này',data: [11200000,3400000,4800000], backgroundColor: COLORS.global, borderRadius: 4 },
+      { label: 'Global Tuần trước',data:[10500000,3100000,4200000],backgroundColor:'rgba(59,130,246,.4)',borderRadius:4},
     ]
   },
   options: { ...CHART_DEFAULTS, scales: { ...CHART_DEFAULTS.scales } }
 });
 
 // ── MONTHLY CHART ─────────────────────────────────────
-const mVN     = [{&#34;month&#34;: &#34;2026-04&#34;, &#34;views&#34;: 68669198}];
-const mGlobal = [{&#34;month&#34;: &#34;2026-04&#34;, &#34;views&#34;: 28640893}];
-const allMonths = [...new Set([
-  ...mVN.map(d => d.month), ...mGlobal.map(d => d.month)
-])].sort();
+const months = ['2025-11','2025-12','2026-01','2026-02','2026-03','2026-04'];
 new Chart(document.getElementById('chartMonthly'), {
   type: 'bar',
   data: {
-    labels: allMonths,
+    labels: months,
     datasets: [
-      {
-        label: '🇻🇳 VN',
-        data: allMonths.map(m => mVN.find(d => d.month === m)?.views || 0),
-        backgroundColor: COLORS.vn, borderRadius: 4,
-      },
-      {
-        label: '🌐 Global',
-        data: allMonths.map(m => mGlobal.find(d => d.month === m)?.views || 0),
-        backgroundColor: COLORS.global, borderRadius: 4,
-      }
+      { label: '🇻🇳 VN',     data: [98000000,112000000,104000000,118000000,131000000,142000000], backgroundColor: COLORS.vn,     borderRadius: 4 },
+      { label: '🌐 Global', data: [380000000,420000000,401000000,445000000,468000000,510000000], backgroundColor: COLORS.global, borderRadius: 4 }
     ]
   },
   options: { ...CHART_DEFAULTS }
 });
 
 // ── POST TIME (VN) ────────────────────────────────────
-const ptVN = {&#34;0&#34;: 278302.0, &#34;3&#34;: 280102.0, &#34;4&#34;: 943854.0, &#34;5&#34;: 69798.0, &#34;7&#34;: 165476.0, &#34;8&#34;: 3343605.0, &#34;9&#34;: 273426.0, &#34;10&#34;: 387181.0, &#34;11&#34;: 521295.0, &#34;12&#34;: 424463.0, &#34;13&#34;: 1272473.0, &#34;14&#34;: 307898.0, &#34;15&#34;: 767350.0, &#34;16&#34;: 41822560.0, &#34;17&#34;: 539563.0, &#34;20&#34;: 343896.0, &#34;22&#34;: 239343.0};
+const postTimeData = {
+  0:80000, 1:45000, 2:30000, 3:22000, 4:25000, 5:38000,
+  6:95000, 7:140000, 8:180000, 9:210000, 10:230000, 11:260000,
+  12:310000, 13:290000, 14:275000, 15:280000, 16:310000, 17:340000,
+  18:410000, 19:450000, 20:510000, 21:480000, 22:380000, 23:210000
+};
 const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
+const maxPT = Math.max(...Object.values(postTimeData));
 new Chart(document.getElementById('chartPostTime'), {
   type: 'bar',
   data: {
     labels: hours,
-    datasets: [
-      {
-        label: '🇻🇳 VN — Avg Views Gain',
-        data: hours.map((_, i) => ptVN[String(i)] || 0),
-        backgroundColor: hours.map((_, i) => {
-          const v = ptVN[String(i)] || 0;
-          const max = Math.max(...Object.values(ptVN));
-          const alpha = max > 0 ? 0.3 + (v/max)*0.7 : 0.3;
-          return `rgba(34,197,94,${alpha.toFixed(2)})`;
-        }),
-        borderRadius: 4,
-      },
-    ]
+    datasets: [{
+      label: '🇻🇳 VN — Avg Views Gain',
+      data: hours.map((_, i) => postTimeData[i] || 0),
+      backgroundColor: hours.map((_, i) => {
+        const v = postTimeData[i] || 0;
+        const alpha = maxPT > 0 ? 0.3 + (v/maxPT)*0.7 : 0.3;
+        return `rgba(34,197,94,${alpha.toFixed(2)})`;
+      }),
+      borderRadius: 4,
+    }]
   },
   options: {
     ...CHART_DEFAULTS,
@@ -1308,7 +938,6 @@ new Chart(document.getElementById('chartPostTime'), {
 });
 
 // ── CATEGORY DONUT VN ─────────────────────────────────
-const catVN = {&#34;Music&#34;: 21, &#34;Gaming&#34;: 21, &#34;People &amp; Blogs&#34;: 5, &#34;Film &amp; Animation&#34;: 1, &#34;Entertainment&#34;: 1, &#34;Travel &amp; Events&#34;: 1};
 const PIE_COLORS = [
   '#22c55e','#3b82f6','#f59e0b','#a855f7','#14b8a6',
   '#ef4444','#f97316','#06b6d4','#8b5cf6'
@@ -1316,113 +945,39 @@ const PIE_COLORS = [
 new Chart(document.getElementById('chartCatVN'), {
   type: 'doughnut',
   data: {
-    labels: Object.keys(catVN),
+    labels: ['Tài chính','Công nghệ','Gaming','Ẩm thực','Giải trí','Giáo dục','Thể thao','Khác'],
     datasets: [{
-      data: Object.values(catVN),
-      backgroundColor: PIE_COLORS,
-      borderWidth: 0,
-      hoverOffset: 6,
+      data: [22, 19, 18, 12, 11, 8, 6, 4],
+      backgroundColor: PIE_COLORS, borderWidth: 0, hoverOffset: 6,
     }]
   },
   options: {
-    responsive: true, maintainAspectRatio: false,
-    cutout: '62%',
+    responsive: true, maintainAspectRatio: false, cutout: '62%',
     plugins: {
-      legend: {
-        position: 'right',
-        labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 }
-      },
+      legend: { position: 'right', labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 } },
       tooltip: CHART_DEFAULTS.plugins.tooltip,
     }
   }
 });
 
 // ── CATEGORY DONUT GLOBAL ─────────────────────────────
-const catGlobal = {&#34;Music&#34;: 13, &#34;Entertainment&#34;: 12, &#34;Gaming&#34;: 12, &#34;Film &amp; Animation&#34;: 5, &#34;People &amp; Blogs&#34;: 2};
 new Chart(document.getElementById('chartCatGlobal'), {
   type: 'doughnut',
   data: {
-    labels: Object.keys(catGlobal),
+    labels: ['AI/Tech','Entertainment','Gaming','Finance','Music','Education','Sports','Other'],
     datasets: [{
-      data: Object.values(catGlobal),
-      backgroundColor: PIE_COLORS,
-      borderWidth: 0,
-      hoverOffset: 6,
+      data: [26, 21, 17, 13, 9, 7, 5, 2],
+      backgroundColor: PIE_COLORS, borderWidth: 0, hoverOffset: 6,
     }]
   },
   options: {
-    responsive: true, maintainAspectRatio: false,
-    cutout: '62%',
+    responsive: true, maintainAspectRatio: false, cutout: '62%',
     plugins: {
-      legend: {
-        position: 'right',
-        labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 }
-      },
+      legend: { position: 'right', labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 } },
       tooltip: CHART_DEFAULTS.plugins.tooltip,
     }
   }
 });
-// ── INTRADAY VN ──────────────────────────────────────
-const intradayVN = [];
-if (intradayVN.length > 0) {
-  new Chart(document.getElementById('chartIntradayVN'), {
-    type: 'bar',
-    data: {
-      labels: intradayVN.map(d => d.hour),
-      datasets: [{
-        label: 'Views gained (VN)',
-        data: intradayVN.map(d => d.views),
-        backgroundColor: intradayVN.map(d => {
-          const max = Math.max(...intradayVN.map(x => x.views));
-          const alpha = max > 0 ? 0.35 + (d.views/max)*0.65 : 0.4;
-          return `rgba(34,197,94,${alpha.toFixed(2)})`;
-        }),
-        borderRadius: 4,
-      }]
-    },
-    options: {
-      ...CHART_DEFAULTS,
-      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
-    }
-  });
-} else {
-  const ctx = document.getElementById('chartIntradayVN');
-  if (ctx) {
-    ctx.parentElement.innerHTML =
-      '<div class="empty" style="padding:40px">Chưa có hourly data — cần chạy hourly.yml ít nhất 1 lần</div>';
-  }
-}
-
-// ── INTRADAY GLOBAL ───────────────────────────────────
-const intradayGlobal = [];
-if (intradayGlobal.length > 0) {
-  new Chart(document.getElementById('chartIntradayGlobal'), {
-    type: 'bar',
-    data: {
-      labels: intradayGlobal.map(d => d.hour),
-      datasets: [{
-        label: 'Views gained (Global)',
-        data: intradayGlobal.map(d => d.views),
-        backgroundColor: intradayGlobal.map(d => {
-          const max = Math.max(...intradayGlobal.map(x => x.views));
-          const alpha = max > 0 ? 0.35 + (d.views/max)*0.65 : 0.4;
-          return `rgba(59,130,246,${alpha.toFixed(2)})`;
-        }),
-        borderRadius: 4,
-      }]
-    },
-    options: {
-      ...CHART_DEFAULTS,
-      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
-    }
-  });
-} else {
-  const ctx = document.getElementById('chartIntradayGlobal');
-  if (ctx) {
-    ctx.parentElement.innerHTML =
-      '<div class="empty" style="padding:40px">Chưa có hourly data</div>';
-  }
-}
 </script>
 </body>
 </html>
