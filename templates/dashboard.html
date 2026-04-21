@@ -3,981 +3,1074 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YouTube Analytics Dashboard · 21/04/2026</title>
+<title>YouTube Analytics · {{ today }}</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ── RESET & BASE ─────────────────────────────────────── */
+/* ── RESET & TOKENS ───────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f1117;--bg2:#171b26;--bg3:#1e2336;--border:#2a2f45;
-  --text:#e8eaf0;--text2:#9ea8c4;--text3:#5a6280;
-  --vn:#22c55e;--vn-dim:#16532d;
-  --global:#3b82f6;--global-dim:#1e3a6e;
-  --accent:#f59e0b;--accent-dim:#78400b;
-  --red:#ef4444;--purple:#a855f7;--teal:#14b8a6;
-  --radius:12px;--radius-sm:8px;
-  --shadow:0 4px 24px rgba(0,0,0,.4);
+  --bg:#0b0e18;--bg2:#12172a;--bg3:#181f35;--bg4:#1e2740;
+  --border:#252d45;--border2:#2e3a55;
+  --text:#dde4f4;--text2:#8994b8;--text3:#4a5475;
+  --vn:#10b981;--vn2:#059669;--vn-glow:rgba(16,185,129,.15);
+  --global:#3b82f6;--global2:#2563eb;--global-glow:rgba(59,130,246,.15);
+  --amber:#f59e0b;--amber-dim:rgba(245,158,11,.12);
+  --red:#ef4444;--red-dim:rgba(239,68,68,.12);
+  --purple:#a855f7;--purple-dim:rgba(168,85,247,.12);
+  --teal:#14b8a6;--orange:#f97316;
+  --r:10px;--r-sm:7px;--r-lg:14px;
+  --shadow:0 4px 32px rgba(0,0,0,.5);
 }
 body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;
   font-size:14px;line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
 
 /* ── LAYOUT ──────────────────────────────────────────── */
-.wrapper{max-width:1400px;margin:0 auto;padding:24px 20px}
-.grid{display:grid;gap:16px}
-.grid-2{grid-template-columns:1fr 1fr}
-.grid-3{grid-template-columns:1fr 1fr 1fr}
-.grid-4{grid-template-columns:repeat(4,1fr)}
-.grid-auto{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.wrap{max-width:1440px;margin:0 auto;padding:20px 18px 40px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.gauto{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+@media(max-width:960px){.g2,.g3,.g4{grid-template-columns:1fr}}
 
 /* ── CARD ─────────────────────────────────────────────── */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
-  padding:20px;box-shadow:var(--shadow)}
-.card-sm{padding:14px 16px}
-
-/* ── HEADER ──────────────────────────────────────────── */
-.header{display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:28px;flex-wrap:wrap;gap:12px}
-.header-logo{display:flex;align-items:center;gap:12px}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#ef4444,#b91c1c);
-  border-radius:10px;display:flex;align-items:center;justify-content:center;
-  font-size:20px}
-.header h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
-.header-meta{text-align:right;color:var(--text2);font-size:12px;line-height:1.8}
-.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;
-  padding:3px 10px;border-radius:20px;font-weight:500}
-.badge-vn{background:var(--vn-dim);color:var(--vn)}
-.badge-global{background:var(--global-dim);color:var(--global)}
-.badge-ai{background:#3b1f7a;color:var(--purple)}
-.badge-red{background:#450a0a;color:var(--red)}
-.badge-amber{background:var(--accent-dim);color:var(--accent)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:18px;box-shadow:var(--shadow)}
+.card-p0{padding:0}
 
 /* ── SECTION TITLE ───────────────────────────────────── */
-.section-title{font-size:11px;font-weight:600;color:var(--text3);
-  letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;
-  display:flex;align-items:center;gap:8px}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.st{font-size:10.5px;font-weight:600;color:var(--text3);letter-spacing:.1em;
+  text-transform:uppercase;display:flex;align-items:center;gap:8px;margin:22px 0 12px}
+.st::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── HEADER ──────────────────────────────────────────── */
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:22px;flex-wrap:wrap;gap:14px}
+.hdr-left{display:flex;align-items:center;gap:14px}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,#dc2626,#991b1b);
+  border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;box-shadow:0 0 20px rgba(220,38,38,.3)}
+.hdr h1{font-size:21px;font-weight:700;letter-spacing:-.3px}
+.hdr-badges{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.hdr-right{text-align:right;line-height:1.9}
+.hdr-right .label{font-size:11px;color:var(--text3)}
+.hdr-right strong{color:var(--text)}
+
+/* ── BADGES ──────────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:500;
+  padding:3px 9px;border-radius:20px}
+.bvn{background:rgba(16,185,129,.15);color:var(--vn)}
+.bgl{background:rgba(59,130,246,.15);color:var(--global)}
+.bai{background:var(--purple-dim);color:var(--purple)}
+.bamb{background:var(--amber-dim);color:var(--amber)}
+.bred{background:var(--red-dim);color:var(--red)}
+.bgr{background:var(--bg4);color:var(--text2)}
 
 /* ── KPI CARDS ───────────────────────────────────────── */
-.kpi-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
-.kpi-card{padding:18px 20px;border-left:3px solid transparent}
-.kpi-card.vn{border-color:var(--vn)}
-.kpi-card.global{border-color:var(--global)}
-.kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;
+.kpi{padding:16px 18px;border-left:3px solid transparent;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.3}
+.kpi.vn{border-color:var(--vn)}
+.kpi.gl{border-color:var(--global)}
+.kpi-lbl{font-size:10.5px;color:var(--text2);text-transform:uppercase;
   letter-spacing:.06em;margin-bottom:6px}
-.kpi-value{font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1}
-.kpi-sub{font-size:12px;color:var(--text2);margin-top:6px}
-.kpi-change{font-size:12px;font-weight:500;margin-top:4px}
-.up{color:var(--vn)}
-.down{color:var(--red)}
+.kpi-val{font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1}
+.kpi-sub{font-size:11.5px;color:var(--text2);margin-top:5px}
+.kpi-sub .up{color:var(--vn)}
+.kpi-sub .dn{color:var(--red)}
 
-/* ── STREAM TABS ─────────────────────────────────────── */
-.tabs{display:flex;gap:8px;margin-bottom:16px}
-.tab{padding:6px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);
-  cursor:pointer;font-size:13px;transition:.15s;background:transparent;color:var(--text2)}
-.tab.active-vn{background:var(--vn-dim);border-color:var(--vn);color:var(--vn)}
-.tab.active-global{background:var(--global-dim);border-color:var(--global);color:var(--global)}
-.tab:hover{border-color:var(--text3)}
+/* ── CONTENT TYPE BATTLE ─────────────────────────────── */
+.ct-battle{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;
+  background:var(--border);border-radius:var(--r);overflow:hidden}
+.ct-col{background:var(--bg2);padding:14px 16px}
+.ct-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ct-icon{font-size:18px}
+.ct-name{font-size:13px;font-weight:600}
+.ct-stat{display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-bottom:1px solid var(--border)}
+.ct-stat:last-child{border:none}
+.ct-stat-label{font-size:11px;color:var(--text2)}
+.ct-stat-val{font-size:12px;font-weight:600}
+.progress-row{margin-top:8px}
+.progress-bg{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:3px}
+.progress-fill{height:100%;border-radius:3px}
 
-/* ── CHART CONTAINERS ────────────────────────────────── */
-.chart-wrap{position:relative;height:220px}
-.chart-wrap-lg{height:280px}
+/* ── TAB SYSTEM ──────────────────────────────────────── */
+.tab-bar{display:flex;gap:6px;padding:0 18px;border-bottom:1px solid var(--border);
+  overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab-bar::-webkit-scrollbar{height:0}
+.tab-btn{padding:10px 16px;font-size:12px;font-weight:500;color:var(--text2);
+  border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;
+  transition:.15s;white-space:nowrap;margin-bottom:-1px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--vn);border-color:var(--vn)}
+.tab-btn.active-gl{color:var(--global);border-color:var(--global)}
+.tab-pane{display:none;padding:0}
+.tab-pane.active{display:block}
 
-/* ── TOP VIDEOS TABLE ────────────────────────────────── */
-.video-table{width:100%;border-collapse:collapse}
-.video-table th{font-size:11px;color:var(--text3);text-transform:uppercase;
-  letter-spacing:.06em;padding:8px 12px;border-bottom:1px solid var(--border);
-  text-align:left;white-space:nowrap}
-.video-table td{padding:10px 12px;border-bottom:1px solid var(--border);
-  vertical-align:middle}
-.video-table tr:last-child td{border:none}
-.video-table tr:hover td{background:var(--bg3)}
-.video-thumb{width:56px;height:40px;object-fit:cover;border-radius:4px;
-  background:var(--bg3)}
-.video-title-wrap{max-width:320px}
-.video-title{font-size:13px;font-weight:500;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
-.video-cat{font-size:11px;color:var(--text3);margin-top:2px}
-.video-link{color:inherit;text-decoration:none}
-.video-link:hover .video-title{color:var(--accent);text-decoration:underline}
-.num{font-family:monospace;font-size:13px;color:var(--text2)}
-.num-gain{color:var(--vn);font-weight:600}
-.ct-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
-.ct-video{background:#1e3a6e;color:#93c5fd}
-.ct-stream{background:#3b1f7a;color:#c4b5fd}
-.ct-shorts{background:#78400b;color:#fcd34d}
+/* ── VIDEO TABLE ─────────────────────────────────────── */
+.vtbl{width:100%;border-collapse:collapse}
+.vtbl th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;
+  padding:9px 14px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.vtbl td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.vtbl tr:last-child td{border:none}
+.vtbl tbody tr:hover td{background:var(--bg3)}
+.vthumb{width:54px;height:38px;object-fit:cover;border-radius:5px;background:var(--bg3)}
+.vtitle{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;max-width:280px;color:var(--text)}
+.vtitle:hover{color:var(--amber)}
+.vcat{font-size:10.5px;color:var(--text3);margin-top:2px}
+.mono{font-family:'SF Mono',monospace;font-size:12px;color:var(--text2)}
+.gain{color:var(--vn);font-weight:600;font-family:monospace}
+.gain-gl{color:var(--global)}
+.ct-pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.ct-video{background:rgba(59,130,246,.15);color:#93c5fd}
+.ct-stream{background:rgba(168,85,247,.15);color:#d8b4fe}
+.ct-shorts{background:rgba(245,158,11,.15);color:#fcd34d}
+.rank{color:var(--text3);font-size:12px;font-weight:600;width:20px;text-align:center}
 
-/* ── ER METER ────────────────────────────────────────── */
-.er-row{display:flex;align-items:center;gap:10px;padding:8px 0;
+/* ── CATEGORY LEADERBOARD ────────────────────────────── */
+.cat-card{padding:12px 14px;background:var(--bg3);border-radius:var(--r-sm);
+  border:1px solid var(--border);margin-bottom:8px;cursor:default}
+.cat-card:last-child{margin:0}
+.cat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cat-name{font-size:13px;font-weight:600}
+.cat-gain{font-size:12px;font-weight:700;color:var(--vn)}
+.cat-bar-wrap{height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.cat-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--vn),var(--teal))}
+.cat-meta{display:flex;gap:10px;flex-wrap:wrap}
+.cat-meta span{font-size:10.5px;color:var(--text2)}
+.cat-top-vid{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;margin-top:4px}
+
+/* ── CHART WRAP ──────────────────────────────────────── */
+.ch{position:relative;height:210px}
+.ch-lg{height:260px}
+.ch-sm{height:160px}
+
+/* ── GEMINI CARD ─────────────────────────────────────── */
+.ai-card{border-left:3px solid var(--purple);background:linear-gradient(135deg,var(--bg2),var(--bg3))}
+.ai-hdr{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--purple);
+  box-shadow:0 0 8px var(--purple);animation:pulse-ai 2s infinite}
+@keyframes pulse-ai{0%,100%{opacity:1}50%{opacity:.4}}
+.ai-body{font-size:13.5px;line-height:1.85;color:var(--text2)}
+.ai-forecast{margin-top:12px;padding:12px;background:var(--bg4);border-radius:var(--r-sm);
+  border-left:2px solid var(--amber);font-size:12.5px}
+.ai-meta{font-size:10.5px;color:var(--text3);margin-top:10px}
+
+/* ── REC CARDS ───────────────────────────────────────── */
+.rec{padding:11px 13px;background:var(--bg3);border-radius:var(--r-sm);
+  border-left:3px solid var(--border);margin-bottom:8px}
+.rec:last-child{margin:0}
+.rec.high{border-color:var(--red)}
+.rec.medium{border-color:var(--amber)}
+.rec.low{border-color:var(--teal)}
+.rec-action{font-size:13px;font-weight:500;margin-bottom:4px}
+.rec-reason{font-size:11.5px;color:var(--text2)}
+.rec-footer{display:flex;gap:6px;margin-top:7px}
+
+/* ── GAP CARDS ───────────────────────────────────────── */
+.gap-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;
   border-bottom:1px solid var(--border)}
-.er-row:last-child{border:none}
-.er-label{width:70px;font-size:12px;color:var(--text2)}
-.er-bar-wrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
-.er-bar{height:100%;border-radius:4px;transition:width .6s}
-.er-val{width:50px;text-align:right;font-size:12px;font-weight:600;font-family:monospace}
+.gap-row:last-child{border:none}
+.gap-score{width:38px;height:38px;border-radius:var(--r-sm);background:var(--amber-dim);
+  display:flex;align-items:center;justify-content:center;font-weight:700;
+  font-size:15px;color:var(--amber);flex-shrink:0}
+.gap-topic{font-size:13px;font-weight:500}
+.gap-ev{font-size:11px;color:var(--text2);margin-top:2px}
 
-/* ── VIRAL ALERT ─────────────────────────────────────── */
-.viral-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;
+/* ── ANOMALY ─────────────────────────────────────────── */
+.anom{padding:10px 12px;background:var(--bg3);border-radius:var(--r-sm);
+  margin-bottom:8px;border-left:3px solid var(--border)}
+.anom:last-child{margin:0}
+.anom.high{border-color:var(--red)}
+.anom.medium{border-color:var(--amber)}
+.anom-title{font-size:12px;font-weight:600;margin-bottom:3px;display:flex;
+  justify-content:space-between;align-items:center}
+.anom-desc{font-size:11.5px;color:var(--text2)}
+
+/* ── VIRAL ───────────────────────────────────────────── */
+.viral-row{display:flex;align-items:center;gap:10px;padding:9px 0;
   border-bottom:1px solid var(--border)}
-.viral-item:last-child{border:none}
-.viral-rank{width:32px;height:32px;border-radius:50%;background:var(--accent-dim);
-  color:var(--accent);display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:13px;flex-shrink:0}
+.viral-row:last-child{border:none}
+.vi-num{font-size:13px;font-weight:700;color:var(--red);background:var(--red-dim);
+  padding:2px 9px;border-radius:10px;flex-shrink:0}
 .viral-info{flex:1;min-width:0}
-.viral-title{font-size:13px;font-weight:500;white-space:nowrap;
+.viral-title{font-size:12.5px;font-weight:500;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis}
 .viral-meta{font-size:11px;color:var(--text2);margin-top:2px}
-.vi-badge{font-size:11px;font-weight:700;color:var(--red);
-  background:#450a0a;padding:2px 8px;border-radius:10px;flex-shrink:0}
 
-/* ── AI NARRATIVE ────────────────────────────────────── */
-.ai-card{border-left:3px solid var(--purple);background:var(--bg2)}
-.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.ai-header-icon{font-size:18px}
-.ai-narrative{font-size:14px;line-height:1.8;color:var(--text2)}
-.ai-forecast{margin-top:12px;padding:12px;background:var(--bg3);
-  border-radius:var(--radius-sm);font-size:13px;color:var(--text)}
-
-/* ── RECOMMENDATION ──────────────────────────────────── */
-.rec-item{padding:12px 14px;background:var(--bg3);border-radius:var(--radius-sm);
-  margin-bottom:8px;border-left:3px solid transparent}
-.rec-item:last-child{margin:0}
-.rec-item.high{border-color:var(--red)}
-.rec-item.medium{border-color:var(--accent)}
-.rec-item.low{border-color:var(--teal)}
-.rec-action{font-size:13px;font-weight:500;margin-bottom:4px}
-.rec-reason{font-size:12px;color:var(--text2)}
-.rec-meta{display:flex;gap:8px;margin-top:6px}
-
-/* ── CONTENT GAP ─────────────────────────────────────── */
-.gap-item{display:flex;align-items:center;gap:12px;padding:10px 0;
-  border-bottom:1px solid var(--border)}
-.gap-item:last-child{border:none}
-.gap-score{width:36px;height:36px;border-radius:var(--radius-sm);
-  background:var(--bg3);display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0}
-.gap-info{flex:1;min-width:0}
-.gap-topic{font-size:13px;font-weight:500}
-.gap-evidence{font-size:11px;color:var(--text2);margin-top:2px}
+/* ── MOMENTUM ────────────────────────────────────────── */
+.mom-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.mom-cell{text-align:center;padding:10px 6px;background:var(--bg3);
+  border-radius:var(--r-sm);border:1px solid var(--border)}
+.mom-num{font-size:22px;font-weight:700;line-height:1}
+.mom-lbl{font-size:10px;color:var(--text2);margin-top:3px}
 
 /* ── TREND LAG ───────────────────────────────────────── */
-.lag-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.lag-tag{padding:4px 12px;border-radius:20px;background:var(--global-dim);
-  color:var(--global);font-size:12px;border:1px solid var(--global-dim)}
+.lag-stat{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.lag-box{text-align:center;padding:12px;background:var(--bg3);border-radius:var(--r-sm)}
+.lag-box .n{font-size:24px;font-weight:700;line-height:1}
+.lag-box .l{font-size:10.5px;color:var(--text2);margin-top:4px}
+.lag-tags{display:flex;flex-wrap:wrap;gap:5px}
+.lag-tag{font-size:11px;padding:3px 10px;border-radius:20px;
+  background:rgba(59,130,246,.12);color:var(--global);
+  border:1px solid rgba(59,130,246,.2)}
 
-/* ── WOW LEGEND ──────────────────────────────────────── */
-.wow-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
-.wow-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
-.wow-dot{width:10px;height:10px;border-radius:50%}
+/* ── HOT RIGHT NOW ───────────────────────────────────── */
+.hot-row{display:flex;align-items:center;gap:10px;padding:8px 16px;
+  border-bottom:1px solid var(--border)}
+.hot-row:last-child{border:none}
+.hot-row:hover{background:var(--bg3)}
+.hot-rk{font-size:11px;font-weight:700;color:var(--text3);width:16px;text-align:center;flex-shrink:0}
+.hot-th{width:46px;height:32px;object-fit:cover;border-radius:4px;background:var(--bg4);flex-shrink:0}
+.hot-inf{flex:1;min-width:0}
+.hot-t{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hot-m{font-size:10.5px;color:var(--text2);margin-top:1px}
+.hot-d{font-size:13px;font-weight:700;flex-shrink:0}
 
-/* ── EMPTY STATE ─────────────────────────────────────── */
-.empty{text-align:center;color:var(--text3);padding:32px;font-size:13px}
+/* ── MOMENTUM BADGE ──────────────────────────────────── */
+.mb{display:inline-flex;align-items:center;font-size:10px;font-weight:600;
+  padding:1px 7px;border-radius:8px}
+.mb-acc{background:rgba(16,185,129,.15);color:var(--vn)}
+.mb-peak{background:var(--amber-dim);color:var(--amber)}
+.mb-dec{background:rgba(249,115,22,.15);color:var(--orange)}
+.mb-fad{background:var(--bg4);color:var(--text3)}
+.mb-new{background:var(--bg4);color:var(--text3)}
 
-/* ── FOOTER ──────────────────────────────────────────── */
-.footer{margin-top:40px;text-align:center;color:var(--text3);font-size:12px;
-  padding-bottom:24px;line-height:2}
+/* ── LIVE PULSE ──────────────────────────────────────── */
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--vn);box-shadow:0 0 6px var(--vn);
+  animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ── DIVIDER ─────────────────────────────────────────── */
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* ── EMPTY ───────────────────────────────────────────── */
+.empty{text-align:center;color:var(--text3);padding:28px;font-size:12.5px}
 
 /* ── SCROLLBAR ───────────────────────────────────────── */
-::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── FOOTER ──────────────────────────────────────────── */
+.footer{margin-top:48px;text-align:center;color:var(--text3);font-size:11.5px;
+  padding-bottom:20px;line-height:2}
 </style>
 </head>
 <body>
-<div class="wrapper">
+{#– Macro definitions FIRST — Jinja2 requires macros before use –#}
+<!-- ══════════════════════════════════════════
+     MACROS
+══════════════════════════════════════════ -->
+{% macro render_video_table(videos, stream) %}
+{% if videos %}
+<div style="overflow-x:auto">
+<table class="vtbl">
+  <thead><tr>
+    <th>#</th><th>Thumb</th><th>Video</th>
+    <th>Type</th><th>Views Gain</th><th>ER</th>
+  </tr></thead>
+  <tbody>
+  {% for v in videos %}
+  <tr>
+    <td><span class="rank">{{ loop.index }}</span></td>
+    <td>{% if v.thumbnail %}<img src="{{ v.thumbnail }}" class="vthumb" loading="lazy" alt="">
+        {% else %}<div class="vthumb"></div>{% endif %}</td>
+    <td style="max-width:300px">
+      <a href="{{ v.yt_url }}" target="_blank" rel="noopener">
+        <div class="vtitle">{{ v.title }}</div>
+      </a>
+      <div class="vcat">{{ v.category }}</div>
+    </td>
+    <td><span class="ct-pill ct-{{ v.content_type }}">{{ v.content_type }}</span></td>
+    <td><span class="gain{% if stream=='gl' %} gain-gl{% endif %}">
+      +{{ "{:,.0f}".format(v.views_gain or 0) }}
+    </span></td>
+    <td><span class="mono">{{ v.er_pct }}%</span></td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty">Không có dữ liệu cho category này</div>
+{% endif %}
+{% endmacro %}
+<div class="wrap">
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-logo">
-    <div class="logo-icon">▶</div>
+<!-- ══════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════ -->
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="logo">▶</div>
     <div>
       <h1>YouTube Analytics</h1>
-      <div style="font-size:12px;color:var(--text2);margin-top:2px">
-        <span class="badge badge-vn">🇻🇳 Vietnam Top 50</span>
-        <span class="badge badge-global" style="margin-left:6px">🌐 Global Sampled</span>
-        <span class="badge badge-ai" style="margin-left:6px">✦ Gemini 2.5</span>
+      <div class="hdr-badges">
+        <span class="badge bvn">🇻🇳 Vietnam Top 50</span>
+        <span class="badge bgl">🌐 Global 5 Markets</span>
+        <span class="badge bai">✦ Gemini 2.5 Flash</span>
+        <span class="badge bgr"><span class="live-dot"></span>&nbsp;Live · mỗi giờ</span>
       </div>
     </div>
   </div>
-  <div class="header-meta">
-    <div>Cập nhật lúc <strong>06:00 ICT</strong></div>
-    <div>Dữ liệu ngày <strong>21/04/2026</strong></div>
-    <div style="color:var(--text3);font-size:11px">run_id: a3f9c12b...</div>
+  <div class="hdr-right">
+    <div class="label">Cập nhật</div>
+    <strong>{{ generated_at }}</strong>
+    <div class="label" style="margin-top:4px">Ngày phân tích</div>
+    <strong>{{ today }}</strong>
+    <div style="font-size:10px;color:var(--text3);margin-top:4px">run {{ run_id[:8] }}…</div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════
-     SECTION 1: KPI OVERVIEW
-════════════════════════════════════ -->
-<p class="section-title">Tổng quan hôm nay</p>
-<div class="grid kpi-grid" style="margin-bottom:20px">
-
-  <div class="card kpi-card vn">
-    <div class="kpi-label">🇻🇳 Videos theo dõi (VN)</div>
-    <div class="kpi-value">1,247</div>
-    <div class="kpi-sub">84 video active hôm nay</div>
+<!-- ══════════════════════════════════════════
+     KPI OVERVIEW
+══════════════════════════════════════════ -->
+<p class="st">Tổng quan hôm nay</p>
+<div class="g4" style="margin-bottom:14px">
+  <div class="card kpi vn">
+    <div class="kpi-lbl">🇻🇳 Videos VN</div>
+    <div class="kpi-val">{{ "{:,}".format(kpi.VN.total_videos) }}</div>
+    <div class="kpi-sub"><span class="up">{{ kpi.VN.active_today }}</span> active hôm nay</div>
   </div>
-
-  <div class="card kpi-card vn">
-    <div class="kpi-label">Views gain hôm nay (VN)</div>
-    <div class="kpi-value">4,832,100</div>
-    <div class="kpi-sub">+128,400 likes</div>
+  <div class="card kpi vn">
+    <div class="kpi-lbl">Views Gained · VN
+      {% if kpi.VN.is_first_day %}<span class="badge bamb" style="margin-left:4px;font-size:9px">Day 1</span>{% endif %}
+    </div>
+    <div class="kpi-val">{{ "{:,.0f}".format(kpi.VN.views_gained_today or 0) }}</div>
+    <div class="kpi-sub"><span class="up">+{{ "{:,.0f}".format(kpi.VN.likes_gained_today or 0) }}</span> likes</div>
   </div>
-
-  <div class="card kpi-card vn">
-    <div class="kpi-label">Avg Engagement Rate (VN)</div>
-    <div class="kpi-value">3.72%</div>
-    <div class="kpi-sub">(likes + comments) / views</div>
+  <div class="card kpi vn">
+    <div class="kpi-lbl">Avg ER · VN</div>
+    <div class="kpi-val">{{ kpi.VN.avg_er }}%</div>
+    <div class="kpi-sub">(likes+comments)/views</div>
   </div>
-
-  <div class="card kpi-card global">
-    <div class="kpi-label">🌐 Videos theo dõi (Global)</div>
-    <div class="kpi-value">3,015</div>
-    <div class="kpi-sub">201 video active hôm nay</div>
+  <div class="card kpi gl">
+    <div class="kpi-lbl">🌐 Views Gained · Global</div>
+    <div class="kpi-val">{{ "{:,.0f}".format(kpi.Global.views_gained_today or 0) }}</div>
+    <div class="kpi-sub"><span style="color:var(--global)">+{{ "{:,.0f}".format(kpi.Global.likes_gained_today or 0) }}</span> likes</div>
   </div>
-
-  <div class="card kpi-card global">
-    <div class="kpi-label">Views gain hôm nay (Global)</div>
-    <div class="kpi-value">18,940,500</div>
-    <div class="kpi-sub">+512,300 likes</div>
-  </div>
-
-  <div class="card kpi-card global">
-    <div class="kpi-label">Avg Engagement Rate (Global)</div>
-    <div class="kpi-value">2.45%</div>
-    <div class="kpi-sub">(likes + comments) / views</div>
-  </div>
-
 </div>
 
-<!-- ════════════════════════════════════
-     SECTION 2: GEMINI AI NARRATIVE
-════════════════════════════════════ -->
-<p class="section-title">Phân tích AI — Gemini 2.5</p>
-<div class="grid grid-2" style="margin-bottom:20px">
+<!-- ══════════════════════════════════════════
+     CONTENT TYPE BATTLE: Video vs Stream vs Shorts
+══════════════════════════════════════════ -->
+<p class="st">Video · Stream · Shorts — so sánh trực tiếp</p>
+<div class="g2" style="margin-bottom:14px">
+
+  <div class="card" style="padding:0">
+    <div style="padding:14px 18px 10px;border-bottom:1px solid var(--border)">
+      <strong>🇻🇳 Vietnam — Phân bố nội dung</strong>
+    </div>
+    <div class="ct-battle" style="border-radius:0;border:none">
+      {% for ct, icon, col in [('video','🎬','#3b82f6'),('stream','🔴','#a855f7'),('shorts','⚡','#f59e0b')] %}
+      {% set d = svv_vn_data.get(ct, {}) %}
+      <div class="ct-col">
+        <div class="ct-header">
+          <span class="ct-icon">{{ icon }}</span>
+          <span class="ct-name" style="color:{{ col }}">{{ ct|capitalize }}</span>
+        </div>
+        <div class="ct-stat">
+          <span class="ct-stat-label">Số lượng</span>
+          <span class="ct-stat-val">{{ d.get('count', 0) }}</span>
+        </div>
+        <div class="ct-stat">
+          <span class="ct-stat-label">% Views</span>
+          <span class="ct-stat-val" style="color:{{ col }}">{{ d.get('pct_views', 0) }}%</span>
+        </div>
+        <div class="ct-stat">
+          <span class="ct-stat-label">Avg ER</span>
+          <span class="ct-stat-val">{{ d.get('avg_er', 0) }}%</span>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bg">
+            <div class="progress-fill" style="width:{{ d.get('pct_views', 0) }}%;background:{{ col }}"></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card" style="padding:0">
+    <div style="padding:14px 18px 10px;border-bottom:1px solid var(--border)">
+      <strong>🌐 Global — Phân bố nội dung</strong>
+    </div>
+    <div class="ct-battle" style="border-radius:0;border:none">
+      {% for ct, icon, col in [('video','🎬','#3b82f6'),('stream','🔴','#a855f7'),('shorts','⚡','#f59e0b')] %}
+      {% set d = svv_global_data.get(ct, {}) %}
+      <div class="ct-col">
+        <div class="ct-header">
+          <span class="ct-icon">{{ icon }}</span>
+          <span class="ct-name" style="color:{{ col }}">{{ ct|capitalize }}</span>
+        </div>
+        <div class="ct-stat">
+          <span class="ct-stat-label">Số lượng</span>
+          <span class="ct-stat-val">{{ d.get('count', 0) }}</span>
+        </div>
+        <div class="ct-stat">
+          <span class="ct-stat-label">% Views</span>
+          <span class="ct-stat-val" style="color:{{ col }}">{{ d.get('pct_views', 0) }}%</span>
+        </div>
+        <div class="ct-stat">
+          <span class="ct-stat-label">Avg ER</span>
+          <span class="ct-stat-val">{{ d.get('avg_er', 0) }}%</span>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bg">
+            <div class="progress-fill" style="width:{{ d.get('pct_views', 0) }}%;background:{{ col }}"></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TOP RANKINGS — TABS
+══════════════════════════════════════════ -->
+<p class="st">Top Rankings</p>
+
+<!-- ── VN TABS ── -->
+<div class="card card-p0" style="margin-bottom:14px">
+  <div style="padding:14px 18px 0;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center">
+    <strong>🇻🇳 Vietnam</strong>
+    <span class="badge bvn">by views gain</span>
+  </div>
+  <div class="tab-bar" id="vn-tabs">
+    <button class="tab-btn active" onclick="switchTab('vn','all',this)">🏆 All Top 10</button>
+    <button class="tab-btn" onclick="switchTab('vn','video',this)">🎬 Video</button>
+    <button class="tab-btn" onclick="switchTab('vn','stream',this)">🔴 Stream</button>
+    <button class="tab-btn" onclick="switchTab('vn','shorts',this)">⚡ Shorts</button>
+  </div>
+
+  <div id="vn-all" class="tab-pane active">
+    {{ render_video_table(top_vn, 'vn') }}
+  </div>
+  <div id="vn-video" class="tab-pane">
+    {{ render_video_table(top_vn_video, 'vn') }}
+  </div>
+  <div id="vn-stream" class="tab-pane">
+    {{ render_video_table(top_vn_stream, 'vn') }}
+  </div>
+  <div id="vn-shorts" class="tab-pane">
+    {{ render_video_table(top_vn_shorts, 'vn') }}
+  </div>
+</div>
+
+<!-- ── GLOBAL TABS ── -->
+<div class="card card-p0" style="margin-bottom:14px">
+  <div style="padding:14px 18px 0;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center">
+    <strong>🌐 Global</strong>
+    <span class="badge bgl">by views gain</span>
+  </div>
+  <div class="tab-bar" id="gl-tabs">
+    <button class="tab-btn active-gl active" onclick="switchTab('gl','all',this,'active-gl')">🏆 All Top 10</button>
+    <button class="tab-btn" onclick="switchTab('gl','video',this,'active-gl')">🎬 Video</button>
+    <button class="tab-btn" onclick="switchTab('gl','stream',this,'active-gl')">🔴 Stream</button>
+  </div>
+  <div id="gl-all" class="tab-pane active">
+    {{ render_video_table(top_global, 'gl') }}
+  </div>
+  <div id="gl-video" class="tab-pane">
+    {{ render_video_table(top_gl_video, 'gl') }}
+  </div>
+  <div id="gl-stream" class="tab-pane">
+    {{ render_video_table(top_gl_stream, 'gl') }}
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CATEGORY LEADERBOARD
+══════════════════════════════════════════ -->
+<p class="st">Category Leaderboard — top lĩnh vực hôm nay</p>
+<div class="g2" style="margin-bottom:14px">
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <strong>🇻🇳 Vietnam</strong>
+      <span class="badge bvn">8 categories</span>
+    </div>
+    <div id="cat-vn-list">
+      <!-- rendered by JS from cat_perf_vn_json -->
+      <div class="empty">Loading…</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <strong>🌐 Global</strong>
+      <span class="badge bgl">8 categories</span>
+    </div>
+    <div id="cat-global-list">
+      <div class="empty">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     INTRADAY + TREND CHARTS
+══════════════════════════════════════════ -->
+<p class="st"><span class="live-dot"></span>&nbsp;Intraday Views · từng giờ hôm nay</p>
+<div class="g2" style="margin-bottom:14px">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <strong>🇻🇳 VN — Views/giờ</strong>
+      <span style="font-size:11px;color:var(--text2)">{{ last_updated_ts }}</span>
+    </div>
+    <div class="ch"><canvas id="cIntradayVN"></canvas></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <strong>🌐 Global — Views/giờ</strong>
+      <span style="font-size:11px;color:var(--text2)">hourly snapshot</span>
+    </div>
+    <div class="ch"><canvas id="cIntradayGlobal"></canvas></div>
+  </div>
+</div>
+
+<p class="st">Xu hướng 30 ngày</p>
+<div class="g2" style="margin-bottom:14px">
+  <div class="card">
+    <div style="margin-bottom:12px"><strong>🇻🇳 VN — Daily Views Gain</strong></div>
+    <div class="ch"><canvas id="cTrendVN"></canvas></div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:12px"><strong>🌐 Global — Daily Views Gain</strong></div>
+    <div class="ch"><canvas id="cTrendGlobal"></canvas></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     WoW + MONTHLY + POST TIME
+══════════════════════════════════════════ -->
+<div class="g3" style="margin-bottom:14px">
+  <div class="card">
+    <div style="margin-bottom:12px"><strong>📊 Week-over-Week</strong></div>
+    <div class="ch-sm"><canvas id="cWoW"></canvas></div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:12px"><strong>📅 Monthly VN vs Global</strong></div>
+    <div class="ch-sm"><canvas id="cMonthly"></canvas></div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:12px"><strong>🕐 Giờ đăng tối ưu (VN)</strong></div>
+    <div class="ch-sm"><canvas id="cPostTime"></canvas></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HOT RIGHT NOW + MOMENTUM
+══════════════════════════════════════════ -->
+<p class="st"><span class="live-dot"></span>&nbsp;Hot Right Now · tăng mạnh nhất 2h qua</p>
+<div class="g2" style="margin-bottom:14px">
+  <div class="card card-p0">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);
+      display:flex;justify-content:space-between;align-items:center">
+      <strong>🇻🇳 Vietnam</strong>
+      <span class="badge bvn">Δviews / 1h</span>
+    </div>
+    {% if hot_vn %}
+      {% for v in hot_vn %}
+      <div class="hot-row">
+        <span class="hot-rk">{{ loop.index }}</span>
+        {% if v.thumbnail %}<img src="{{ v.thumbnail }}" class="hot-th" loading="lazy" alt="">
+        {% else %}<div class="hot-th"></div>{% endif %}
+        <div class="hot-inf">
+          <a href="{{ v.yt_url }}" target="_blank" rel="noopener">
+            <div class="hot-t">{{ v.title }}</div>
+          </a>
+          <div class="hot-m">
+            <span class="mb mb-{{ v.momentum }}">{{ v.momentum }}</span>
+            <span class="ct-pill ct-{{ v.content_type }}" style="margin-left:4px">{{ v.content_type }}</span>
+            &nbsp;{{ v.category }}
+          </div>
+        </div>
+        <div class="hot-d" style="color:var(--vn)">+{{ "{:,.0f}".format(v.views_delta_1h or 0) }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">Chưa có hourly data<br><small>Cần chạy <code>hourly.yml</code> ít nhất 1 lần</small></div>
+    {% endif %}
+  </div>
+
+  <div class="card card-p0">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);
+      display:flex;justify-content:space-between;align-items:center">
+      <strong>🌐 Global</strong>
+      <span class="badge bgl">Δviews / 1h</span>
+    </div>
+    {% if hot_global %}
+      {% for v in hot_global %}
+      <div class="hot-row">
+        <span class="hot-rk">{{ loop.index }}</span>
+        {% if v.thumbnail %}<img src="{{ v.thumbnail }}" class="hot-th" loading="lazy" alt="">
+        {% else %}<div class="hot-th"></div>{% endif %}
+        <div class="hot-inf">
+          <a href="{{ v.yt_url }}" target="_blank" rel="noopener">
+            <div class="hot-t">{{ v.title }}</div>
+          </a>
+          <div class="hot-m">
+            <span class="mb mb-{{ v.momentum }}">{{ v.momentum }}</span>
+            <span class="ct-pill ct-{{ v.content_type }}" style="margin-left:4px">{{ v.content_type }}</span>
+          </div>
+        </div>
+        <div class="hot-d" style="color:var(--global)">+{{ "{:,.0f}".format(v.views_delta_1h or 0) }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">Chưa có hourly data</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MOMENTUM STATUS
+══════════════════════════════════════════ -->
+<p class="st">Momentum — trạng thái tăng trưởng</p>
+<div class="g2" style="margin-bottom:14px">
+  {% for stream, mom, col in [('🇻🇳 Vietnam', momentum_vn, 'vn'), ('🌐 Global', momentum_global, 'gl')] %}
+  <div class="card">
+    <div style="margin-bottom:12px"><strong>{{ stream }}</strong></div>
+    <div class="mom-grid">
+      <div class="mom-cell">
+        <div class="mom-num" style="color:var(--vn)">{{ mom.accelerating }}</div>
+        <div class="mom-lbl">↑↑ Accelerating</div>
+      </div>
+      <div class="mom-cell">
+        <div class="mom-num" style="color:var(--amber)">{{ mom.peaking }}</div>
+        <div class="mom-lbl">▲ Peaking</div>
+      </div>
+      <div class="mom-cell">
+        <div class="mom-num" style="color:var(--orange)">{{ mom.decelerating }}</div>
+        <div class="mom-lbl">↓ Decelerating</div>
+      </div>
+      <div class="mom-cell">
+        <div class="mom-num" style="color:var(--text3)">{{ mom.fading }}</div>
+        <div class="mom-lbl">→ Fading</div>
+      </div>
+      <div class="mom-cell">
+        <div class="mom-num" style="color:var(--text3)">{{ mom.new }}</div>
+        <div class="mom-lbl">◎ New</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ══════════════════════════════════════════
+     GEMINI AI INSIGHTS
+══════════════════════════════════════════ -->
+<p class="st">Phân tích AI — Gemini 2.5 Flash</p>
+<div class="g2" style="margin-bottom:14px">
 
   <div class="card ai-card">
-    <div class="ai-header">
-      <span class="ai-header-icon">✦</span>
+    <div class="ai-hdr">
+      <div class="ai-dot"></div>
       <strong>Tóm tắt tuần này</strong>
-      <span class="badge badge-ai">Gemini 2.5 Flash</span>
+      <span class="badge bai" style="margin-left:auto">Gemini 2.5</span>
     </div>
-    <div class="ai-narrative">
-      Tuần 16/2026 ghi nhận tăng trưởng views mạnh tại thị trường VN (+18% WoW), đặc biệt nhóm <strong style="color:var(--text)">Shorts</strong> đạt đỉnh engagement rate 5.1%. Nội dung <em>công nghệ AI</em> và <em>tài chính cá nhân</em> tiếp tục dẫn đầu lượt xem, trong khi gaming giảm nhẹ 4% so với tuần trước.
-      Ở thị trường Global, các kênh tier 1 (>10M subs) ghi nhận views/video giảm trung bình 7% — phản ánh xu hướng phân tán sang nền tảng ngắn.
-    </div>
-    <div class="ai-forecast">
-      <span style="color:var(--accent);font-weight:600">📈 Dự báo tuần tới:</span>
-      Views VN dự kiến duy trì 4.5–5.2M/ngày. Nội dung liên quan WWDC 2026 và SEA Games sẽ spike mạnh cuối tuần.
-    </div>
+    {% if weekly_narrative %}
+      <div class="ai-body">{{ weekly_narrative }}</div>
+      {% if trend_forecast %}
+      <div class="ai-forecast">
+        <span style="color:var(--amber);font-weight:600">📈 Dự báo tuần tới:&nbsp;</span>{{ trend_forecast }}
+      </div>
+      {% endif %}
+      {% if gemini_generated_at %}
+      <div class="ai-meta">Generated: {{ gemini_generated_at[:16]|replace("T"," ") }} UTC</div>
+      {% endif %}
+    {% else %}
+      <div class="empty">Chưa có insight — chạy <code>daily.yml</code> để tạo<br>
+        <small style="color:var(--text3)">Hourly run tự load insights cũ từ Supabase khi có</small>
+      </div>
+    {% endif %}
   </div>
 
-  <div class="card">
-    <div style="margin-bottom:14px"><strong>🚨 Anomalies phát hiện</strong></div>
-
-    <div style="padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
-      margin-bottom:8px;border-left:3px solid var(--red)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-size:12px;font-weight:600;color:var(--text)">Views Spike</span>
-        <span class="badge badge-red">high</span>
-      </div>
-      <div style="font-size:12px;color:var(--text2)">Kênh TechVN tăng 1,240% views trong 6h — nghi do viral TikTok cross-post</div>
+  <div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="margin-bottom:10px"><strong>🚨 Anomalies</strong></div>
+      {% if anomalies %}
+        {% for a in anomalies %}
+        <div class="anom {{ a.severity }}">
+          <div class="anom-title">
+            <span>{{ (a.type or '')|replace('_',' ')|title }}</span>
+            <span class="badge {% if a.severity=='high' %}bred{% else %}bamb{% endif %}">{{ a.severity }}</span>
+          </div>
+          <div class="anom-desc">{{ a.description }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty" style="padding:14px">Không có anomaly</div>
+      {% endif %}
     </div>
-
-    <div style="padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
-      margin-bottom:8px;border-left:3px solid var(--accent)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-size:12px;font-weight:600;color:var(--text)">Engagement Drop</span>
-        <span class="badge badge-amber">medium</span>
-      </div>
-      <div style="font-size:12px;color:var(--text2)">3 kênh gaming VN có ER giảm >40% WoW — có thể liên quan thuật toán</div>
-    </div>
-
-    <div style="padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
-      border-left:3px solid var(--teal)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-size:12px;font-weight:600;color:var(--text)">New Channel</span>
-        <span class="badge badge-ai">low</span>
-      </div>
-      <div style="font-size:12px;color:var(--text2)">2 kênh mới lọt top 20 VN lần đầu tiên — cả hai đều thuộc niche tài chính</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION 3: TREND CHARTS
-════════════════════════════════════ -->
-<p class="section-title">Xu hướng views (30 ngày)</p>
-<div class="grid grid-2" style="margin-bottom:20px">
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <strong>🇻🇳 Vietnam — Daily Views Gain</strong>
-      <span class="badge badge-vn">30 ngày</span>
-    </div>
-    <div class="chart-wrap">
-      <canvas id="chartTrendVN"></canvas>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <strong>🌐 Global — Daily Views Gain</strong>
-      <span class="badge badge-global">30 ngày</span>
-    </div>
-    <div class="chart-wrap">
-      <canvas id="chartTrendGlobal"></canvas>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION 4: WoW + MONTHLY
-════════════════════════════════════ -->
-<div class="grid grid-2" style="margin-bottom:20px">
-
-  <div class="card">
-    <div style="margin-bottom:14px"><strong>📊 Week-over-Week Growth</strong></div>
-    <div class="chart-wrap">
-      <canvas id="chartWoW"></canvas>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="margin-bottom:14px"><strong>📅 Monthly Views Gained (VN vs Global)</strong></div>
-    <div class="chart-wrap">
-      <canvas id="chartMonthly"></canvas>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION 5: ENGAGEMENT + CATEGORY
-════════════════════════════════════ -->
-<div class="grid grid-3" style="margin-bottom:20px">
-
-  <div class="card">
-    <div style="margin-bottom:14px"><strong>💡 Engagement Rate by Type</strong></div>
-
-    <div style="margin-bottom:12px">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">VN</div>
-      <div class="er-row">
-        <div class="er-label"><span class="ct-badge ct-video">video</span></div>
-        <div class="er-bar-wrap"><div class="er-bar" style="width:37%;background:var(--vn)"></div></div>
-        <div class="er-val">3.7%</div>
-      </div>
-      <div class="er-row">
-        <div class="er-label"><span class="ct-badge ct-stream">stream</span></div>
-        <div class="er-bar-wrap"><div class="er-bar" style="width:29%;background:var(--vn)"></div></div>
-        <div class="er-val">2.9%</div>
-      </div>
-      <div class="er-row">
-        <div class="er-label"><span class="ct-badge ct-shorts">shorts</span></div>
-        <div class="er-bar-wrap"><div class="er-bar" style="width:51%;background:var(--vn)"></div></div>
-        <div class="er-val">5.1%</div>
-      </div>
-    </div>
-
-    <div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Global</div>
-      <div class="er-row">
-        <div class="er-label"><span class="ct-badge ct-video">video</span></div>
-        <div class="er-bar-wrap"><div class="er-bar" style="width:24%;background:var(--global)"></div></div>
-        <div class="er-val">2.4%</div>
-      </div>
-      <div class="er-row">
-        <div class="er-label"><span class="ct-badge ct-stream">stream</span></div>
-        <div class="er-bar-wrap"><div class="er-bar" style="width:18%;background:var(--global)"></div></div>
-        <div class="er-val">1.8%</div>
-      </div>
-      <div class="er-row">
-        <div class="er-label"><span class="ct-badge ct-shorts">shorts</span></div>
-        <div class="er-bar-wrap"><div class="er-bar" style="width:41%;background:var(--global)"></div></div>
-        <div class="er-val">4.1%</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="margin-bottom:14px"><strong>🥧 Category Distribution (VN)</strong></div>
-    <div style="position:relative;height:180px">
-      <canvas id="chartCatVN"></canvas>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="margin-bottom:14px"><strong>🥧 Category Distribution (Global)</strong></div>
-    <div style="position:relative;height:180px">
-      <canvas id="chartCatGlobal"></canvas>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION 6: OPTIMAL POST TIME
-════════════════════════════════════ -->
-<p class="section-title">Giờ đăng bài tối ưu (30 ngày · theo avg views gain)</p>
-<div class="card" style="margin-bottom:20px">
-  <div class="chart-wrap">
-    <canvas id="chartPostTime"></canvas>
   </div>
 </div>
 
-<!-- ════════════════════════════════════
-     SECTION 7: TOP VIDEOS
-════════════════════════════════════ -->
-<p class="section-title">Top 10 video hôm nay</p>
-<div class="grid grid-2" style="margin-bottom:20px">
-
-  <div class="card" style="padding:0">
-    <div style="padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;
-      justify-content:space-between;align-items:center">
-      <strong>🇻🇳 Vietnam</strong>
-      <span class="badge badge-vn">by views gain</span>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="video-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Thumbnail</th>
-            <th>Video</th>
-            <th>Type</th>
-            <th>Views Gain</th>
-            <th>ER</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="num">1</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#16532d,#22c55e)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Tôi đã dùng AI để kiếm 100 triệu trong 30 ngày</div>
-              </a>
-              <div class="video-cat">Tài chính cá nhân</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+482,300</span></td>
-            <td><span class="num">5.2%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">2</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#1e3a6e,#3b82f6)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Review iPhone 17 Ultra sau 3 tháng sử dụng</div>
-              </a>
-              <div class="video-cat">Công nghệ</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+341,800</span></td>
-            <td><span class="num">4.1%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">3</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#78400b,#f59e0b)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">#shorts Mẹo nấu ăn cực nhanh mà ngon</div>
-              </a>
-              <div class="video-cat">Ẩm thực</div>
-            </td>
-            <td><span class="ct-badge ct-shorts">shorts</span></td>
-            <td><span class="num-gain">+298,450</span></td>
-            <td><span class="num">6.8%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">4</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#3b1f7a,#a855f7)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">LIVE: Rank Challenger — Road to Top 1 VN</div>
-              </a>
-              <div class="video-cat">Gaming / LMHT</div>
-            </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+214,700</span></td>
-            <td><span class="num">3.9%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">5</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#164e63,#14b8a6)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">Sự thật về bong bóng bất động sản 2026</div>
-              </a>
-              <div class="video-cat">Kinh tế / BĐS</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+198,220</span></td>
-            <td><span class="num">4.7%</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card" style="padding:0">
-    <div style="padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;
-      justify-content:space-between;align-items:center">
-      <strong>🌐 Global</strong>
-      <span class="badge badge-global">by views gain</span>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="video-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Thumbnail</th>
-            <th>Video</th>
-            <th>Type</th>
-            <th>Views Gain</th>
-            <th>ER</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="num">1</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#450a0a,#ef4444)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">OpenAI o4 vs Gemini 2.5 Ultra — The Final Test</div>
-              </a>
-              <div class="video-cat">AI / Technology</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+2,841,000</span></td>
-            <td><span class="num">4.9%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">2</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#1e3a6e,#3b82f6)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">The Real Reason Nvidia Stock Is Crashing</div>
-              </a>
-              <div class="video-cat">Finance</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+1,920,400</span></td>
-            <td><span class="num">3.6%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">3</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#78400b,#f59e0b)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">#shorts This dog learned to open the fridge 😂</div>
-              </a>
-              <div class="video-cat">Entertainment / Animals</div>
-            </td>
-            <td><span class="ct-badge ct-shorts">shorts</span></td>
-            <td><span class="num-gain">+1,654,800</span></td>
-            <td><span class="num">7.2%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">4</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#3b1f7a,#a855f7)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">I Spent $10,000 Testing Every AI Coding Tool</div>
-              </a>
-              <div class="video-cat">Programming</div>
-            </td>
-            <td><span class="ct-badge ct-video">video</span></td>
-            <td><span class="num-gain">+1,340,100</span></td>
-            <td><span class="num">5.5%</span></td>
-          </tr>
-          <tr>
-            <td><span class="num">5</span></td>
-            <td><div class="video-thumb" style="background:linear-gradient(135deg,#164e63,#14b8a6)"></div></td>
-            <td class="video-title-wrap">
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="video-link">
-                <div class="video-title">LIVE: GTA VI Launch Day Gameplay — Hour 1</div>
-              </a>
-              <div class="video-cat">Gaming</div>
-            </td>
-            <td><span class="ct-badge ct-stream">stream</span></td>
-            <td><span class="num-gain">+1,107,500</span></td>
-            <td><span class="num">3.1%</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION 8: VIRAL ALERTS
-════════════════════════════════════ -->
-<p class="section-title">🚨 Viral Early Warning (Virality Index ≥ 5×)</p>
-<div class="grid grid-2" style="margin-bottom:20px">
+<!-- ══════════════════════════════════════════
+     CONTENT GAP + RECOMMENDATIONS
+══════════════════════════════════════════ -->
+<p class="st">Cơ hội & Khuyến nghị từ AI</p>
+<div class="g2" style="margin-bottom:14px">
 
   <div class="card">
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between">
-      <strong>🇻🇳 Vietnam Viral</strong>
-      <span class="badge badge-red">3 videos</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <strong>🌏 Content Gap — Global chưa có ở VN</strong>
+      <span class="badge bai">Gemini</span>
     </div>
-    <div class="viral-item">
-      <div class="viral-rank">1</div>
-      <div class="viral-info">
-        <div class="viral-title">Tôi đã dùng AI để kiếm 100 triệu trong 30 ngày</div>
-        <div class="viral-meta">Views gain hôm nay: +482,300 · Baseline: 38,200/ngày</div>
+    {% if content_gaps %}
+      {% for g in content_gaps %}
+      <div class="gap-row">
+        <div class="gap-score">{{ g.opportunity_score }}</div>
+        <div>
+          <div class="gap-topic">{{ g.topic }}</div>
+          <div class="gap-ev">{{ g.evidence }}</div>
+        </div>
       </div>
-      <div class="vi-badge">12.6×</div>
-    </div>
-    <div class="viral-item">
-      <div class="viral-rank">2</div>
-      <div class="viral-info">
-        <div class="viral-title">Sự thật về bong bóng bất động sản 2026</div>
-        <div class="viral-meta">Views gain hôm nay: +198,220 · Baseline: 28,400/ngày</div>
-      </div>
-      <div class="vi-badge">7.0×</div>
-    </div>
-    <div class="viral-item">
-      <div class="viral-rank">3</div>
-      <div class="viral-info">
-        <div class="viral-title">#shorts Mẹo nấu ăn cực nhanh mà ngon</div>
-        <div class="viral-meta">Views gain hôm nay: +298,450 · Baseline: 51,200/ngày</div>
-      </div>
-      <div class="vi-badge">5.8×</div>
-    </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">Chưa có data — cần chạy daily.yml</div>
+    {% endif %}
   </div>
 
   <div class="card">
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between">
-      <strong>🌐 Global Viral</strong>
-      <span class="badge badge-red">2 videos</span>
-    </div>
-    <div class="viral-item">
-      <div class="viral-rank">1</div>
-      <div class="viral-info">
-        <div class="viral-title">OpenAI o4 vs Gemini 2.5 Ultra — The Final Test</div>
-        <div class="viral-meta">Views gain: +2,841,000 · Category: AI / Technology</div>
-      </div>
-      <div class="vi-badge">19.4×</div>
-    </div>
-    <div class="viral-item">
-      <div class="viral-rank">2</div>
-      <div class="viral-info">
-        <div class="viral-title">#shorts This dog learned to open the fridge 😂</div>
-        <div class="viral-meta">Views gain: +1,654,800 · Category: Entertainment</div>
-      </div>
-      <div class="vi-badge">8.1×</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════
-     SECTION 9: CONTENT GAP + RECOMMENDATIONS
-════════════════════════════════════ -->
-<p class="section-title">Cơ hội & Khuyến nghị</p>
-<div class="grid grid-2" style="margin-bottom:20px">
-
-  <div class="card">
-    <div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
-      <strong>🌏 Content Gap — Trend Global chưa có ở VN</strong>
-      <span class="badge badge-global">Gemini</span>
-    </div>
-    <div class="gap-item">
-      <div class="gap-score">9</div>
-      <div class="gap-info">
-        <div class="gap-topic">AI Coding Assistants — So sánh thực chiến</div>
-        <div class="gap-evidence">GitHub Copilot vs Cursor vs Claude Code trending mạnh ở US, chưa có kênh VN khai thác sâu</div>
-      </div>
-    </div>
-    <div class="gap-item">
-      <div class="gap-score">8</div>
-      <div class="gap-info">
-        <div class="gap-topic">Personal Finance với lạm phát 2026</div>
-        <div class="gap-evidence">40+ video >1M views toàn cầu về hedge lạm phát, VN chỉ có 3 video cũ dưới 100K</div>
-      </div>
-    </div>
-    <div class="gap-item">
-      <div class="gap-score">7</div>
-      <div class="gap-info">
-        <div class="gap-topic">GTA VI Review & Tips (tiếng Việt)</div>
-        <div class="gap-evidence">Game vừa ra, demand tìm kiếm tiếng Việt tăng 1,400% nhưng supply gần như bằng 0</div>
-      </div>
-    </div>
-    <div class="gap-item">
-      <div class="gap-score">6</div>
-      <div class="gap-info">
-        <div class="gap-topic">SEA Games 2026 Preview & Analysis</div>
-        <div class="gap-evidence">VN chuẩn bị đăng cai SEA Games, nội dung phân tích thể thao đang thiếu hụt trầm trọng</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <strong>💡 Recommendations</strong>
-      <span class="badge badge-ai">Gemini</span>
+      <span class="badge bai">Gemini</span>
     </div>
-    <div class="rec-item high">
-      <div class="rec-action">Sản xuất ngay video "AI Coding Tool So Sánh 2026"</div>
-      <div class="rec-reason">Niche chưa có người khai thác, search volume tăng 340% MoM, monetization cao</div>
-      <div class="rec-meta">
-        <span class="badge badge-red">high</span>
-        <span class="badge" style="background:var(--bg3);color:var(--text2)">Kênh Tech</span>
+    {% if recommendations %}
+      {% for r in recommendations %}
+      <div class="rec {{ r.priority }}">
+        <div class="rec-action">{{ r.action }}</div>
+        <div class="rec-reason">{{ r.reasoning }}</div>
+        <div class="rec-footer">
+          <span class="badge {% if r.priority=='high' %}bred{% elif r.priority=='medium' %}bamb{% else %}bai{% endif %}">{{ r.priority }}</span>
+          <span class="badge bgr">{{ r.target }}</span>
+        </div>
       </div>
-    </div>
-    <div class="rec-item medium">
-      <div class="rec-action">Tăng tần suất Shorts lên 2 video/ngày trong tuần này</div>
-      <div class="rec-reason">ER Shorts đang ở đỉnh 5.1%, algorithm đang boost loại nội dung này</div>
-      <div class="rec-meta">
-        <span class="badge badge-amber">medium</span>
-        <span class="badge" style="background:var(--bg3);color:var(--text2)">Tất cả kênh</span>
-      </div>
-    </div>
-    <div class="rec-item low">
-      <div class="rec-action">Review lại upload schedule — dịch sang khung 20:00–21:00</div>
-      <div class="rec-reason">Phân tích post time cho thấy khung giờ tối có avg views gain cao hơn 28%</div>
-      <div class="rec-meta">
-        <span class="badge badge-ai">low</span>
-        <span class="badge" style="background:var(--bg3);color:var(--text2)">VN stream</span>
-      </div>
-    </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">Chưa có data — cần chạy daily.yml</div>
+    {% endif %}
   </div>
-
 </div>
 
-<!-- ════════════════════════════════════
-     SECTION 10: TREND LAG RADAR
-════════════════════════════════════ -->
-<p class="section-title">🕐 Trend Lag Radar — Global → VN</p>
-<div class="card" style="margin-bottom:20px">
-  <div class="grid grid-3" style="margin-bottom:16px">
-    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
-      <div style="font-size:24px;font-weight:700;color:var(--global)">23</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics chỉ có ở Global</div>
+<!-- ══════════════════════════════════════════
+     VIRAL ALERTS
+══════════════════════════════════════════ -->
+{% if viral_vn or viral_global %}
+<p class="st">🚨 Viral Early Warning — Virality Index ≥ 5×</p>
+<div class="g2" style="margin-bottom:14px">
+  {% for label, vlist, col in [('🇻🇳 Vietnam', viral_vn, 'var(--red)'), ('🌐 Global', viral_global, 'var(--red)')] %}
+  <div class="card">
+    <div style="margin-bottom:10px;display:flex;justify-content:space-between">
+      <strong>{{ label }}</strong>
+      <span class="badge bred">{{ vlist|length }} videos</span>
     </div>
-    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
-      <div style="font-size:24px;font-weight:700;color:var(--accent)">11</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics overlap VN & Global</div>
+    {% for v in vlist %}
+    <div class="viral-row">
+      <div class="viral-info">
+        <div class="viral-title">{{ v.title }}</div>
+        <div class="viral-meta">+{{ "{:,.0f}".format(v.views_gain or 0) }} views · baseline {{ "{:,.0f}".format((v.avg_baseline or 0)|int) }}/ngày</div>
+      </div>
+      <div class="vi-num">{{ v.virality_index }}×</div>
     </div>
-    <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
-      <div style="font-size:24px;font-weight:700;color:var(--vn)">8</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:4px">Topics chỉ có ở VN</div>
+    {% else %}
+    <div class="empty" style="padding:12px">Không có viral hôm nay</div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ══════════════════════════════════════════
+     TREND LAG
+══════════════════════════════════════════ -->
+{% if trend_lag and trend_lag.lag_tags %}
+<p class="st">🕐 Trend Lag Radar — Global → VN</p>
+<div class="card" style="margin-bottom:14px">
+  <div class="lag-stat">
+    <div class="lag-box">
+      <div class="n" style="color:var(--global)">{{ trend_lag.global_only }}</div>
+      <div class="l">Chỉ Global</div>
+    </div>
+    <div class="lag-box">
+      <div class="n" style="color:var(--amber)">{{ trend_lag.overlap }}</div>
+      <div class="l">Overlap</div>
+    </div>
+    <div class="lag-box">
+      <div class="n" style="color:var(--vn)">{{ trend_lag.vn_only }}</div>
+      <div class="l">Chỉ VN</div>
     </div>
   </div>
-  <div style="font-size:12px;color:var(--text2);margin-bottom:8px">
-    Topics đang trending ở Global nhưng chưa xuất hiện tại VN (cơ hội nội dung):
+  <div style="font-size:11.5px;color:var(--text2);margin-bottom:10px">
+    Topics hot ở Global nhưng chưa xuất hiện tại VN (cơ hội làm content):
   </div>
   <div class="lag-tags">
-    <span class="lag-tag"># GTA VI</span>
-    <span class="lag-tag"># AI agents 2026</span>
-    <span class="lag-tag"># quantum computing</span>
-    <span class="lag-tag"># WWDC 2026</span>
-    <span class="lag-tag"># inflation hedge</span>
-    <span class="lag-tag"># humanoid robots</span>
-    <span class="lag-tag"># deepfake detection</span>
-    <span class="lag-tag"># weight loss GLP-1</span>
-    <span class="lag-tag"># space tourism</span>
-    <span class="lag-tag"># coding with AI</span>
-    <span class="lag-tag"># creator economy 2026</span>
-    <span class="lag-tag"># longevity science</span>
+    {% for tag in trend_lag.lag_tags %}<span class="lag-tag">#{{ tag }}</span>{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- ══════════════════════════════════════════
+     CATEGORY + ER CHARTS
+══════════════════════════════════════════ -->
+<p class="st">Phân tích chi tiết</p>
+<div class="g3" style="margin-bottom:14px">
+  <div class="card">
+    <div style="margin-bottom:10px"><strong>🥧 Category (VN)</strong></div>
+    <div class="ch-sm"><canvas id="cCatVN"></canvas></div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:10px"><strong>🥧 Category (Global)</strong></div>
+    <div class="ch-sm"><canvas id="cCatGlobal"></canvas></div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:10px"><strong>💡 ER by Type (VN)</strong></div>
+    {% for ct, er in er_vn.items() %}
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span class="ct-pill ct-{{ ct }}">{{ ct }}</span>
+        <span style="font-size:12px;font-weight:600">{{ er }}%</span>
+      </div>
+      <div class="progress-bg">
+        <div class="progress-fill" style="width:{{ [[er|float * 8, 100]|min, 0]|max }}%;
+          background:{% if ct=='stream' %}var(--purple){% elif ct=='shorts' %}var(--amber){% else %}var(--global){% endif %}">
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <div style="margin-top:14px;font-size:11px;color:var(--text2)">Global</div>
+    {% for ct, er in er_global.items() %}
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span class="ct-pill ct-{{ ct }}">{{ ct }}</span>
+        <span style="font-size:12px;font-weight:600">{{ er }}%</span>
+      </div>
+      <div class="progress-bg">
+        <div class="progress-fill" style="width:{{ [[er|float * 8, 100]|min, 0]|max }}%;background:var(--global)"></div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-  <div>YouTube Analytics Pipeline · Tự động cập nhật hàng ngày lúc 06:00 ICT</div>
+  <div>YouTube Analytics Pipeline · Hourly crawl + Daily Gemini analysis</div>
   <div style="margin-top:4px">
-    Dữ liệu từ <strong>YouTube Data API v3</strong> ·
-    Phân tích bởi <strong>Gemini 2.5 Flash</strong> ·
-    Lưu trữ tại <strong>Supabase</strong> ·
-    Deploy qua <strong>GitHub Actions → Pages</strong>
+    <strong>YouTube Data API v3</strong> · <strong>Gemini 2.5 Flash</strong> ·
+    <strong>Supabase</strong> · <strong>GitHub Actions → Pages</strong>
   </div>
-  <div style="margin-top:4px;color:var(--text3)">21/04/2026 06:00 ICT</div>
+  <div style="margin-top:4px;color:var(--text3)">{{ generated_at }}</div>
 </div>
 
-</div><!-- /wrapper -->
+</div><!-- /wrap -->
 
-<!-- ════════════════════════════════════
-     CHARTS INITIALIZATION
-════════════════════════════════════ -->
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
 <script>
-const COLORS = {
-  vn:      '#22c55e', vnAlpha:  'rgba(34,197,94,.15)',
-  global:  '#3b82f6', globalAlpha: 'rgba(59,130,246,.15)',
-  amber:   '#f59e0b', amberAlpha:  'rgba(245,158,11,.15)',
-  purple:  '#a855f7', teal: '#14b8a6', red: '#ef4444',
-  text2:   '#9ea8c4', border: '#2a2f45', bg3: '#1e2336',
+// ── Utils ─────────────────────────────────────────────────
+const C = {
+  vn:'#10b981', vnA:'rgba(16,185,129,.15)',
+  gl:'#3b82f6', glA:'rgba(59,130,246,.15)',
+  amb:'#f59e0b', pur:'#a855f7', teal:'#14b8a6',
+  red:'#ef4444', ora:'#f97316',
+  txt2:'#8994b8', border:'#252d45', bg3:'#181f35',
 };
-
-const CHART_DEFAULTS = {
-  responsive: true, maintainAspectRatio: false,
-  plugins: {
-    legend: { labels: { color: COLORS.text2, font: { size: 11 }, boxWidth: 10, padding: 12 } },
-    tooltip: {
-      backgroundColor: '#1e2336', borderColor: '#2a2f45', borderWidth: 1,
-      titleColor: '#e8eaf0', bodyColor: '#9ea8c4', padding: 10,
-    }
+const PALETTE = ['#10b981','#3b82f6','#f59e0b','#a855f7','#14b8a6',
+                 '#ef4444','#f97316','#06b6d4','#8b5cf6','#ec4899'];
+const DEF = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{
+    legend:{labels:{color:C.txt2,font:{size:11},boxWidth:10,padding:10}},
+    tooltip:{backgroundColor:'#1e2740',borderColor:C.border,borderWidth:1,
+      titleColor:'#dde4f4',bodyColor:C.txt2,padding:10}
   },
-  scales: {
-    x: { grid: { color: COLORS.border }, ticks: { color: COLORS.text2, font: { size: 11 } } },
-    y: { grid: { color: COLORS.border }, ticks: { color: COLORS.text2, font: { size: 11 },
-      callback: v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v
-    } }
+  scales:{
+    x:{grid:{color:C.border},ticks:{color:C.txt2,font:{size:11}}},
+    y:{grid:{color:C.border},ticks:{color:C.txt2,font:{size:11},
+      callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}}
   }
 };
+const fmtD = d=>{const dt=new Date(d);return`${dt.getDate()}/${dt.getMonth()+1}`};
 
-// ── MOCK DATA ─────────────────────────────────────────
-function genDates(days) {
-  const arr = [];
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date('2026-04-21');
-    d.setDate(d.getDate() - i);
-    arr.push(`${d.getDate()}/${d.getMonth()+1}`);
-  }
-  return arr;
+// ── Tab switching ─────────────────────────────────────────
+function switchTab(prefix, id, btn, activeClass='active') {
+  document.querySelectorAll(`[id^="${prefix}-"]`).forEach(el=>{
+    if(el.classList.contains('tab-pane')) el.classList.remove('active');
+  });
+  document.getElementById(`${prefix}-${id}`).classList.add('active');
+  const bar = btn.closest('.tab-bar');
+  bar.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active','active-gl'));
+  btn.classList.add(activeClass);
 }
 
-function randArr(len, min, max) {
-  return Array.from({length: len}, () => Math.floor(Math.random() * (max - min) + min));
-}
-
-const dates30 = genDates(30);
-
-// ── TREND VN ──────────────────────────────────────────
-new Chart(document.getElementById('chartTrendVN'), {
-  type: 'line',
-  data: {
-    labels: dates30,
-    datasets: [{
-      label: 'Views Gain/ngày (VN)',
-      data: randArr(30, 3200000, 5800000),
-      borderColor: COLORS.vn, backgroundColor: COLORS.vnAlpha,
-      borderWidth: 2, pointRadius: 2, fill: true, tension: .4,
-    }]
-  },
-  options: CHART_DEFAULTS
+// ── Trend VN ─────────────────────────────────────────────
+const tVN = {{ trend_vn_json }};
+if(tVN.length) new Chart(document.getElementById('cTrendVN'),{
+  type:'line', data:{
+    labels:tVN.map(d=>fmtD(d.date)),
+    datasets:[{label:'Views Gain/ngày (VN)',data:tVN.map(d=>d.views),
+      borderColor:C.vn,backgroundColor:C.vnA,borderWidth:2,
+      pointRadius:2,fill:true,tension:.4}]
+  }, options:DEF
 });
 
-// ── TREND GLOBAL ──────────────────────────────────────
-new Chart(document.getElementById('chartTrendGlobal'), {
-  type: 'line',
-  data: {
-    labels: dates30,
-    datasets: [{
-      label: 'Views Gain/ngày (Global)',
-      data: randArr(30, 14000000, 22000000),
-      borderColor: COLORS.global, backgroundColor: COLORS.globalAlpha,
-      borderWidth: 2, pointRadius: 2, fill: true, tension: .4,
-    }]
-  },
-  options: CHART_DEFAULTS
+// ── Trend Global ──────────────────────────────────────────
+const tGL = {{ trend_global_json }};
+if(tGL.length) new Chart(document.getElementById('cTrendGlobal'),{
+  type:'line', data:{
+    labels:tGL.map(d=>fmtD(d.date)),
+    datasets:[{label:'Views Gain/ngày (Global)',data:tGL.map(d=>d.views),
+      borderColor:C.gl,backgroundColor:C.glA,borderWidth:2,
+      pointRadius:2,fill:true,tension:.4}]
+  }, options:DEF
 });
 
-// ── WOW CHART ─────────────────────────────────────────
-const wowTypes = ['video', 'stream', 'shorts'];
-new Chart(document.getElementById('chartWoW'), {
-  type: 'bar',
-  data: {
-    labels: wowTypes,
-    datasets: [
-      { label: 'VN Tuần này',    data: [2840000, 920000, 1470000], backgroundColor: COLORS.vn,     borderRadius: 4 },
-      { label: 'VN Tuần trước',  data: [2410000, 880000, 1100000], backgroundColor: 'rgba(34,197,94,.4)', borderRadius: 4 },
-      { label: 'Global Tuần này',data: [11200000,3400000,4800000], backgroundColor: COLORS.global, borderRadius: 4 },
-      { label: 'Global Tuần trước',data:[10500000,3100000,4200000],backgroundColor:'rgba(59,130,246,.4)',borderRadius:4},
+// ── WoW ──────────────────────────────────────────────────
+const wowD = {{ wow_json }};
+const wowTypes = [...new Set([...Object.keys(wowD.VN?.current||{}),
+                               ...Object.keys(wowD.Global?.current||{})])];
+new Chart(document.getElementById('cWoW'),{
+  type:'bar', data:{
+    labels:wowTypes,
+    datasets:[
+      {label:'VN này',data:wowTypes.map(t=>wowD.VN?.current?.[t]||0),backgroundColor:C.vn,borderRadius:4},
+      {label:'VN trước',data:wowTypes.map(t=>wowD.VN?.previous?.[t]||0),backgroundColor:C.vnA.replace('.15','.5'),borderRadius:4},
+      {label:'GL này',data:wowTypes.map(t=>wowD.Global?.current?.[t]||0),backgroundColor:C.gl,borderRadius:4},
+      {label:'GL trước',data:wowTypes.map(t=>wowD.Global?.previous?.[t]||0),backgroundColor:C.glA.replace('.15','.5'),borderRadius:4},
     ]
-  },
-  options: { ...CHART_DEFAULTS, scales: { ...CHART_DEFAULTS.scales } }
+  }, options:DEF
 });
 
-// ── MONTHLY CHART ─────────────────────────────────────
-const months = ['2025-11','2025-12','2026-01','2026-02','2026-03','2026-04'];
-new Chart(document.getElementById('chartMonthly'), {
-  type: 'bar',
-  data: {
-    labels: months,
-    datasets: [
-      { label: '🇻🇳 VN',     data: [98000000,112000000,104000000,118000000,131000000,142000000], backgroundColor: COLORS.vn,     borderRadius: 4 },
-      { label: '🌐 Global', data: [380000000,420000000,401000000,445000000,468000000,510000000], backgroundColor: COLORS.global, borderRadius: 4 }
+// ── Monthly ───────────────────────────────────────────────
+const mVN = {{ monthly_vn_json }}, mGL = {{ monthly_global_json }};
+const allM = [...new Set([...mVN.map(d=>d.month),...mGL.map(d=>d.month)])].sort();
+new Chart(document.getElementById('cMonthly'),{
+  type:'bar', data:{
+    labels:allM,
+    datasets:[
+      {label:'VN',data:allM.map(m=>mVN.find(d=>d.month===m)?.views||0),backgroundColor:C.vn,borderRadius:4},
+      {label:'Global',data:allM.map(m=>mGL.find(d=>d.month===m)?.views||0),backgroundColor:C.gl,borderRadius:4},
     ]
-  },
-  options: { ...CHART_DEFAULTS }
+  }, options:DEF
 });
 
-// ── POST TIME (VN) ────────────────────────────────────
-const postTimeData = {
-  0:80000, 1:45000, 2:30000, 3:22000, 4:25000, 5:38000,
-  6:95000, 7:140000, 8:180000, 9:210000, 10:230000, 11:260000,
-  12:310000, 13:290000, 14:275000, 15:280000, 16:310000, 17:340000,
-  18:410000, 19:450000, 20:510000, 21:480000, 22:380000, 23:210000
-};
-const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
-const maxPT = Math.max(...Object.values(postTimeData));
-new Chart(document.getElementById('chartPostTime'), {
-  type: 'bar',
-  data: {
-    labels: hours,
-    datasets: [{
-      label: '🇻🇳 VN — Avg Views Gain',
-      data: hours.map((_, i) => postTimeData[i] || 0),
-      backgroundColor: hours.map((_, i) => {
-        const v = postTimeData[i] || 0;
-        const alpha = maxPT > 0 ? 0.3 + (v/maxPT)*0.7 : 0.3;
-        return `rgba(34,197,94,${alpha.toFixed(2)})`;
+// ── Post Time ─────────────────────────────────────────────
+const ptVN = {{ post_time_vn_json }};
+const hrs = Array.from({length:24},(_,i)=>`${i}h`);
+new Chart(document.getElementById('cPostTime'),{
+  type:'bar', data:{
+    labels:hrs,
+    datasets:[{
+      label:'Avg Views Gain',
+      data:hrs.map((_,i)=>ptVN[String(i)]||0),
+      backgroundColor:hrs.map((_,i)=>{
+        const v=ptVN[String(i)]||0, mx=Math.max(...Object.values(ptVN));
+        return `rgba(16,185,129,${mx>0?(.3+v/mx*.7).toFixed(2):.3})`;
       }),
-      borderRadius: 4,
+      borderRadius:3,
     }]
-  },
-  options: {
-    ...CHART_DEFAULTS,
-    plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } }
-  }
+  }, options:{...DEF,plugins:{...DEF.plugins,legend:{display:false}}}
 });
 
-// ── CATEGORY DONUT VN ─────────────────────────────────
-const PIE_COLORS = [
-  '#22c55e','#3b82f6','#f59e0b','#a855f7','#14b8a6',
-  '#ef4444','#f97316','#06b6d4','#8b5cf6'
-];
-new Chart(document.getElementById('chartCatVN'), {
-  type: 'doughnut',
-  data: {
-    labels: ['Tài chính','Công nghệ','Gaming','Ẩm thực','Giải trí','Giáo dục','Thể thao','Khác'],
-    datasets: [{
-      data: [22, 19, 18, 12, 11, 8, 6, 4],
-      backgroundColor: PIE_COLORS, borderWidth: 0, hoverOffset: 6,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false, cutout: '62%',
-    plugins: {
-      legend: { position: 'right', labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 } },
-      tooltip: CHART_DEFAULTS.plugins.tooltip,
+// ── Category Donuts ───────────────────────────────────────
+const catVN = {{ cat_vn_json }}, catGL = {{ cat_global_json }};
+[['cCatVN',catVN],['cCatGlobal',catGL]].forEach(([id,data])=>{
+  new Chart(document.getElementById(id),{
+    type:'doughnut', data:{
+      labels:Object.keys(data),
+      datasets:[{data:Object.values(data),backgroundColor:PALETTE,borderWidth:0,hoverOffset:5}]
+    }, options:{
+      responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{
+        legend:{position:'right',labels:{color:C.txt2,font:{size:10},boxWidth:10,padding:5}},
+        tooltip:DEF.plugins.tooltip
+      }
     }
-  }
+  });
 });
 
-// ── CATEGORY DONUT GLOBAL ─────────────────────────────
-new Chart(document.getElementById('chartCatGlobal'), {
-  type: 'doughnut',
-  data: {
-    labels: ['AI/Tech','Entertainment','Gaming','Finance','Music','Education','Sports','Other'],
-    datasets: [{
-      data: [26, 21, 17, 13, 9, 7, 5, 2],
-      backgroundColor: PIE_COLORS, borderWidth: 0, hoverOffset: 6,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false, cutout: '62%',
-    plugins: {
-      legend: { position: 'right', labels: { color: COLORS.text2, font: { size: 10 }, boxWidth: 10, padding: 6 } },
-      tooltip: CHART_DEFAULTS.plugins.tooltip,
-    }
-  }
-});
+// ── Intraday VN ───────────────────────────────────────────
+const ivn = {{ intraday_vn_json }};
+const ivnEl = document.getElementById('cIntradayVN');
+if(ivn.length && ivnEl) {
+  new Chart(ivnEl,{type:'bar',data:{
+    labels:ivn.map(d=>d.hour),
+    datasets:[{label:'Views/giờ (VN)',data:ivn.map(d=>d.views),
+      backgroundColor:ivn.map(d=>{const mx=Math.max(...ivn.map(x=>x.views));
+        return `rgba(16,185,129,${mx>0?(.3+d.views/mx*.7).toFixed(2):.4})`;
+      }),borderRadius:4}]
+  }, options:{...DEF,plugins:{...DEF.plugins,legend:{display:false}}}});
+} else if(ivnEl) {
+  ivnEl.parentElement.innerHTML='<div class="empty" style="padding:30px">Chưa có hourly data</div>';
+}
+
+// ── Intraday Global ───────────────────────────────────────
+const igl = {{ intraday_global_json }};
+const iglEl = document.getElementById('cIntradayGlobal');
+if(igl.length && iglEl) {
+  new Chart(iglEl,{type:'bar',data:{
+    labels:igl.map(d=>d.hour),
+    datasets:[{label:'Views/giờ (Global)',data:igl.map(d=>d.views),
+      backgroundColor:igl.map(d=>{const mx=Math.max(...igl.map(x=>x.views));
+        return `rgba(59,130,246,${mx>0?(.3+d.views/mx*.7).toFixed(2):.4})`;
+      }),borderRadius:4}]
+  }, options:{...DEF,plugins:{...DEF.plugins,legend:{display:false}}}});
+} else if(iglEl) {
+  iglEl.parentElement.innerHTML='<div class="empty" style="padding:30px">Chưa có hourly data</div>';
+}
+
+// ── Category Leaderboard (JS render) ─────────────────────
+function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'K':n}
+function renderCatList(data, containerId, maxGain, col){
+  const el = document.getElementById(containerId);
+  if(!data||!data.length){el.innerHTML='<div class="empty">Chưa có dữ liệu</div>';return;}
+  el.innerHTML = data.map((c,i)=>{
+    const pct = maxGain>0?Math.round(c.total_gain/maxGain*100):0;
+    const tv = c.top_video;
+    return `<div class="cat-card">
+      <div class="cat-top">
+        <span class="cat-name">${['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'][i]||'·'} ${c.category}</span>
+        <span class="cat-gain">${fmt(c.total_gain)} views</span>
+      </div>
+      <div class="cat-bar-wrap">
+        <div class="cat-bar" style="width:${pct}%;background:${col}"></div>
+      </div>
+      <div class="cat-meta">
+        <span>📹 ${c.video_count} videos</span>
+        <span>🔴 ${c.stream_count} streams</span>
+        <span>ER: ${c.avg_er}%</span>
+      </div>
+      ${tv?`<div class="cat-top-vid" title="${tv.title}">
+        🏆 ${tv.title} (+${fmt(tv.views_gain)})
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+const catPerfVN = {{ cat_perf_vn_json }};
+const catPerfGL = {{ cat_perf_global_json }};
+const maxVN = catPerfVN.length ? catPerfVN[0].total_gain : 1;
+const maxGL = catPerfGL.length ? catPerfGL[0].total_gain : 1;
+renderCatList(catPerfVN, 'cat-vn-list', maxVN, '#10b981');
+renderCatList(catPerfGL, 'cat-global-list', maxGL, '#3b82f6');
+
+// ── Stream vs Video data ──────────────────────────────────
+const svvVN = {{ svv_vn_json }};
+const svvGL = {{ svv_global_json }};
+// Already rendered via Jinja template via svv_vn_data/svv_global_data aliases
 </script>
 </body>
 </html>
