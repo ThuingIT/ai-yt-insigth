@@ -465,8 +465,8 @@ def load_stream(sb: Client, json_path: str) -> dict:
 # ============================================================
 
 def refresh_views(sb: Client):
-    """Gọi Postgres function refresh_all_views() đã tạo trong create_supabase.sql."""
-    log.info("Refreshing materialized views (weekly_stats, monthly_stats)...")
+    """Gọi Postgres function refresh_all_views()."""
+    log.info("Refreshing materialized views...")
     log_id = log_start(sb, "02_load_refresh_views")
     try:
         sb.rpc("refresh_all_views", {}).execute()
