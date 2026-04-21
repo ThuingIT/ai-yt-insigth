@@ -16,11 +16,6 @@ Cách chạy:
     export SUPABASE_SERVICE_KEY="eyJ..."
     export OUTPUT_DIR="data"
     python 04_generate_html.py
-
-FIXES:
-    - yt_url: đổi youtube.com → www.youtube.com (fix redirect về trang chủ)
-    - thumbnail: select thêm thumbnail_url đúng field, thêm debug log
-    - autoescape: tắt cho template dashboard.html (URLs bị escape thành &amp;)
 """
 
 import os
@@ -58,16 +53,6 @@ logging.basicConfig(
     datefmt="%Y-%m-%dT%H:%M:%S",
 )
 log = logging.getLogger("04_html")
-
-
-# ============================================================
-# HELPER
-# ============================================================
-
-# FIX #1: Dùng www.youtube.com thay vì youtube.com
-# youtube.com (không www) bị redirect về trang chủ YouTube thay vì video
-def yt_url(video_id: str) -> str:
-    return f"https://www.youtube.com/watch?v={video_id}"
 
 
 # ============================================================
@@ -186,22 +171,9 @@ def fetch_top_videos(sb: Client, stream: str, top_n: int = 10) -> list:
 
     enriched = []
     for r in rows:
-        # FIX #2: Select đủ fields bao gồm thumbnail_url
         v = sb.table("videos").select(
             "title, thumbnail_url, views, likes, comments_count, category_name, published_at, channel_id"
         ).eq("id", r["video_id"]).maybe_single().execute()
-
-        # FIX #2b: Debug log để kiểm tra thumbnail
-        if v.data:
-            thumb = v.data.get("thumbnail_url", "")
-            if not thumb:
-                log.warning(f"[thumbnail NULL] video_id={r['video_id']} title={v.data.get('title','?')[:40]}")
-            else:
-                # Đảm bảo thumbnail URL dùng HTTPS
-                if thumb.startswith("http://"):
-                    thumb = thumb.replace("http://", "https://", 1)
-        else:
-            thumb = ""
 
         er = 0.0
         if v.data and v.data.get("views", 0) > 0:
@@ -214,14 +186,14 @@ def fetch_top_videos(sb: Client, stream: str, top_n: int = 10) -> list:
         enriched.append({
             "video_id":     r["video_id"],
             "title":        v.data.get("title", "Không rõ") if v.data else "Không rõ",
-            "thumbnail":    thumb,  # FIX #2: đã xử lý HTTPS và debug NULL
+            "thumbnail":    v.data.get("thumbnail_url", "") if v.data else "",
             "category":     v.data.get("category_name", "") if v.data else "",
             "content_type": r["content_type"],
             "views_gain":   disp_gain,
             "likes_gain":   disp_likes,
             "total_views":  v.data.get("views", 0) if v.data else 0,
             "er_pct":       er,
-            "yt_url":       yt_url(r["video_id"]),  # FIX #1: dùng www.youtube.com
+            "yt_url":       f"https://youtube.com/watch?v={r['video_id']}",
         })
 
     return enriched
@@ -376,22 +348,16 @@ def fetch_top_by_content_type(sb: Client, stream: str, content_type: str, top_n:
             er = round((v.data.get("likes", 0) + v.data.get("comments_count", 0))
                        / v.data["views"] * 100, 2)
         gain = r["views_gain"] if r["views_gain"] is not None else (r.get("views_total") or 0)
-
-        # FIX #2: xử lý thumbnail HTTPS
-        thumb = (v.data.get("thumbnail_url") or "") if v.data else ""
-        if thumb.startswith("http://"):
-            thumb = thumb.replace("http://", "https://", 1)
-
         enriched.append({
             "video_id":     r["video_id"],
             "title":        v.data.get("title", "?") if v.data else "?",
-            "thumbnail":    thumb,
+            "thumbnail":    v.data.get("thumbnail_url", "") if v.data else "",
             "category":     v.data.get("category_name", "") if v.data else "",
             "content_type": r["content_type"],
             "views_gain":   gain,
             "total_views":  v.data.get("views", 0) if v.data else 0,
             "er_pct":       er,
-            "yt_url":       yt_url(r["video_id"]),  # FIX #1
+            "yt_url":       f"https://youtube.com/watch?v={r['video_id']}",
         })
     return enriched
 
@@ -436,16 +402,12 @@ def fetch_category_performance(sb: Client, stream: str) -> list:
         if v.get("content_type") == "stream":
             by_cat[cat]["stream_count"] += 1
         if by_cat[cat]["top_video"] is None or gain > delta_map.get(by_cat[cat]["top_video"]["video_id"], 0):
-            # FIX #2: xử lý thumbnail HTTPS
-            thumb = v.get("thumbnail_url") or ""
-            if thumb.startswith("http://"):
-                thumb = thumb.replace("http://", "https://", 1)
             by_cat[cat]["top_video"] = {
                 "video_id": v["id"],
                 "title":    v.get("title", ""),
-                "thumbnail": thumb,
+                "thumbnail": v.get("thumbnail_url", ""),
                 "views_gain": gain,
-                "yt_url":   yt_url(v["id"]),  # FIX #1
+                "yt_url":   f"https://youtube.com/watch?v={v['id']}",
             }
 
     result = []
@@ -550,25 +512,20 @@ def fetch_hot_right_now(sb: Client, stream: str, limit: int = 8) -> list:
             "p_hours_ago": 2,
         }).execute()
         rows = res.data or []
-
-        result = []
-        for r in rows:
-            # FIX #2: xử lý thumbnail HTTPS
-            thumb = r.get("thumbnail_url") or ""
-            if thumb.startswith("http://"):
-                thumb = thumb.replace("http://", "https://", 1)
-            result.append({
+        return [
+            {
                 "video_id":       r["video_id"],
                 "title":          r["title"] or "Không rõ",
-                "thumbnail":      thumb,
+                "thumbnail":      r["thumbnail_url"] or "",
                 "category":       r["category_name"] or "",
                 "content_type":   r["content_type"],
                 "views_delta_1h": r["views_delta_1h"] or 0,
                 "total_views":    r["total_views"] or 0,
                 "momentum":       r["momentum_status"] or "new",
-                "yt_url":         yt_url(r["video_id"]),  # FIX #1
-            })
-        return result
+                "yt_url":         f"https://youtube.com/watch?v={r['video_id']}",
+            }
+            for r in rows
+        ]
     except Exception as e:
         log.warning(f"get_hot_right_now error: {e}")
         return []
@@ -764,21 +721,10 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
 
 
 def render_html(context: dict) -> str:
-    """
-    Render HTML từ Jinja2 template.
-
-    FIX #3: Tắt autoescape cho dashboard.html.
-    Lý do: autoescape=True escape dấu & trong URL thành &amp;
-    khiến href="https://www.youtube.com/watch?v=..." bị broken.
-    Template đã dùng {{ v.thumbnail | e }} khi cần escape thủ công.
-
-    Nếu muốn bật lại autoescape, cần thêm | safe vào tất cả URL
-    trong template: {{ v.yt_url | safe }}, {{ v.thumbnail | safe }}
-    """
+    """Render HTML từ Jinja2 template."""
     env = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR),
-        # FIX #3: Chỉ autoescape XML/XHTML, không autoescape HTML template
-        autoescape=select_autoescape(["xml", "xhtml"]),
+        autoescape=select_autoescape(["html"]),
     )
     template = env.get_template("dashboard.html")
     return template.render(**context)
