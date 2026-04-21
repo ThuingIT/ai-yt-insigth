@@ -120,7 +120,7 @@ jobs:
   publish:
     name: "04 · Refresh Dashboard"
     runs-on: ubuntu-latest
-    needs: load
+    needs: [crawl, load]
     timeout-minutes: 10
     permissions:
       contents: write
