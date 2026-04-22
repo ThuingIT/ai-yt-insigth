@@ -79,8 +79,8 @@ a{color:inherit;text-decoration:none}
 .kpi-sub .up{color:var(--vn)}
 .kpi-sub .dn{color:var(--red)}
 
-/* ── CONTENT TYPE BATTLE ─────────────────────────────── */
-.ct-battle{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;
+/* ── CONTENT TYPE BATTLE — 2 cols only (video + stream) ─ */
+.ct-battle{display:grid;grid-template-columns:1fr 1fr;gap:1px;
   background:var(--border);border-radius:var(--r);overflow:hidden}
 .ct-col{background:var(--bg2);padding:14px 16px}
 .ct-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
@@ -111,23 +111,28 @@ a{color:inherit;text-decoration:none}
 /* ── VIDEO TABLE ─────────────────────────────────────── */
 .vtbl{width:100%;border-collapse:collapse}
 .vtbl th{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;
-  padding:9px 14px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
-.vtbl td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+  padding:9px 10px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.vtbl td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
 .vtbl tr:last-child td{border:none}
 .vtbl tbody tr:hover td{background:var(--bg3)}
 .vthumb{width:54px;height:38px;object-fit:cover;border-radius:5px;background:var(--bg3)}
 .vtitle{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;max-width:280px;color:var(--text)}
+  text-overflow:ellipsis;max-width:260px;color:var(--text)}
 .vtitle:hover{color:var(--amber)}
 .vcat{font-size:10.5px;color:var(--text3);margin-top:2px}
-.mono{font-family:'SF Mono',monospace;font-size:12px;color:var(--text2)}
-.gain{color:var(--vn);font-weight:600;font-family:monospace}
+.mono{font-family:'SF Mono',monospace;font-size:11.5px;color:var(--text2)}
+.gain{color:var(--vn);font-weight:600;font-family:monospace;font-size:12px}
 .gain-gl{color:var(--global)}
 .ct-pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
 .ct-video{background:rgba(59,130,246,.15);color:#93c5fd}
 .ct-stream{background:rgba(168,85,247,.15);color:#d8b4fe}
 .ct-shorts{background:rgba(245,158,11,.15);color:#fcd34d}
 .rank{color:var(--text3);font-size:12px;font-weight:600;width:20px;text-align:center}
+
+/* ── STAT CELL in table ──────────────────────────────── */
+.stat-cell{text-align:right}
+.stat-main{font-size:12px;font-weight:600;font-family:'SF Mono',monospace}
+.stat-label{font-size:10px;color:var(--text3);display:block}
 
 /* ── CATEGORY LEADERBOARD ────────────────────────────── */
 .cat-card{padding:12px 14px;background:var(--bg3);border-radius:var(--r-sm);
@@ -287,10 +292,10 @@ a{color:inherit;text-decoration:none}
   </div>
   <div class="hdr-right">
     <div class="label">Cập nhật</div>
-    <strong>22/04/2026 05:38 UTC</strong>
+    <strong>22/04/2026 13:11 ICT</strong>
     <div class="label" style="margin-top:4px">Ngày phân tích</div>
     <strong>22/04/2026</strong>
-    <div style="font-size:10px;color:var(--text3);margin-top:4px">run b20eb2b1…</div>
+    <div style="font-size:10px;color:var(--text3);margin-top:4px">run a38d07f5…</div>
   </div>
 </div>
 
@@ -308,12 +313,12 @@ a{color:inherit;text-decoration:none}
     <div class="kpi-lbl">Views Gained · VN
       
     </div>
-    <div class="kpi-val">1,786,250</div>
-    <div class="kpi-sub"><span class="up">+41,137</span> likes</div>
+    <div class="kpi-val">1,922,561</div>
+    <div class="kpi-sub"><span class="up">+42,872</span> likes</div>
   </div>
   <div class="card kpi vn">
     <div class="kpi-lbl">Avg ER · VN</div>
-    <div class="kpi-val">1.99%</div>
+    <div class="kpi-val">1.98%</div>
     <div class="kpi-sub">(likes+comments)/views</div>
   </div>
   <div class="card kpi gl">
@@ -324,9 +329,9 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <!-- ══════════════════════════════════════════
-     CONTENT TYPE BATTLE: Video vs Stream vs Shorts
+     CONTENT TYPE BATTLE: Video vs Stream (Shorts removed)
 ══════════════════════════════════════════ -->
-<p class="st">Video · Stream · Shorts — so sánh trực tiếp</p>
+<p class="st">Video vs Stream — so sánh trực tiếp</p>
 <div class="g2" style="margin-bottom:14px">
 
   <div class="card" style="padding:0">
@@ -376,36 +381,11 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="ct-stat">
           <span class="ct-stat-label">Avg ER</span>
-          <span class="ct-stat-val">3.07%</span>
+          <span class="ct-stat-val">3.05%</span>
         </div>
         <div class="progress-row">
           <div class="progress-bg">
             <div class="progress-fill" style="width:18.1%;background:#a855f7"></div>
-          </div>
-        </div>
-      </div>
-      
-      
-      <div class="ct-col">
-        <div class="ct-header">
-          <span class="ct-icon">⚡</span>
-          <span class="ct-name" style="color:#f59e0b">Shorts</span>
-        </div>
-        <div class="ct-stat">
-          <span class="ct-stat-label">Số lượng</span>
-          <span class="ct-stat-val">0</span>
-        </div>
-        <div class="ct-stat">
-          <span class="ct-stat-label">% Views</span>
-          <span class="ct-stat-val" style="color:#f59e0b">0%</span>
-        </div>
-        <div class="ct-stat">
-          <span class="ct-stat-label">Avg ER</span>
-          <span class="ct-stat-val">0%</span>
-        </div>
-        <div class="progress-row">
-          <div class="progress-bg">
-            <div class="progress-fill" style="width:0%;background:#f59e0b"></div>
           </div>
         </div>
       </div>
@@ -469,31 +449,6 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
       
-      
-      <div class="ct-col">
-        <div class="ct-header">
-          <span class="ct-icon">⚡</span>
-          <span class="ct-name" style="color:#f59e0b">Shorts</span>
-        </div>
-        <div class="ct-stat">
-          <span class="ct-stat-label">Số lượng</span>
-          <span class="ct-stat-val">0</span>
-        </div>
-        <div class="ct-stat">
-          <span class="ct-stat-label">% Views</span>
-          <span class="ct-stat-val" style="color:#f59e0b">0%</span>
-        </div>
-        <div class="ct-stat">
-          <span class="ct-stat-label">Avg ER</span>
-          <span class="ct-stat-val">0%</span>
-        </div>
-        <div class="progress-row">
-          <div class="progress-bg">
-            <div class="progress-fill" style="width:0%;background:#f59e0b"></div>
-          </div>
-        </div>
-      </div>
-      
     </div>
   </div>
 </div>
@@ -503,18 +458,17 @@ a{color:inherit;text-decoration:none}
 ══════════════════════════════════════════ -->
 <p class="st">Top Rankings</p>
 
-<!-- ── VN TABS ── -->
+<!-- ── VN TABS (Video + Stream only) ── -->
 <div class="card card-p0" style="margin-bottom:14px">
   <div style="padding:14px 18px 0;border-bottom:1px solid var(--border);
     display:flex;justify-content:space-between;align-items:center">
     <strong>🇻🇳 Vietnam</strong>
-    <span class="badge bvn">by views gain</span>
+    <span class="badge bvn">ranked by views gain</span>
   </div>
   <div class="tab-bar" id="vn-tabs">
     <button class="tab-btn active" onclick="switchTab('vn','all',this)">🏆 All Top 10</button>
     <button class="tab-btn" onclick="switchTab('vn','video',this)">🎬 Video</button>
     <button class="tab-btn" onclick="switchTab('vn','stream',this)">🔴 Stream</button>
-    <button class="tab-btn" onclick="switchTab('vn','shorts',this)">⚡ Shorts</button>
   </div>
 
   <div id="vn-all" class="tab-pane active">
@@ -523,8 +477,15 @@ a{color:inherit;text-decoration:none}
 <div style="overflow-x:auto">
 <table class="vtbl">
   <thead><tr>
-    <th>#</th><th>Thumb</th><th>Video</th>
-    <th>Type</th><th>Views Gain</th><th>ER</th>
+    <th>#</th>
+    <th>Thumb</th>
+    <th>Video</th>
+    <th>Type</th>
+    <th style="text-align:right">Views Gain</th>
+    <th style="text-align:right">Total Views</th>
+    <th style="text-align:right">Likes</th>
+    <th style="text-align:right">Comments</th>
+    <th style="text-align:right">ER</th>
   </tr></thead>
   <tbody>
   
@@ -532,170 +493,300 @@ a{color:inherit;text-decoration:none}
     <td><span class="rank">1</span></td>
     <td><img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=QF5YpZI1wnk" target="_blank" rel="noopener">
         <div class="vtitle">I Survived 100 Days in Skyblock</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +278,280
-    </span></td>
-    <td><span class="mono">1.67%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +301,035
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">42,852,141</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">694,746</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">20,391</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.67%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">2</span></td>
     <td><img src="https://i.ytimg.com/vi/6hNenqz0ISA/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=6hNenqz0ISA" target="_blank" rel="noopener">
         <div class="vtitle">Sớm Như Vậy / buitruonglinh</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +25,120
-    </span></td>
-    <td><span class="mono">1.35%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +29,437
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,121,867</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">43,682</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">12,053</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.35%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">3</span></td>
     <td><img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=U6BDbXIah-Y" target="_blank" rel="noopener">
         <div class="vtitle">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +169,477
-    </span></td>
-    <td><span class="mono">16.72%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +190,591
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,018,267</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">618,036</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">51,296</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">16.66%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">4</span></td>
     <td><img src="https://i.ytimg.com/vi/he4RarbyIfQ/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=he4RarbyIfQ" target="_blank" rel="noopener">
         <div class="vtitle">bqThanh và Ốc Chơi POPPY PLAYTIME PHẦN 0 Khởi Đầu Của Nhà Máy Biến Trẻ Em Thành Đồ Chơi</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +10,938
-    </span></td>
-    <td><span class="mono">0.98%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +14,754
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,409,997</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13,269</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">531</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.98%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">5</span></td>
     <td><img src="https://i.ytimg.com/vi/Hn02lBrVxMk/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=Hn02lBrVxMk" target="_blank" rel="noopener">
         <div class="vtitle">Bình Luận Tiếng Việt: BRO vs NS l l KRX vs T1 | LCK 2026</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +1,418
-    </span></td>
-    <td><span class="mono">0.52%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +1,674
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,235,277</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,406</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">41</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.52%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">6</span></td>
     <td><img src="https://i.ytimg.com/vi/2wEWRtl5hbM/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=2wEWRtl5hbM" target="_blank" rel="noopener">
         <div class="vtitle">FPT x FLASH vs ONE STAR ESPORTS | GIAI ĐOẠN 2 | ĐTDV MÙA XUÂN 2026</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +1,782
-    </span></td>
-    <td><span class="mono">0.52%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +2,041
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,164,984</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,066</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">23</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.52%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">7</span></td>
     <td><img src="https://i.ytimg.com/vi/d5L6cqcOkrs/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=d5L6cqcOkrs" target="_blank" rel="noopener">
         <div class="vtitle">BI HUỲNH ĐẬP TRỨNG MỞ TRÁI ÁC QUỶ PVP CÙNG ĐỒNG BỌN TRONG BLOX FRUITS</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +917
-    </span></td>
-    <td><span class="mono">1.82%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +1,240
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">948,003</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13,655</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3,620</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.82%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">8</span></td>
     <td><img src="https://i.ytimg.com/vi/3lLPt34meDA/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=3lLPt34meDA" target="_blank" rel="noopener">
         <div class="vtitle">BÓNG PHÙ HOA - PHƯƠNG MỸ CHI ft RHYDER | LUMINARHY CONCERT</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +8,674
-    </span></td>
-    <td><span class="mono">3.25%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +10,607
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">907,360</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">25,004</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,458</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3.25%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">9</span></td>
     <td><img src="https://i.ytimg.com/vi/bZZn2B11b_c/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=bZZn2B11b_c" target="_blank" rel="noopener">
         <div class="vtitle">Thanh Tân - VƯƠNG BÌNH song ca THÙY CHI | bản ghi hình trình diễn</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +2,871
-    </span></td>
-    <td><span class="mono">1.71%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +2,871
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">817,170</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">11,215</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,722</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.71%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">10</span></td>
     <td><img src="https://i.ytimg.com/vi/FmyJa95ktJg/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=FmyJa95ktJg" target="_blank" rel="noopener">
         <div class="vtitle">[TRỰC TIẾP] VÒNG CHUNG KẾT: NK, SGLX, FPT, TKO – TỨ LINH HỘI TỤ CÙNG TRANH ĐẤU | FVPL SPRING 2026</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +465
-    </span></td>
-    <td><span class="mono">0.64%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +572
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">770,882</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,921</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">36</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.64%</span>
+    </td>
   </tr>
   
   </tbody>
@@ -710,8 +801,15 @@ a{color:inherit;text-decoration:none}
 <div style="overflow-x:auto">
 <table class="vtbl">
   <thead><tr>
-    <th>#</th><th>Thumb</th><th>Video</th>
-    <th>Type</th><th>Views Gain</th><th>ER</th>
+    <th>#</th>
+    <th>Thumb</th>
+    <th>Video</th>
+    <th>Type</th>
+    <th style="text-align:right">Views Gain</th>
+    <th style="text-align:right">Total Views</th>
+    <th style="text-align:right">Likes</th>
+    <th style="text-align:right">Comments</th>
+    <th style="text-align:right">ER</th>
   </tr></thead>
   <tbody>
   
@@ -719,170 +817,300 @@ a{color:inherit;text-decoration:none}
     <td><span class="rank">1</span></td>
     <td><img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=QF5YpZI1wnk" target="_blank" rel="noopener">
         <div class="vtitle">I Survived 100 Days in Skyblock</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +278,280
-    </span></td>
-    <td><span class="mono">1.67%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +301,035
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">42,852,141</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">694,746</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">20,391</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.67%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">2</span></td>
     <td><img src="https://i.ytimg.com/vi/6hNenqz0ISA/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=6hNenqz0ISA" target="_blank" rel="noopener">
         <div class="vtitle">Sớm Như Vậy / buitruonglinh</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +25,120
-    </span></td>
-    <td><span class="mono">1.35%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +29,437
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,121,867</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">43,682</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">12,053</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.35%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">3</span></td>
     <td><img src="https://i.ytimg.com/vi/he4RarbyIfQ/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=he4RarbyIfQ" target="_blank" rel="noopener">
         <div class="vtitle">bqThanh và Ốc Chơi POPPY PLAYTIME PHẦN 0 Khởi Đầu Của Nhà Máy Biến Trẻ Em Thành Đồ Chơi</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +10,938
-    </span></td>
-    <td><span class="mono">0.98%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +14,754
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,409,997</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13,269</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">531</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.98%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">4</span></td>
     <td><img src="https://i.ytimg.com/vi/d5L6cqcOkrs/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=d5L6cqcOkrs" target="_blank" rel="noopener">
         <div class="vtitle">BI HUỲNH ĐẬP TRỨNG MỞ TRÁI ÁC QUỶ PVP CÙNG ĐỒNG BỌN TRONG BLOX FRUITS</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +917
-    </span></td>
-    <td><span class="mono">1.82%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +1,240
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">948,003</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13,655</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3,620</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.82%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">5</span></td>
     <td><img src="https://i.ytimg.com/vi/3lLPt34meDA/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=3lLPt34meDA" target="_blank" rel="noopener">
         <div class="vtitle">BÓNG PHÙ HOA - PHƯƠNG MỸ CHI ft RHYDER | LUMINARHY CONCERT</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +8,674
-    </span></td>
-    <td><span class="mono">3.25%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +10,607
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">907,360</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">25,004</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,458</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3.25%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">6</span></td>
     <td><img src="https://i.ytimg.com/vi/BluGEfDLba4/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=BluGEfDLba4" target="_blank" rel="noopener">
         <div class="vtitle">MÌNH TRỞ LẠI Sol&#39;s RNG SAU 500 NGÀY VÀ MỞ KHÓA AURA 1 TRONG 2 TỶ</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +20,148
-    </span></td>
-    <td><span class="mono">1.3%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +25,498
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">724,853</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">8,637</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">731</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.29%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">7</span></td>
     <td><img src="https://i.ytimg.com/vi/BO_4dDF35PY/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=BO_4dDF35PY" target="_blank" rel="noopener">
         <div class="vtitle">Tô Gà Sinh Tồn Bên Trong Chân Của Nabee!</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +8,282
-    </span></td>
-    <td><span class="mono">0.38%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +10,212
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">719,695</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,646</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">118</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.38%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">8</span></td>
     <td><img src="https://i.ytimg.com/vi/_zD3vpCkL2Q/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=_zD3vpCkL2Q" target="_blank" rel="noopener">
         <div class="vtitle">NHẠC REMIX TIKTOK TRIỆU VIEW - BXH Nhạc Trẻ Remix Hay Nhất Hiện Nay🎼Top 20 Nhạc TikTok Hay 2026</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +2,290
-    </span></td>
-    <td><span class="mono">0.39%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +2,726
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">434,290</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,622</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">69</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.39%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">9</span></td>
     <td><img src="https://i.ytimg.com/vi/6J2UXjxDjEw/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=6J2UXjxDjEw" target="_blank" rel="noopener">
         <div class="vtitle">(Windrose #1) Thủ lĩnh KaiĐộ cùng băng hải tặc mới nhú Refund đổ bộ hoang đảo, gây dựng lãnh địa.</div>
       </a>
       <div class="vcat">Entertainment</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +3,241
-    </span></td>
-    <td><span class="mono">1.1%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +4,005
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">415,734</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,506</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">74</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.1%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">10</span></td>
     <td><img src="https://i.ytimg.com/vi/YIYOSJ4a0IY/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=YIYOSJ4a0IY" target="_blank" rel="noopener">
         <div class="vtitle">900 NGÀY XÂY DỰNG KHU BẢO TỒN KHỦNG LONG TRONG MINECRAFT - BẮT ĐẦU HỆ SINH THÁI ĐẠI DƯƠNG!</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain">
-      +2,970
-    </span></td>
-    <td><span class="mono">3.89%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +3,752
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">388,587</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13,995</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,107</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3.89%</span>
+    </td>
   </tr>
   
   </tbody>
@@ -897,8 +1125,15 @@ a{color:inherit;text-decoration:none}
 <div style="overflow-x:auto">
 <table class="vtbl">
   <thead><tr>
-    <th>#</th><th>Thumb</th><th>Video</th>
-    <th>Type</th><th>Views Gain</th><th>ER</th>
+    <th>#</th>
+    <th>Thumb</th>
+    <th>Video</th>
+    <th>Type</th>
+    <th style="text-align:right">Views Gain</th>
+    <th style="text-align:right">Total Views</th>
+    <th style="text-align:right">Likes</th>
+    <th style="text-align:right">Comments</th>
+    <th style="text-align:right">ER</th>
   </tr></thead>
   <tbody>
   
@@ -906,182 +1141,305 @@ a{color:inherit;text-decoration:none}
     <td><span class="rank">1</span></td>
     <td><img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=U6BDbXIah-Y" target="_blank" rel="noopener">
         <div class="vtitle">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +169,477
-    </span></td>
-    <td><span class="mono">16.72%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +190,591
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,018,267</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">618,036</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">51,296</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">16.66%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">2</span></td>
     <td><img src="https://i.ytimg.com/vi/Hn02lBrVxMk/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=Hn02lBrVxMk" target="_blank" rel="noopener">
         <div class="vtitle">Bình Luận Tiếng Việt: BRO vs NS l l KRX vs T1 | LCK 2026</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +1,418
-    </span></td>
-    <td><span class="mono">0.52%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +1,674
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,235,277</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,406</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">41</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.52%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">3</span></td>
     <td><img src="https://i.ytimg.com/vi/2wEWRtl5hbM/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=2wEWRtl5hbM" target="_blank" rel="noopener">
         <div class="vtitle">FPT x FLASH vs ONE STAR ESPORTS | GIAI ĐOẠN 2 | ĐTDV MÙA XUÂN 2026</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +1,782
-    </span></td>
-    <td><span class="mono">0.52%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +2,041
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,164,984</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,066</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">23</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.52%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">4</span></td>
     <td><img src="https://i.ytimg.com/vi/bZZn2B11b_c/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=bZZn2B11b_c" target="_blank" rel="noopener">
         <div class="vtitle">Thanh Tân - VƯƠNG BÌNH song ca THÙY CHI | bản ghi hình trình diễn</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +2,871
-    </span></td>
-    <td><span class="mono">1.71%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +2,871
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">817,170</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">11,215</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,722</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.71%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">5</span></td>
     <td><img src="https://i.ytimg.com/vi/FmyJa95ktJg/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=FmyJa95ktJg" target="_blank" rel="noopener">
         <div class="vtitle">[TRỰC TIẾP] VÒNG CHUNG KẾT: NK, SGLX, FPT, TKO – TỨ LINH HỘI TỤ CÙNG TRANH ĐẤU | FVPL SPRING 2026</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +465
-    </span></td>
-    <td><span class="mono">0.64%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +572
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">770,882</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,921</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">36</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.64%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">6</span></td>
     <td><img src="https://i.ytimg.com/vi/gxiGDeydGpY/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=gxiGDeydGpY" target="_blank" rel="noopener">
         <div class="vtitle">JayGray Được Hiha Dẫn Đi Thăm LÀNG SINH TỐ Trong Minecraft🔎😜Thử Thách 24 Giờ Troll Phá Sinh Tố Team</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +3,392
-    </span></td>
-    <td><span class="mono">1.49%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +3,996
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">765,126</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">10,729</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">642</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.49%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">7</span></td>
     <td><img src="https://i.ytimg.com/vi/QwPkkoODpy4/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=QwPkkoODpy4" target="_blank" rel="noopener">
         <div class="vtitle">🔴 TRỰC TIẾP: FPT x FLASH vs ONE STAR ESPORTS | GIAI ĐOẠN 2 | ĐTDV MÙA XUÂN 2026</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +811
-    </span></td>
-    <td><span class="mono">0.49%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +914
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">574,241</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,794</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.49%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">8</span></td>
-    <td><img src="https://i.ytimg.com/vi/cL8MfC8oaB0/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
-        </td>
-    <td style="max-width:300px">
-      <a href="https://youtube.com/watch?v=cL8MfC8oaB0" target="_blank" rel="noopener">
-        <div class="vtitle">100 ngày đập đá trong Mincraft Hardcore!</div>
-      </a>
-      <div class="vcat">Gaming</div>
-    </td>
-    <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +4,376
-    </span></td>
-    <td><span class="mono">2.79%</span></td>
-  </tr>
-  
-  <tr>
-    <td><span class="rank">9</span></td>
     <td><img src="https://i.ytimg.com/vi/m-7PbZJQyec/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=m-7PbZJQyec" target="_blank" rel="noopener">
         <div class="vtitle">Hiha Trừ Tà TRIỆU HỒI Hiha CatNap và Hiha AntiCatNap Trong Minecraft 😵‍💫😱</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +486,076
-    </span></td>
-    <td><span class="mono">2.7%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +515,240
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">515,240</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">12,556</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">686</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2.57%</span>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><span class="rank">9</span></td>
+    <td><img src="https://i.ytimg.com/vi/cL8MfC8oaB0/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
+        </td>
+    <td style="max-width:260px">
+      <a href="https://youtube.com/watch?v=cL8MfC8oaB0" target="_blank" rel="noopener">
+        <div class="vtitle">100 ngày đập đá trong Mincraft Hardcore!</div>
+      </a>
+      <div class="vcat">Gaming</div>
+    </td>
+    <td><span class="ct-pill ct-stream">stream</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +5,445
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">490,676</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">12,780</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">879</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2.78%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">10</span></td>
     <td><img src="https://i.ytimg.com/vi/n9KmySC6ziA/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=n9KmySC6ziA" target="_blank" rel="noopener">
         <div class="vtitle">🏆[PVS Finals 2026 P1] Ngày 6: 🇻🇳 AL, 🇻🇳 TE, 🇻🇳 FCE, 🇻🇳 TDT, 🇻🇳 FL, 🇻🇳 WDE, 🇻🇳VC, 🇻🇳 UNC, 🇻🇳 SBTC,...</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain">
-      +422
-    </span></td>
-    <td><span class="mono">0.62%</span></td>
+    <td class="stat-cell">
+      <span class="gain">
+        +459
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">406,735</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,508</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">12</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.62%</span>
+    </td>
   </tr>
   
   </tbody>
 </table>
 </div>
-
-
-  </div>
-  <div id="vn-shorts" class="tab-pane">
-    
-
-<div class="empty">Không có dữ liệu cho category này</div>
 
 
   </div>
@@ -1092,7 +1450,7 @@ a{color:inherit;text-decoration:none}
   <div style="padding:14px 18px 0;border-bottom:1px solid var(--border);
     display:flex;justify-content:space-between;align-items:center">
     <strong>🌐 Global</strong>
-    <span class="badge bgl">by views gain</span>
+    <span class="badge bgl">ranked by views gain</span>
   </div>
   <div class="tab-bar" id="gl-tabs">
     <button class="tab-btn active-gl active" onclick="switchTab('gl','all',this,'active-gl')">🏆 All Top 10</button>
@@ -1105,8 +1463,15 @@ a{color:inherit;text-decoration:none}
 <div style="overflow-x:auto">
 <table class="vtbl">
   <thead><tr>
-    <th>#</th><th>Thumb</th><th>Video</th>
-    <th>Type</th><th>Views Gain</th><th>ER</th>
+    <th>#</th>
+    <th>Thumb</th>
+    <th>Video</th>
+    <th>Type</th>
+    <th style="text-align:right">Views Gain</th>
+    <th style="text-align:right">Total Views</th>
+    <th style="text-align:right">Likes</th>
+    <th style="text-align:right">Comments</th>
+    <th style="text-align:right">ER</th>
   </tr></thead>
   <tbody>
   
@@ -1114,170 +1479,300 @@ a{color:inherit;text-decoration:none}
     <td><span class="rank">1</span></td>
     <td><img src="https://i.ytimg.com/vi/q2zwd3OVcnM/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=q2zwd3OVcnM" target="_blank" rel="noopener">
         <div class="vtitle">Daadi Ki Shaadi Official Trailer | Neetu Kapoor, Kapil Sharma | Ashish R Mohan | In Cinemas 8th May</div>
       </a>
       <div class="vcat">Entertainment</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +983,320
-    </span></td>
-    <td><span class="mono">0.22%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +983,320
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">12,004,066</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">24,730</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,083</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.22%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">2</span></td>
     <td><img src="https://i.ytimg.com/vi/Os4JVfZp4jg/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=Os4JVfZp4jg" target="_blank" rel="noopener">
         <div class="vtitle">PATI PATNI AUR WOH DO (Teaser) | Ayushmann, Wamiqa, Sara, Rakul | Mudassar, Bhushan K, Juno | 15 May</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +249,333
-    </span></td>
-    <td><span class="mono">0.84%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +249,333
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,942,691</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">52,530</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">5,538</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.84%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">3</span></td>
     <td><img src="https://i.ytimg.com/vi/QHdajZktFEU/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=QHdajZktFEU" target="_blank" rel="noopener">
         <div class="vtitle">Bangles (Official #Video) Sanju Rathod Ft. Isha Malviya | G-Spark | #Marathi Pop 2026 | बांगडी</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +192,804
-    </span></td>
-    <td><span class="mono">3.66%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +192,804
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,835,908</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">170,072</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,955</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3.66%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">4</span></td>
     <td><img src="https://i.ytimg.com/vi/1o5O2YvV3HU/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=1o5O2YvV3HU" target="_blank" rel="noopener">
         <div class="vtitle">NCT WISH 엔시티 위시 &#39;Ode to Love&#39; MV</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +146,063
-    </span></td>
-    <td><span class="mono">2.1%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +146,063
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,724,679</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">91,574</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">7,485</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2.1%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">5</span></td>
     <td><img src="https://i.ytimg.com/vi/Bgy00eaFyhE/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=Bgy00eaFyhE" target="_blank" rel="noopener">
         <div class="vtitle">Raja Shivaji Hindi Trailer | Riteish D | Genelia D | Sanjay D | In Cinemas 1 May 2026</div>
       </a>
       <div class="vcat">Entertainment</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +65,564
-    </span></td>
-    <td><span class="mono">3.54%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +65,564
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,557,557</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">52,261</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,900</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3.54%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">6</span></td>
     <td><img src="https://i.ytimg.com/vi/wWvu34x2INc/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=wWvu34x2INc" target="_blank" rel="noopener">
         <div class="vtitle">UNCHILD 언차일드 &#39;UNCHILD&#39; MV</div>
       </a>
       <div class="vcat">People &amp; Blogs</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +213,783
-    </span></td>
-    <td><span class="mono">15.91%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +213,783
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,445,856</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">209,102</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">20,956</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">15.91%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">7</span></td>
     <td><img src="https://i.ytimg.com/vi/MEFzMcNMs8M/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=MEFzMcNMs8M" target="_blank" rel="noopener">
         <div class="vtitle">Surviving Elemental Ore Chunk Battle in Minecraft..</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +34,615
-    </span></td>
-    <td><span class="mono">1.32%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +34,615
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,092,239</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13,829</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">589</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.32%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">8</span></td>
     <td><img src="https://i.ytimg.com/vi/ovu5CisMVug/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=ovu5CisMVug" target="_blank" rel="noopener">
         <div class="vtitle">スプラトゥーン レイダース 発売日決定！</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +327,988
-    </span></td>
-    <td><span class="mono">4.42%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +327,988
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">975,634</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">43,170</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4.42%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">9</span></td>
     <td><img src="https://i.ytimg.com/vi/5sOgJQ3N03Q/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=5sOgJQ3N03Q" target="_blank" rel="noopener">
         <div class="vtitle">REDRED</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +113,202
-    </span></td>
-    <td><span class="mono">8.47%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +113,202
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">905,362</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">72,596</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,063</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">8.47%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">10</span></td>
     <td><img src="https://i.ytimg.com/vi/a1vHjBy85TU/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=a1vHjBy85TU" target="_blank" rel="noopener">
         <div class="vtitle">CORTIS (코르티스) &#39;REDRED&#39; Conceptual Performance Film</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +180,619
-    </span></td>
-    <td><span class="mono">20.13%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +180,619
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">884,166</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">170,874</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">7,151</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">20.13%</span>
+    </td>
   </tr>
   
   </tbody>
@@ -1292,8 +1787,15 @@ a{color:inherit;text-decoration:none}
 <div style="overflow-x:auto">
 <table class="vtbl">
   <thead><tr>
-    <th>#</th><th>Thumb</th><th>Video</th>
-    <th>Type</th><th>Views Gain</th><th>ER</th>
+    <th>#</th>
+    <th>Thumb</th>
+    <th>Video</th>
+    <th>Type</th>
+    <th style="text-align:right">Views Gain</th>
+    <th style="text-align:right">Total Views</th>
+    <th style="text-align:right">Likes</th>
+    <th style="text-align:right">Comments</th>
+    <th style="text-align:right">ER</th>
   </tr></thead>
   <tbody>
   
@@ -1301,170 +1803,300 @@ a{color:inherit;text-decoration:none}
     <td><span class="rank">1</span></td>
     <td><img src="https://i.ytimg.com/vi/q2zwd3OVcnM/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=q2zwd3OVcnM" target="_blank" rel="noopener">
         <div class="vtitle">Daadi Ki Shaadi Official Trailer | Neetu Kapoor, Kapil Sharma | Ashish R Mohan | In Cinemas 8th May</div>
       </a>
       <div class="vcat">Entertainment</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +983,320
-    </span></td>
-    <td><span class="mono">0.22%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +983,320
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">12,004,066</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">24,730</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,083</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.22%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">2</span></td>
     <td><img src="https://i.ytimg.com/vi/Os4JVfZp4jg/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=Os4JVfZp4jg" target="_blank" rel="noopener">
         <div class="vtitle">PATI PATNI AUR WOH DO (Teaser) | Ayushmann, Wamiqa, Sara, Rakul | Mudassar, Bhushan K, Juno | 15 May</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +249,333
-    </span></td>
-    <td><span class="mono">0.84%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +249,333
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,942,691</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">52,530</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">5,538</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.84%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">3</span></td>
     <td><img src="https://i.ytimg.com/vi/Bgy00eaFyhE/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=Bgy00eaFyhE" target="_blank" rel="noopener">
         <div class="vtitle">Raja Shivaji Hindi Trailer | Riteish D | Genelia D | Sanjay D | In Cinemas 1 May 2026</div>
       </a>
       <div class="vcat">Entertainment</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +65,564
-    </span></td>
-    <td><span class="mono">3.54%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +65,564
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,557,557</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">52,261</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,900</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3.54%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">4</span></td>
     <td><img src="https://i.ytimg.com/vi/wWvu34x2INc/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=wWvu34x2INc" target="_blank" rel="noopener">
         <div class="vtitle">UNCHILD 언차일드 &#39;UNCHILD&#39; MV</div>
       </a>
       <div class="vcat">People &amp; Blogs</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +213,783
-    </span></td>
-    <td><span class="mono">15.91%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +213,783
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,445,856</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">209,102</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">20,956</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">15.91%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">5</span></td>
     <td><img src="https://i.ytimg.com/vi/MEFzMcNMs8M/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=MEFzMcNMs8M" target="_blank" rel="noopener">
         <div class="vtitle">Surviving Elemental Ore Chunk Battle in Minecraft..</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +34,615
-    </span></td>
-    <td><span class="mono">1.32%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +34,615
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,092,239</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">13,829</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">589</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.32%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">6</span></td>
     <td><img src="https://i.ytimg.com/vi/ovu5CisMVug/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=ovu5CisMVug" target="_blank" rel="noopener">
         <div class="vtitle">スプラトゥーン レイダース 発売日決定！</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +327,988
-    </span></td>
-    <td><span class="mono">4.42%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +327,988
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">975,634</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">43,170</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4.42%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">7</span></td>
     <td><img src="https://i.ytimg.com/vi/5sOgJQ3N03Q/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=5sOgJQ3N03Q" target="_blank" rel="noopener">
         <div class="vtitle">REDRED</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +113,202
-    </span></td>
-    <td><span class="mono">8.47%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +113,202
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">905,362</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">72,596</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,063</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">8.47%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">8</span></td>
     <td><img src="https://i.ytimg.com/vi/a1vHjBy85TU/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=a1vHjBy85TU" target="_blank" rel="noopener">
         <div class="vtitle">CORTIS (코르티스) &#39;REDRED&#39; Conceptual Performance Film</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +180,619
-    </span></td>
-    <td><span class="mono">20.13%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +180,619
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">884,166</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">170,874</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">7,151</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">20.13%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">9</span></td>
     <td><img src="https://i.ytimg.com/vi/23mZFKYM9S8/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=23mZFKYM9S8" target="_blank" rel="noopener">
         <div class="vtitle">#Video | कमरिया लिखवाली | #Ankush Raja | #Shilpi Raj | Ft. Pallavi | New Bhojpuri Song 2026</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +56,055
-    </span></td>
-    <td><span class="mono">0.79%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +56,055
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">736,762</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">5,681</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">111</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">0.79%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">10</span></td>
     <td><img src="https://i.ytimg.com/vi/puwtCcUu9_E/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=puwtCcUu9_E" target="_blank" rel="noopener">
         <div class="vtitle">THE RADIO TOWER</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-video">video</span></td>
-    <td><span class="gain gain-gl">
-      +692,779
-    </span></td>
-    <td><span class="mono">8.12%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +692,779
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">692,779</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">53,733</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,517</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">8.12%</span>
+    </td>
   </tr>
   
   </tbody>
@@ -1479,8 +2111,15 @@ a{color:inherit;text-decoration:none}
 <div style="overflow-x:auto">
 <table class="vtbl">
   <thead><tr>
-    <th>#</th><th>Thumb</th><th>Video</th>
-    <th>Type</th><th>Views Gain</th><th>ER</th>
+    <th>#</th>
+    <th>Thumb</th>
+    <th>Video</th>
+    <th>Type</th>
+    <th style="text-align:right">Views Gain</th>
+    <th style="text-align:right">Total Views</th>
+    <th style="text-align:right">Likes</th>
+    <th style="text-align:right">Comments</th>
+    <th style="text-align:right">ER</th>
   </tr></thead>
   <tbody>
   
@@ -1488,153 +2127,270 @@ a{color:inherit;text-decoration:none}
     <td><span class="rank">1</span></td>
     <td><img src="https://i.ytimg.com/vi/QHdajZktFEU/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=QHdajZktFEU" target="_blank" rel="noopener">
         <div class="vtitle">Bangles (Official #Video) Sanju Rathod Ft. Isha Malviya | G-Spark | #Marathi Pop 2026 | बांगडी</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +192,804
-    </span></td>
-    <td><span class="mono">3.66%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +192,804
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,835,908</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">170,072</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,955</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3.66%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">2</span></td>
     <td><img src="https://i.ytimg.com/vi/1o5O2YvV3HU/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=1o5O2YvV3HU" target="_blank" rel="noopener">
         <div class="vtitle">NCT WISH 엔시티 위시 &#39;Ode to Love&#39; MV</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +146,063
-    </span></td>
-    <td><span class="mono">2.1%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +146,063
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">4,724,679</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">91,574</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">7,485</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2.1%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">3</span></td>
     <td><img src="https://i.ytimg.com/vi/dKFxO40rdNY/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=dKFxO40rdNY" target="_blank" rel="noopener">
         <div class="vtitle">【初配信】BIGな男に俺はなる。【塚原大地 / にじさんじ】</div>
       </a>
       <div class="vcat">Entertainment</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +28,206
-    </span></td>
-    <td><span class="mono">6.4%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +28,206
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">442,505</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">28,025</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">300</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6.4%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">4</span></td>
     <td><img src="https://i.ytimg.com/vi/dT0KXvI4pn0/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=dT0KXvI4pn0" target="_blank" rel="noopener">
         <div class="vtitle">【初配信】Y4T4が来たぞヤッター！【レヨン / にじさんじ】</div>
       </a>
       <div class="vcat">Entertainment</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +33,842
-    </span></td>
-    <td><span class="mono">6.27%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +33,842
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">392,815</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">24,253</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">380</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6.27%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">5</span></td>
     <td><img src="https://i.ytimg.com/vi/8ULmhXO4gks/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=8ULmhXO4gks" target="_blank" rel="noopener">
         <div class="vtitle">mgk - FIX UR FACE (feat. Fred Durst) (Official Music Video)</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +106,515
-    </span></td>
-    <td><span class="mono">11.64%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +106,515
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">310,272</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">32,956</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">3,156</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">11.64%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">6</span></td>
     <td><img src="https://i.ytimg.com/vi/UfW-nyVHzmE/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=UfW-nyVHzmE" target="_blank" rel="noopener">
         <div class="vtitle">똘끼 리니지클래식 예언 심리</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +9,388
-    </span></td>
-    <td><span class="mono">1.02%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +9,388
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">273,866</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">2,718</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">83</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.02%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">7</span></td>
     <td><img src="https://i.ytimg.com/vi/MuQyoPhajBw/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=MuQyoPhajBw" target="_blank" rel="noopener">
         <div class="vtitle">[LIVE] 4월 21일 아이온2 업데이트 프리뷰 방송</div>
       </a>
       <div class="vcat">Gaming</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +4,506
-    </span></td>
-    <td><span class="mono">1.39%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +4,506
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">183,593</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1,694</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">858</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">1.39%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">8</span></td>
     <td><img src="https://i.ytimg.com/vi/X1xcOhkgc4c/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=X1xcOhkgc4c" target="_blank" rel="noopener">
         <div class="vtitle">初星学園 「ヨルニテ」Official Music Video (HATSUBOSHI GAKUEN - yorunite)</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +24,754
-    </span></td>
-    <td><span class="mono">9.82%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +24,754
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">103,853</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">9,654</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">544</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">9.82%</span>
+    </td>
   </tr>
   
   <tr>
     <td><span class="rank">9</span></td>
     <td><img src="https://i.ytimg.com/vi/rhafluNvZok/mqdefault.jpg" class="vthumb" loading="lazy" alt="">
         </td>
-    <td style="max-width:300px">
+    <td style="max-width:260px">
       <a href="https://youtube.com/watch?v=rhafluNvZok" target="_blank" rel="noopener">
         <div class="vtitle">Raq baby - Homicide (Official Music Video)</div>
       </a>
       <div class="vcat">Music</div>
     </td>
     <td><span class="ct-pill ct-stream">stream</span></td>
-    <td><span class="gain gain-gl">
-      +44,669
-    </span></td>
-    <td><span class="mono">14.34%</span></td>
+    <td class="stat-cell">
+      <span class="gain gain-gl">
+        +44,669
+      </span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">44,669</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">6,111</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">293</span>
+    </td>
+    <td class="stat-cell">
+      <span class="mono">14.34%</span>
+    </td>
   </tr>
   
   </tbody>
@@ -1657,7 +2413,6 @@ a{color:inherit;text-decoration:none}
       <span class="badge bvn">8 categories</span>
     </div>
     <div id="cat-vn-list">
-      <!-- rendered by JS from cat_perf_vn_json -->
       <div class="empty">Loading…</div>
     </div>
   </div>
@@ -1674,26 +2429,20 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <!-- ══════════════════════════════════════════
-     INTRADAY + TREND CHARTS
+     INTRADAY CHART (VN only — hourly không crawl Global)
 ══════════════════════════════════════════ -->
-<p class="st"><span class="live-dot"></span>&nbsp;Intraday Views · từng giờ hôm nay</p>
-<div class="g2" style="margin-bottom:14px">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <strong>🇻🇳 VN — Views/giờ</strong>
-      <span style="font-size:11px;color:var(--text2)">05:38 UTC</span>
-    </div>
-    <div class="ch"><canvas id="cIntradayVN"></canvas></div>
+<p class="st"><span class="live-dot"></span>&nbsp;Intraday Views · từng giờ hôm nay (ICT)</p>
+<div class="card" style="margin-bottom:14px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <strong>🇻🇳 VN — Views/giờ</strong>
+    <span style="font-size:11px;color:var(--text2)">13:11 ICT</span>
   </div>
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <strong>🌐 Global — Views/giờ</strong>
-      <span style="font-size:11px;color:var(--text2)">hourly snapshot</span>
-    </div>
-    <div class="ch"><canvas id="cIntradayGlobal"></canvas></div>
-  </div>
+  <div class="ch"><canvas id="cIntradayVN"></canvas></div>
 </div>
 
+<!-- ══════════════════════════════════════════
+     TREND 30 NGÀY
+══════════════════════════════════════════ -->
 <p class="st">Xu hướng 30 ngày</p>
 <div class="g2" style="margin-bottom:14px">
   <div class="card">
@@ -1715,11 +2464,14 @@ a{color:inherit;text-decoration:none}
     <div class="ch-sm"><canvas id="cWoW"></canvas></div>
   </div>
   <div class="card">
-    <div style="margin-bottom:12px"><strong>📅 Monthly VN vs Global</strong></div>
+    <div style="margin-bottom:12px">
+      <strong>📅 Monthly VN vs Global</strong>
+      <span class="badge bgr" style="margin-left:8px;font-size:10px">6 tháng gần nhất</span>
+    </div>
     <div class="ch-sm"><canvas id="cMonthly"></canvas></div>
   </div>
   <div class="card">
-    <div style="margin-bottom:12px"><strong>🕐 Giờ đăng tối ưu (VN)</strong></div>
+    <div style="margin-bottom:12px"><strong>🕐 Giờ đăng tối ưu · VN (ICT)</strong></div>
     <div class="ch-sm"><canvas id="cPostTime"></canvas></div>
   </div>
 </div>
@@ -1739,6 +2491,57 @@ a{color:inherit;text-decoration:none}
       
       <div class="hot-row">
         <span class="hot-rk">1</span>
+        <img src="https://i.ytimg.com/vi/m-7PbZJQyec/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
+        
+        <div class="hot-inf">
+          <a href="https://youtube.com/watch?v=m-7PbZJQyec" target="_blank" rel="noopener">
+            <div class="hot-t">Hiha Trừ Tà TRIỆU HỒI Hiha CatNap và Hiha AntiCatNap Trong Minecraft 😵‍💫😱</div>
+          </a>
+          <div class="hot-m">
+            <span class="mb mb-peaking">peaking</span>
+            <span class="ct-pill ct-stream" style="margin-left:4px">stream</span>
+            &nbsp;Gaming
+          </div>
+        </div>
+        <div class="hot-d" style="color:var(--vn)">+31,390</div>
+      </div>
+      
+      <div class="hot-row">
+        <span class="hot-rk">2</span>
+        <img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
+        
+        <div class="hot-inf">
+          <a href="https://youtube.com/watch?v=QF5YpZI1wnk" target="_blank" rel="noopener">
+            <div class="hot-t">I Survived 100 Days in Skyblock</div>
+          </a>
+          <div class="hot-m">
+            <span class="mb mb-fading">fading</span>
+            <span class="ct-pill ct-video" style="margin-left:4px">video</span>
+            &nbsp;Gaming
+          </div>
+        </div>
+        <div class="hot-d" style="color:var(--vn)">+25,386</div>
+      </div>
+      
+      <div class="hot-row">
+        <span class="hot-rk">3</span>
+        <img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
+        
+        <div class="hot-inf">
+          <a href="https://youtube.com/watch?v=U6BDbXIah-Y" target="_blank" rel="noopener">
+            <div class="hot-t">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
+          </a>
+          <div class="hot-m">
+            <span class="mb mb-decelerating">decelerating</span>
+            <span class="ct-pill ct-stream" style="margin-left:4px">stream</span>
+            &nbsp;Music
+          </div>
+        </div>
+        <div class="hot-d" style="color:var(--vn)">+22,782</div>
+      </div>
+      
+      <div class="hot-row">
+        <span class="hot-rk">4</span>
         <img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
         
         <div class="hot-inf">
@@ -1755,7 +2558,7 @@ a{color:inherit;text-decoration:none}
       </div>
       
       <div class="hot-row">
-        <span class="hot-rk">2</span>
+        <span class="hot-rk">5</span>
         <img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
         
         <div class="hot-inf">
@@ -1763,7 +2566,7 @@ a{color:inherit;text-decoration:none}
             <div class="hot-t">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
           </a>
           <div class="hot-m">
-            <span class="mb mb-fading">fading</span>
+            <span class="mb mb-decelerating">decelerating</span>
             <span class="ct-pill ct-stream" style="margin-left:4px">stream</span>
             &nbsp;Music
           </div>
@@ -1772,7 +2575,24 @@ a{color:inherit;text-decoration:none}
       </div>
       
       <div class="hot-row">
-        <span class="hot-rk">3</span>
+        <span class="hot-rk">6</span>
+        <img src="https://i.ytimg.com/vi/w2473GsRyXQ/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
+        
+        <div class="hot-inf">
+          <a href="https://youtube.com/watch?v=w2473GsRyXQ" target="_blank" rel="noopener">
+            <div class="hot-t">[Free Fire] CULÌ Tích ( V ) Ghép Kênh Thế Giới Gánh Team Xem Phản Ứng Và Cái Kết !</div>
+          </a>
+          <div class="hot-m">
+            <span class="mb mb-peaking">peaking</span>
+            <span class="ct-pill ct-video" style="margin-left:4px">video</span>
+            &nbsp;Gaming
+          </div>
+        </div>
+        <div class="hot-d" style="color:var(--vn)">+6,673</div>
+      </div>
+      
+      <div class="hot-row">
+        <span class="hot-rk">7</span>
         <img src="https://i.ytimg.com/vi/m-7PbZJQyec/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
         
         <div class="hot-inf">
@@ -1789,74 +2609,6 @@ a{color:inherit;text-decoration:none}
       </div>
       
       <div class="hot-row">
-        <span class="hot-rk">4</span>
-        <img src="https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
-        
-        <div class="hot-inf">
-          <a href="https://youtube.com/watch?v=U6BDbXIah-Y" target="_blank" rel="noopener">
-            <div class="hot-t">CORTIS (코르티스) &#39;REDRED&#39; Official MV</div>
-          </a>
-          <div class="hot-m">
-            <span class="mb mb-fading">fading</span>
-            <span class="ct-pill ct-stream" style="margin-left:4px">stream</span>
-            &nbsp;Music
-          </div>
-        </div>
-        <div class="hot-d" style="color:var(--vn)">+4,924</div>
-      </div>
-      
-      <div class="hot-row">
-        <span class="hot-rk">5</span>
-        <img src="https://i.ytimg.com/vi/QF5YpZI1wnk/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
-        
-        <div class="hot-inf">
-          <a href="https://youtube.com/watch?v=QF5YpZI1wnk" target="_blank" rel="noopener">
-            <div class="hot-t">I Survived 100 Days in Skyblock</div>
-          </a>
-          <div class="hot-m">
-            <span class="mb mb-fading">fading</span>
-            <span class="ct-pill ct-video" style="margin-left:4px">video</span>
-            &nbsp;Gaming
-          </div>
-        </div>
-        <div class="hot-d" style="color:var(--vn)">+4,786</div>
-      </div>
-      
-      <div class="hot-row">
-        <span class="hot-rk">6</span>
-        <img src="https://i.ytimg.com/vi/m-7PbZJQyec/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
-        
-        <div class="hot-inf">
-          <a href="https://youtube.com/watch?v=m-7PbZJQyec" target="_blank" rel="noopener">
-            <div class="hot-t">Hiha Trừ Tà TRIỆU HỒI Hiha CatNap và Hiha AntiCatNap Trong Minecraft 😵‍💫😱</div>
-          </a>
-          <div class="hot-m">
-            <span class="mb mb-peaking">peaking</span>
-            <span class="ct-pill ct-stream" style="margin-left:4px">stream</span>
-            &nbsp;Gaming
-          </div>
-        </div>
-        <div class="hot-d" style="color:var(--vn)">+4,627</div>
-      </div>
-      
-      <div class="hot-row">
-        <span class="hot-rk">7</span>
-        <img src="https://i.ytimg.com/vi/6hNenqz0ISA/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
-        
-        <div class="hot-inf">
-          <a href="https://youtube.com/watch?v=6hNenqz0ISA" target="_blank" rel="noopener">
-            <div class="hot-t">Sớm Như Vậy / buitruonglinh</div>
-          </a>
-          <div class="hot-m">
-            <span class="mb mb-decelerating">decelerating</span>
-            <span class="ct-pill ct-video" style="margin-left:4px">video</span>
-            &nbsp;Music
-          </div>
-        </div>
-        <div class="hot-d" style="color:var(--vn)">+2,322</div>
-      </div>
-      
-      <div class="hot-row">
         <span class="hot-rk">8</span>
         <img src="https://i.ytimg.com/vi/BluGEfDLba4/mqdefault.jpg" class="hot-th" loading="lazy" alt="">
         
@@ -1870,7 +2622,7 @@ a{color:inherit;text-decoration:none}
             &nbsp;Gaming
           </div>
         </div>
-        <div class="hot-d" style="color:var(--vn)">+1,641</div>
+        <div class="hot-d" style="color:var(--vn)">+5,590</div>
       </div>
       
     
@@ -1898,7 +2650,7 @@ a{color:inherit;text-decoration:none}
     <div style="margin-bottom:12px"><strong>🇻🇳 Vietnam</strong></div>
     <div class="mom-grid">
       <div class="mom-cell">
-        <div class="mom-num" style="color:var(--vn)">15</div>
+        <div class="mom-num" style="color:var(--vn)">35</div>
         <div class="mom-lbl">↑↑ Accelerating</div>
       </div>
       <div class="mom-cell">
@@ -1906,11 +2658,11 @@ a{color:inherit;text-decoration:none}
         <div class="mom-lbl">▲ Peaking</div>
       </div>
       <div class="mom-cell">
-        <div class="mom-num" style="color:var(--orange)">17</div>
+        <div class="mom-num" style="color:var(--orange)">6</div>
         <div class="mom-lbl">↓ Decelerating</div>
       </div>
       <div class="mom-cell">
-        <div class="mom-num" style="color:var(--text3)">13</div>
+        <div class="mom-num" style="color:var(--text3)">4</div>
         <div class="mom-lbl">→ Fading</div>
       </div>
       <div class="mom-cell">
@@ -1963,12 +2715,8 @@ a{color:inherit;text-decoration:none}
     
       <div class="ai-body">Tuần này, thị trường YouTube Việt Nam tiếp tục được định hình bởi hai thể loại chính là Gaming và Music. Một video Gaming dài tập đã thu hút lượng lớn lượt xem, trong khi một MV ca nhạc theo phong cách K-pop đạt tỷ lệ tương tác (ER) cực cao, cho thấy tiềm năng lớn của nội dung có tính tương tác cao. Trên toàn cầu, nội dung giải trí từ Ấn Độ, đặc biệt là trailer phim và video âm nhạc, chiếm ưu thế trong các video hàng đầu. Nhìn chung, các buổi phát trực tiếp (stream) đang cho thấy tỷ lệ tương tác tốt hơn so với video truyền thống ở cả hai khu vực.</div>
       
-      <div class="ai-forecast">
-        <span style="color:var(--amber);font-weight:600">📈 Dự báo tuần tới:&nbsp;</span>Gaming và Music sẽ tiếp tục là các thể loại dẫn đầu tại Việt Nam, đặc biệt là các nội dung phát trực tiếp với tỷ lệ tương tác cao. Xu hướng toàn cầu cho thấy sự gia tăng của các nội dung giải trí điện ảnh và âm nhạc, đặc biệt từ thị trường Ấn Độ, có thể sẽ tạo ra những làn sóng mới.
-      </div>
       
-      
-      <div class="ai-meta">Generated: 2026-04-22 05:38 UTC</div>
+      <div class="ai-meta">Generated: 22/04/2026 12:38 ICT</div>
       
     
   </div>
@@ -1977,23 +2725,7 @@ a{color:inherit;text-decoration:none}
     <div class="card" style="margin-bottom:14px">
       <div style="margin-bottom:10px"><strong>🚨 Anomalies</strong></div>
       
-        
-        <div class="anom medium">
-          <div class="anom-title">
-            <span>Category Surge</span>
-            <span class="badge bamb">medium</span>
-          </div>
-          <div class="anom-desc">MV &#39;REDRED&#39; của CORTIS (Music, VN) đạt tỷ lệ tương tác ấn tượng 16.72% cho một buổi phát trực tiếp, cao hơn đáng kể so với các video và stream khác trong top 5, cho thấy mức độ tương tác cộng đồng cực kỳ mạnh mẽ.</div>
-        </div>
-        
-        <div class="anom low">
-          <div class="anom-title">
-            <span>Unusual Drop</span>
-            <span class="badge bamb">low</span>
-          </div>
-          <div class="anom-desc">Video &#39;Bình Luận Tiếng Việt: BRO vs NS l l KRX vs T1 | LCK 2026&#39; (Gaming, VN) lọt vào top 5 với lượng views và ER rất thấp (0.52%), cho thấy nó có thể đại diện cho một niche rất cụ thể hoặc chỉ vừa đủ điều kiện để lọt top mà không có sức hút rộng rãi.</div>
-        </div>
-        
+        <div class="empty" style="padding:14px">Không có anomaly</div>
       
     </div>
   </div>
@@ -2096,30 +2828,6 @@ a{color:inherit;text-decoration:none}
      TREND LAG
 ══════════════════════════════════════════ -->
 
-<p class="st">🕐 Trend Lag Radar — Global → VN</p>
-<div class="card" style="margin-bottom:14px">
-  <div class="lag-stat">
-    <div class="lag-box">
-      <div class="n" style="color:var(--global)">400</div>
-      <div class="l">Chỉ Global</div>
-    </div>
-    <div class="lag-box">
-      <div class="n" style="color:var(--amber)">7</div>
-      <div class="l">Overlap</div>
-    </div>
-    <div class="lag-box">
-      <div class="n" style="color:var(--vn)">732</div>
-      <div class="l">Chỉ VN</div>
-    </div>
-  </div>
-  <div style="font-size:11.5px;color:var(--text2);margin-bottom:10px">
-    Topics hot ở Global nhưng chưa xuất hiện tại VN (cơ hội làm content):
-  </div>
-  <div class="lag-tags">
-    <span class="lag-tag">#아이온</span><span class="lag-tag">#raushan rohi ke gana</span><span class="lag-tag">#gaming</span><span class="lag-tag">#chicago</span><span class="lag-tag">#今野大輝</span><span class="lag-tag">#액션rpg</span><span class="lag-tag">#アイマス</span><span class="lag-tag">#games</span><span class="lag-tag">#amole gupte</span><span class="lag-tag">#fred durst</span><span class="lag-tag">#손인욱</span><span class="lag-tag">#sv_nintendo</span><span class="lag-tag">#silo official trailer</span><span class="lag-tag">#raushan rohi</span><span class="lag-tag">#neetu kapoor movies</span><span class="lag-tag">#raushan rohi ka naya gana</span><span class="lag-tag">#bhojpuri video song</span><span class="lag-tag">#shaky shaky</span><span class="lag-tag">#bugs music</span><span class="lag-tag">#スプラトゥーン3</span>
-  </div>
-</div>
-
 
 <!-- ══════════════════════════════════════════
      CATEGORY + ER CHARTS
@@ -2137,67 +2845,22 @@ a{color:inherit;text-decoration:none}
   <div class="card">
     <div style="margin-bottom:10px"><strong>💡 ER by Type (VN)</strong></div>
     
-    <div style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-        <span class="ct-pill ct-stream">stream</span>
-        <span style="font-size:12px;font-weight:600">3.071%</span>
-      </div>
-      <div class="progress-bg">
-        <div class="progress-fill" style="width:24.568%;
-          background:var(--purple)">
-        </div>
-      </div>
-    </div>
-    
-    <div style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-        <span class="ct-pill ct-video">video</span>
-        <span style="font-size:12px;font-weight:600">1.432%</span>
-      </div>
-      <div class="progress-bg">
-        <div class="progress-fill" style="width:11.456%;
-          background:var(--global)">
-        </div>
-      </div>
-    </div>
-    
     <div style="margin-top:14px;font-size:11px;color:var(--text2)">Global</div>
-    
-    <div style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-        <span class="ct-pill ct-video">video</span>
-        <span style="font-size:12px;font-weight:600">5.359%</span>
-      </div>
-      <div class="progress-bg">
-        <div class="progress-fill" style="width:42.872%;background:var(--global)"></div>
-      </div>
-    </div>
-    
-    <div style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-        <span class="ct-pill ct-stream">stream</span>
-        <span style="font-size:12px;font-weight:600">6.293%</span>
-      </div>
-      <div class="progress-bg">
-        <div class="progress-fill" style="width:50.344%;background:var(--global)"></div>
-      </div>
-    </div>
     
   </div>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-  <div>YouTube Analytics Pipeline · Hourly crawl + Daily Gemini analysis</div>
+  <div>YouTube Analytics Pipeline · Hourly crawl (VN) + Daily Gemini analysis</div>
   <div style="margin-top:4px">
     <strong>YouTube Data API v3</strong> · <strong>Gemini 2.5 Flash</strong> ·
     <strong>Supabase</strong> · <strong>GitHub Actions → Pages</strong>
   </div>
-  <div style="margin-top:4px;color:var(--text3)">22/04/2026 05:38 UTC</div>
+  <div style="margin-top:4px;color:var(--text3)">22/04/2026 13:11 ICT</div>
 </div>
 
 </div><!-- /wrap -->
-
 
 
 <!-- ══════════════════════════════════════════
@@ -2241,7 +2904,7 @@ function switchTab(prefix, id, btn, activeClass='active') {
 }
 
 // ── Trend VN ─────────────────────────────────────────────
-const tVN = [{"date": "2026-04-21", "views": 67047538}, {"date": "2026-04-22", "views": 1786250}];
+const tVN = [{"date": "2026-04-21", "views": 67047538}, {"date": "2026-04-22", "views": 1922561}];
 if(tVN.length) new Chart(document.getElementById('cTrendVN'),{
   type:'line', data:{
     labels:tVN.map(d=>fmtD(d.date)),
@@ -2278,21 +2941,63 @@ new Chart(document.getElementById('cWoW'),{
   }, options:DEF
 });
 
-// ── Monthly ───────────────────────────────────────────────
-const mVN = [{"month": "2026-04", "views": 68833788}], mGL = [{"month": "2026-04", "views": 52619141}];
+// ── Monthly: Line chart để thấy rõ cả VN lẫn Global ─────
+const mVN = [{"month": "2026-04", "views": 68970099}], mGL = [{"month": "2026-04", "views": 52619141}];
 const allM = [...new Set([...mVN.map(d=>d.month),...mGL.map(d=>d.month)])].sort();
-new Chart(document.getElementById('cMonthly'),{
-  type:'bar', data:{
-    labels:allM,
-    datasets:[
-      {label:'VN',data:allM.map(m=>mVN.find(d=>d.month===m)?.views||0),backgroundColor:C.vn,borderRadius:4},
-      {label:'Global',data:allM.map(m=>mGL.find(d=>d.month===m)?.views||0),backgroundColor:C.gl,borderRadius:4},
-    ]
-  }, options:DEF
-});
+if(allM.length){
+  // Dùng 2 y-axis khi data chênh lệch lớn giữa VN và Global
+  const vnVals  = allM.map(m=>mVN.find(d=>d.month===m)?.views||0);
+  const glVals  = allM.map(m=>mGL.find(d=>d.month===m)?.views||0);
+  const maxVN   = Math.max(...vnVals);
+  const maxGL   = Math.max(...glVals);
+  const useDual = maxVN > 0 && maxGL > 0 && (maxVN / maxGL > 5 || maxGL / maxVN > 5);
+
+  const monthlyOpts = {
+    ...DEF,
+    scales: useDual ? {
+      x:{grid:{color:C.border},ticks:{color:C.txt2,font:{size:11}}},
+      yVN:{
+        type:'linear',position:'left',grid:{color:C.border},
+        ticks:{color:C.vn,font:{size:10},
+          callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}
+      },
+      yGL:{
+        type:'linear',position:'right',grid:{drawOnChartArea:false},
+        ticks:{color:C.gl,font:{size:10},
+          callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}
+      }
+    } : DEF.scales,
+  };
+
+  new Chart(document.getElementById('cMonthly'),{
+    type:'line', data:{
+      labels:allM,
+      datasets:[
+        {
+          label:'🇻🇳 VN',
+          data:vnVals,
+          borderColor:C.vn,backgroundColor:C.vnA,
+          borderWidth:2,pointRadius:3,fill:false,tension:.3,
+          ...(useDual ? {yAxisID:'yVN'} : {})
+        },
+        {
+          label:'🌐 Global',
+          data:glVals,
+          borderColor:C.gl,backgroundColor:C.glA,
+          borderWidth:2,pointRadius:3,fill:false,tension:.3,
+          borderDash:[5,3],
+          ...(useDual ? {yAxisID:'yGL'} : {})
+        },
+      ]
+    }, options: monthlyOpts
+  });
+} else {
+  const el = document.getElementById('cMonthly');
+  if(el) el.parentElement.innerHTML='<div class="empty" style="padding:30px">Chưa có data tháng</div>';
+}
 
 // ── Post Time ─────────────────────────────────────────────
-const ptVN = {"0": 2118.0, "3": 145697.0, "4": 560440.0, "5": 6984.0, "7": 72338.0, "8": 169477.0, "9": 82638.0, "10": 58558.0, "11": 224775.0, "12": 9363.0, "13": 101789.0, "14": 118731.0, "15": 465.0, "16": 278280.0, "17": 137684.0, "20": 1311.0, "22": 100711.0};
+const ptVN = {"0": 85509.0, "3": 1629.0, "5": 8891.0, "7": 2500.0, "10": 145697.0, "11": 90776.0, "12": 7796.0, "14": 74099.0, "15": 190591.0, "16": 36460.0, "17": 22350.0, "18": 167033.0, "19": 10857.0, "20": 102681.0, "21": 118750.0, "22": 572.0, "23": 301035.0};
 const hrs = Array.from({length:24},(_,i)=>`${i}h`);
 new Chart(document.getElementById('cPostTime'),{
   type:'bar', data:{
@@ -2301,7 +3006,7 @@ new Chart(document.getElementById('cPostTime'),{
       label:'Avg Views Gain',
       data:hrs.map((_,i)=>ptVN[String(i)]||0),
       backgroundColor:hrs.map((_,i)=>{
-        const v=ptVN[String(i)]||0, mx=Math.max(...Object.values(ptVN));
+        const v=ptVN[String(i)]||0, mx=Math.max(...Object.values(ptVN).map(Number).filter(Boolean));
         return `rgba(16,185,129,${mx>0?(.3+v/mx*.7).toFixed(2):.3})`;
       }),
       borderRadius:3,
@@ -2327,7 +3032,7 @@ const catVN = {"Gaming": 23, "Music": 23, "People & Blogs": 7, "Film & Animation
 });
 
 // ── Intraday VN ───────────────────────────────────────────
-const ivn = [{"hour": "05:00", "views": 28926, "videos": 17}, {"hour": "05:00", "views": 38548, "videos": 33}];
+const ivn = [{"hour": "12:00", "views": 28926, "videos": 17}, {"hour": "12:00", "views": 38548, "videos": 33}, {"hour": "13:00", "views": 66700, "videos": 17}, {"hour": "13:00", "views": 82702, "videos": 33}];
 const ivnEl = document.getElementById('cIntradayVN');
 if(ivn.length && ivnEl) {
   new Chart(ivnEl,{type:'bar',data:{
@@ -2339,21 +3044,6 @@ if(ivn.length && ivnEl) {
   }, options:{...DEF,plugins:{...DEF.plugins,legend:{display:false}}}});
 } else if(ivnEl) {
   ivnEl.parentElement.innerHTML='<div class="empty" style="padding:30px">Chưa có hourly data</div>';
-}
-
-// ── Intraday Global ───────────────────────────────────────
-const igl = [];
-const iglEl = document.getElementById('cIntradayGlobal');
-if(igl.length && iglEl) {
-  new Chart(iglEl,{type:'bar',data:{
-    labels:igl.map(d=>d.hour),
-    datasets:[{label:'Views/giờ (Global)',data:igl.map(d=>d.views),
-      backgroundColor:igl.map(d=>{const mx=Math.max(...igl.map(x=>x.views));
-        return `rgba(59,130,246,${mx>0?(.3+d.views/mx*.7).toFixed(2):.4})`;
-      }),borderRadius:4}]
-  }, options:{...DEF,plugins:{...DEF.plugins,legend:{display:false}}}});
-} else if(iglEl) {
-  iglEl.parentElement.innerHTML='<div class="empty" style="padding:30px">Chưa có hourly data</div>';
 }
 
 // ── Category Leaderboard (JS render) ─────────────────────
@@ -2384,17 +3074,12 @@ function renderCatList(data, containerId, maxGain, col){
   }).join('');
 }
 
-const catPerfVN = [{"category": "Gaming", "total_gain": 1194195, "avg_er": 1.75, "video_count": 21, "stream_count": 8, "top_video": {"video_id": "m-7PbZJQyec", "title": "Hiha Trừ Tà TRIỆU HỒI Hiha CatNap và Hiha AntiCatNap Trong Minecraft 😵‍💫😱", "thumbnail": "https://i.ytimg.com/vi/m-7PbZJQyec/mqdefault.jpg", "views_gain": 486076, "yt_url": "https://youtube.com/watch?v=m-7PbZJQyec"}}, {"category": "Music", "total_gain": 521700, "avg_er": 2.79, "video_count": 22, "stream_count": 8, "top_video": {"video_id": "U6BDbXIah-Y", "title": "CORTIS (코르티스) 'REDRED' Official MV", "thumbnail": "https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg", "views_gain": 169477, "yt_url": "https://youtube.com/watch?v=U6BDbXIah-Y"}}, {"category": "People & Blogs", "total_gain": 58278, "avg_er": 0.76, "video_count": 7, "stream_count": 1, "top_video": {"video_id": "V_yChL_Indc", "title": "Playlist Nhạc Tâm Trạng 8x 9x R&B Cover Hot Tiktok Triệu View - Thiệp Hồng Sai Tên, 999 Đóa Hồng UME", "thumbnail": "https://i.ytimg.com/vi/V_yChL_Indc/mqdefault.jpg", "views_gain": 16637, "yt_url": "https://youtube.com/watch?v=V_yChL_Indc"}}, {"category": "Film & Animation", "total_gain": 8360, "avg_er": 0.33, "video_count": 1, "stream_count": 0, "top_video": {"video_id": "5dsgvY-dXbA", "title": "[Trailer] Giới thiệu phim BÓNG MA HẠNH PHÚC - Tuần 6 | Lớp vỏ bọc hào nhoáng vỡ vụn...", "thumbnail": "https://i.ytimg.com/vi/5dsgvY-dXbA/mqdefault.jpg", "views_gain": 8360, "yt_url": "https://youtube.com/watch?v=5dsgvY-dXbA"}}, {"category": "Entertainment", "total_gain": 3241, "avg_er": 1.1, "video_count": 1, "stream_count": 0, "top_video": {"video_id": "6J2UXjxDjEw", "title": "(Windrose #1) Thủ lĩnh KaiĐộ cùng băng hải tặc mới nhú Refund đổ bộ hoang đảo, gây dựng lãnh địa.", "thumbnail": "https://i.ytimg.com/vi/6J2UXjxDjEw/mqdefault.jpg", "views_gain": 3241, "yt_url": "https://youtube.com/watch?v=6J2UXjxDjEw"}}, {"category": "Travel & Events", "total_gain": 476, "avg_er": 1.35, "video_count": 1, "stream_count": 1, "top_video": {"video_id": "G4OmNEuY8HE", "title": "CUỐI TUẦN NHƯNG VẪN NÀM", "thumbnail": "https://i.ytimg.com/vi/G4OmNEuY8HE/mqdefault.jpg", "views_gain": 476, "yt_url": "https://youtube.com/watch?v=G4OmNEuY8HE"}}];
+const catPerfVN = [{"category": "Gaming", "total_gain": 1276559, "avg_er": 1.74, "video_count": 21, "stream_count": 8, "top_video": {"video_id": "m-7PbZJQyec", "title": "Hiha Trừ Tà TRIỆU HỒI Hiha CatNap và Hiha AntiCatNap Trong Minecraft 😵‍💫😱", "thumbnail": "https://i.ytimg.com/vi/m-7PbZJQyec/mqdefault.jpg", "views_gain": 515240, "yt_url": "https://youtube.com/watch?v=m-7PbZJQyec"}}, {"category": "Music", "total_gain": 565865, "avg_er": 2.78, "video_count": 22, "stream_count": 8, "top_video": {"video_id": "U6BDbXIah-Y", "title": "CORTIS (코르티스) 'REDRED' Official MV", "thumbnail": "https://i.ytimg.com/vi/U6BDbXIah-Y/mqdefault.jpg", "views_gain": 190591, "yt_url": "https://youtube.com/watch?v=U6BDbXIah-Y"}}, {"category": "People & Blogs", "total_gain": 65986, "avg_er": 0.76, "video_count": 7, "stream_count": 1, "top_video": {"video_id": "V_yChL_Indc", "title": "Playlist Nhạc Tâm Trạng 8x 9x R&B Cover Hot Tiktok Triệu View - Thiệp Hồng Sai Tên, 999 Đóa Hồng UME", "thumbnail": "https://i.ytimg.com/vi/V_yChL_Indc/mqdefault.jpg", "views_gain": 18467, "yt_url": "https://youtube.com/watch?v=V_yChL_Indc"}}, {"category": "Film & Animation", "total_gain": 9632, "avg_er": 0.33, "video_count": 1, "stream_count": 0, "top_video": {"video_id": "5dsgvY-dXbA", "title": "[Trailer] Giới thiệu phim BÓNG MA HẠNH PHÚC - Tuần 6 | Lớp vỏ bọc hào nhoáng vỡ vụn...", "thumbnail": "https://i.ytimg.com/vi/5dsgvY-dXbA/mqdefault.jpg", "views_gain": 9632, "yt_url": "https://youtube.com/watch?v=5dsgvY-dXbA"}}, {"category": "Entertainment", "total_gain": 4005, "avg_er": 1.1, "video_count": 1, "stream_count": 0, "top_video": {"video_id": "6J2UXjxDjEw", "title": "(Windrose #1) Thủ lĩnh KaiĐộ cùng băng hải tặc mới nhú Refund đổ bộ hoang đảo, gây dựng lãnh địa.", "thumbnail": "https://i.ytimg.com/vi/6J2UXjxDjEw/mqdefault.jpg", "views_gain": 4005, "yt_url": "https://youtube.com/watch?v=6J2UXjxDjEw"}}, {"category": "Travel & Events", "total_gain": 514, "avg_er": 1.35, "video_count": 1, "stream_count": 1, "top_video": {"video_id": "G4OmNEuY8HE", "title": "CUỐI TUẦN NHƯNG VẪN NÀM", "thumbnail": "https://i.ytimg.com/vi/G4OmNEuY8HE/mqdefault.jpg", "views_gain": 514, "yt_url": "https://youtube.com/watch?v=G4OmNEuY8HE"}}];
 const catPerfGL = [{"category": "Gaming", "total_gain": 1858737, "avg_er": 3.7, "video_count": 11, "stream_count": 2, "top_video": {"video_id": "puwtCcUu9_E", "title": "THE RADIO TOWER", "thumbnail": "https://i.ytimg.com/vi/puwtCcUu9_E/mqdefault.jpg", "views_gain": 692779, "yt_url": "https://youtube.com/watch?v=puwtCcUu9_E"}}, {"category": "Music", "total_gain": 1500747, "avg_er": 6.95, "video_count": 18, "stream_count": 5, "top_video": {"video_id": "Os4JVfZp4jg", "title": "PATI PATNI AUR WOH DO (Teaser) | Ayushmann, Wamiqa, Sara, Rakul | Mudassar, Bhushan K, Juno | 15 May", "thumbnail": "https://i.ytimg.com/vi/Os4JVfZp4jg/mqdefault.jpg", "views_gain": 249333, "yt_url": "https://youtube.com/watch?v=Os4JVfZp4jg"}}, {"category": "Entertainment", "total_gain": 1423140, "avg_er": 3.33, "video_count": 11, "stream_count": 2, "top_video": {"video_id": "q2zwd3OVcnM", "title": "Daadi Ki Shaadi Official Trailer | Neetu Kapoor, Kapil Sharma | Ashish R Mohan | In Cinemas 8th May", "thumbnail": "https://i.ytimg.com/vi/q2zwd3OVcnM/mqdefault.jpg", "views_gain": 983320, "yt_url": "https://youtube.com/watch?v=q2zwd3OVcnM"}}, {"category": "People & Blogs", "total_gain": 272387, "avg_er": 15.28, "video_count": 2, "stream_count": 0, "top_video": {"video_id": "wWvu34x2INc", "title": "UNCHILD 언차일드 'UNCHILD' MV", "thumbnail": "https://i.ytimg.com/vi/wWvu34x2INc/mqdefault.jpg", "views_gain": 213783, "yt_url": "https://youtube.com/watch?v=wWvu34x2INc"}}, {"category": "Film & Animation", "total_gain": 53617, "avg_er": 1.71, "video_count": 3, "stream_count": 0, "top_video": {"video_id": "JWOTK4xsQ_g", "title": "『トップガン 40th Anniversary』予告編｜5月13日(水)公開", "thumbnail": "https://i.ytimg.com/vi/JWOTK4xsQ_g/mqdefault.jpg", "views_gain": 33966, "yt_url": "https://youtube.com/watch?v=JWOTK4xsQ_g"}}];
-const maxVN = catPerfVN.length ? catPerfVN[0].total_gain : 1;
-const maxGL = catPerfGL.length ? catPerfGL[0].total_gain : 1;
-renderCatList(catPerfVN, 'cat-vn-list', maxVN, '#10b981');
-renderCatList(catPerfGL, 'cat-global-list', maxGL, '#3b82f6');
-
-// ── Stream vs Video data ──────────────────────────────────
-const svvVN = {"stream": {"count": 19, "total_views": 13135349, "pct_views": 18.1, "avg_er": 3.07}, "video": {"count": 37, "total_views": 59526115, "pct_views": 81.9, "avg_er": 1.43}};
-const svvGL = {"video": {"count": 41, "total_views": 37479305, "pct_views": 76.8, "avg_er": 4.84}, "stream": {"count": 9, "total_views": 11312160, "pct_views": 23.2, "avg_er": 6.29}};
-// Already rendered via Jinja template via svv_vn_data/svv_global_data aliases
+const maxVN2 = catPerfVN.length ? catPerfVN[0].total_gain : 1;
+const maxGL2 = catPerfGL.length ? catPerfGL[0].total_gain : 1;
+renderCatList(catPerfVN, 'cat-vn-list', maxVN2, '#10b981');
+renderCatList(catPerfGL, 'cat-global-list', maxGL2, '#3b82f6');
 </script>
 </body>
 </html>
