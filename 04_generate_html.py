@@ -42,6 +42,9 @@ TODAY: date      = date.today()
 WEEK_AGO: date   = TODAY - timedelta(days=7)
 MONTH_AGO: date  = TODAY - timedelta(days=30)
 
+# ICT = UTC+7
+ICT = timezone(timedelta(hours=7))
+
 
 # ============================================================
 # LOGGING
@@ -53,6 +56,32 @@ logging.basicConfig(
     datefmt="%Y-%m-%dT%H:%M:%S",
 )
 log = logging.getLogger("04_html")
+
+
+# ============================================================
+# TIMEZONE HELPERS
+# ============================================================
+
+def _to_ict_str(utc_str: str) -> str:
+    """Convert UTC ISO string sang ICT display string."""
+    if not utc_str:
+        return ""
+    try:
+        dt = datetime.fromisoformat(utc_str.replace("Z", "+00:00"))
+        ict = dt.astimezone(ICT)
+        return ict.strftime("%d/%m/%Y %H:%M ICT")
+    except Exception:
+        return utc_str[:16].replace("T", " ") + " UTC"
+
+
+def _utc_hhmm_to_ict(hhmm: str) -> str:
+    """Convert 'HH:MM' UTC sang ICT (UTC+7), xử lý wrap qua midnight."""
+    try:
+        h, m = int(hhmm[:2]), int(hhmm[3:5])
+        h_ict = (h + 7) % 24
+        return f"{h_ict:02d}:{m:02d}"
+    except Exception:
+        return hhmm
 
 
 # ============================================================
@@ -181,19 +210,22 @@ def fetch_top_videos(sb: Client, stream: str, top_n: int = 10) -> list:
                        / v.data["views"] * 100, 2)
 
         # COALESCE: dùng gain nếu có, fallback sang total
-        disp_gain = r["views_gain"] if r["views_gain"] is not None else (r.get("views_total") or 0)
+        disp_gain  = r["views_gain"] if r["views_gain"] is not None else (r.get("views_total") or 0)
         disp_likes = r.get("likes_gain") if r.get("likes_gain") is not None else (r.get("likes_total") or 0)
+
         enriched.append({
-            "video_id":     r["video_id"],
-            "title":        v.data.get("title", "Không rõ") if v.data else "Không rõ",
-            "thumbnail":    v.data.get("thumbnail_url", "") if v.data else "",
-            "category":     v.data.get("category_name", "") if v.data else "",
-            "content_type": r["content_type"],
-            "views_gain":   disp_gain,
-            "likes_gain":   disp_likes,
-            "total_views":  v.data.get("views", 0) if v.data else 0,
-            "er_pct":       er,
-            "yt_url":       f"https://youtube.com/watch?v={r['video_id']}",
+            "video_id":       r["video_id"],
+            "title":          v.data.get("title", "Không rõ") if v.data else "Không rõ",
+            "thumbnail":      v.data.get("thumbnail_url", "") if v.data else "",
+            "category":       v.data.get("category_name", "") if v.data else "",
+            "content_type":   r["content_type"],
+            "views_gain":     disp_gain,
+            "likes_gain":     disp_likes,
+            "total_views":    v.data.get("views", 0) if v.data else 0,
+            "total_likes":    v.data.get("likes", 0) if v.data else 0,
+            "total_comments": v.data.get("comments_count", 0) if v.data else 0,
+            "er_pct":         er,
+            "yt_url":         f"https://youtube.com/watch?v={r['video_id']}",
         })
 
     return enriched
@@ -228,7 +260,7 @@ def fetch_wow_chart(sb: Client) -> dict:
 
 def fetch_post_time_heatmap(sb: Client, stream: str) -> dict:
     """
-    Avg views_gain per hour of day (0-23) trong 30 ngày gần nhất.
+    Avg views_gain per hour of day (0-23, ICT) trong 30 ngày gần nhất.
     Dùng vẽ bar chart "giờ vàng".
     """
     res = (
@@ -253,10 +285,12 @@ def fetch_post_time_heatmap(sb: Client, stream: str) -> dict:
     hour_gains: dict = {}
     for row in (vid_res.data or []):
         try:
-            hour = int(row["published_at"][11:13])
+            # Convert published_at UTC hour → ICT (UTC+7)
+            utc_hour = int(row["published_at"][11:13])
+            ict_hour = (utc_hour + 7) % 24
             gain = delta_map.get(row["id"])
             if gain is not None:
-                hour_gains.setdefault(hour, []).append(gain)
+                hour_gains.setdefault(ict_hour, []).append(gain)
         except (IndexError, ValueError, TypeError):
             continue
 
@@ -326,7 +360,7 @@ def fetch_monthly_chart(sb: Client, stream: str) -> list:
 # ============================================================
 
 def fetch_top_by_content_type(sb: Client, stream: str, content_type: str, top_n: int = 10) -> list:
-    """Top N video của 1 content_type cụ thể (video/stream/shorts)."""
+    """Top N video của 1 content_type cụ thể (video/stream)."""
     res = (
         sb.table("daily_delta")
         .select("video_id, views_gain, likes_gain, views_total, content_type")
@@ -349,15 +383,17 @@ def fetch_top_by_content_type(sb: Client, stream: str, content_type: str, top_n:
                        / v.data["views"] * 100, 2)
         gain = r["views_gain"] if r["views_gain"] is not None else (r.get("views_total") or 0)
         enriched.append({
-            "video_id":     r["video_id"],
-            "title":        v.data.get("title", "?") if v.data else "?",
-            "thumbnail":    v.data.get("thumbnail_url", "") if v.data else "",
-            "category":     v.data.get("category_name", "") if v.data else "",
-            "content_type": r["content_type"],
-            "views_gain":   gain,
-            "total_views":  v.data.get("views", 0) if v.data else 0,
-            "er_pct":       er,
-            "yt_url":       f"https://youtube.com/watch?v={r['video_id']}",
+            "video_id":       r["video_id"],
+            "title":          v.data.get("title", "?") if v.data else "?",
+            "thumbnail":      v.data.get("thumbnail_url", "") if v.data else "",
+            "category":       v.data.get("category_name", "") if v.data else "",
+            "content_type":   r["content_type"],
+            "views_gain":     gain,
+            "total_views":    v.data.get("views", 0) if v.data else 0,
+            "total_likes":    v.data.get("likes", 0) if v.data else 0,
+            "total_comments": v.data.get("comments_count", 0) if v.data else 0,
+            "er_pct":         er,
+            "yt_url":         f"https://youtube.com/watch?v={r['video_id']}",
         })
     return enriched
 
@@ -403,11 +439,11 @@ def fetch_category_performance(sb: Client, stream: str) -> list:
             by_cat[cat]["stream_count"] += 1
         if by_cat[cat]["top_video"] is None or gain > delta_map.get(by_cat[cat]["top_video"]["video_id"], 0):
             by_cat[cat]["top_video"] = {
-                "video_id": v["id"],
-                "title":    v.get("title", ""),
-                "thumbnail": v.get("thumbnail_url", ""),
+                "video_id":   v["id"],
+                "title":      v.get("title", ""),
+                "thumbnail":  v.get("thumbnail_url", ""),
                 "views_gain": gain,
-                "yt_url":   f"https://youtube.com/watch?v={v['id']}",
+                "yt_url":     f"https://youtube.com/watch?v={v['id']}",
             }
 
     result = []
@@ -426,8 +462,8 @@ def fetch_category_performance(sb: Client, stream: str) -> list:
 
 def fetch_stream_vs_video_stats(sb: Client, stream: str) -> dict:
     """
-    So sánh trực tiếp Video vs Stream:
-    - Tổng views gain, avg ER, số lượng, % tổng
+    So sánh trực tiếp Video vs Stream (Shorts không dùng):
+    - Tổng views, avg ER, số lượng, % tổng
     """
     res = (
         sb.table("videos")
@@ -460,8 +496,9 @@ def fetch_stream_vs_video_stats(sb: Client, stream: str) -> dict:
 
 def fetch_intraday_chart(sb: Client, stream: str) -> list:
     """
-    Views_delta_1h theo từng giờ trong ngày hôm nay (từ intraday_chart view).
+    Views_delta_1h theo từng giờ trong ngày hôm nay (ICT).
     Fallback: query trực tiếp hourly_snapshot nếu view chưa refresh.
+    Giờ hiển thị đã được convert sang ICT (UTC+7).
     """
     try:
         res = (
@@ -475,7 +512,8 @@ def fetch_intraday_chart(sb: Client, stream: str) -> list:
         rows = res.data or []
         return [
             {
-                "hour":   r["hour_bucket"][11:16],  # "HH:MM"
+                # Convert UTC "HH:MM" → ICT
+                "hour":   _utc_hhmm_to_ict(r["hour_bucket"][11:16]),
                 "views":  r["total_views_gained"] or 0,
                 "videos": r["active_videos"] or 0,
             }
@@ -495,7 +533,8 @@ def fetch_intraday_chart(sb: Client, stream: str) -> list:
         )
         by_hour: dict = {}
         for r in (res.data or []):
-            h = r["snapshot_at"][11:13] + ":00"
+            utc_h = int(r["snapshot_at"][11:13])
+            h = f"{(utc_h + 7) % 24:02d}:00"
             by_hour[h] = by_hour.get(h, 0) + (r["views_delta_1h"] or 0)
         return [{"hour": h, "views": v, "videos": 0} for h, v in sorted(by_hour.items())]
 
@@ -584,7 +623,6 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
     log.info("Fetching top by content type...")
     top_vn_video   = fetch_top_by_content_type(sb, "VN",     "video",  10)
     top_vn_stream  = fetch_top_by_content_type(sb, "VN",     "stream", 10)
-    top_vn_shorts  = fetch_top_by_content_type(sb, "VN",     "shorts", 10)
     top_gl_video   = fetch_top_by_content_type(sb, "Global", "video",  10)
     top_gl_stream  = fetch_top_by_content_type(sb, "Global", "stream", 10)
 
@@ -596,9 +634,8 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
     svv_vn     = fetch_stream_vs_video_stats(sb, "VN")
     svv_global = fetch_stream_vs_video_stats(sb, "Global")
 
-    log.info("Fetching intraday charts...")
-    intraday_vn     = fetch_intraday_chart(sb, "VN")
-    intraday_global = fetch_intraday_chart(sb, "Global")
+    log.info("Fetching intraday charts (VN only)...")
+    intraday_vn = fetch_intraday_chart(sb, "VN")
 
     log.info("Fetching hot right now...")
     hot_vn     = fetch_hot_right_now(sb, "VN", limit=8)
@@ -620,8 +657,8 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
         return (row.get("payload") or {}).get(field, default)
 
     weekly_narrative = (
-        tier2.get("weekly_narrative")                           # daily run: từ analysis_output.json
-        or _insight_field("weekly_summary", "narrative")        # hourly run: từ Supabase
+        tier2.get("weekly_narrative")
+        or _insight_field("weekly_summary", "narrative")
         or ""
     )
     anomalies = (
@@ -644,10 +681,16 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
         or ""
     )
 
+    # Convert Gemini generated_at sang ICT
+    raw_gemini_ts = (insights.get("weekly_summary") or {}).get("generated_at", "")
+    gemini_generated_at_ict = _to_ict_str(raw_gemini_ts)
+
+    now_ict = datetime.now(ICT)
+
     return {
         # Meta
-        "generated_at":  datetime.now(timezone.utc).strftime("%d/%m/%Y %H:%M UTC"),
-        "today":         TODAY.strftime("%d/%m/%Y"),
+        "generated_at":  now_ict.strftime("%d/%m/%Y %H:%M ICT"),
+        "today":         now_ict.strftime("%d/%m/%Y"),
         "run_id":        analysis.get("run_id", ""),
 
         # KPI
@@ -674,20 +717,19 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
         "er_vn":        tier1.get("VN", {}).get("er_by_type", {}),
         "er_global":    tier1.get("Global", {}).get("er_by_type", {}),
 
-        # Tier2 Gemini (fixed: loads from Supabase when hourly run)
-        "weekly_narrative": weekly_narrative,
-        "anomalies":        anomalies,
-        "recommendations":  recommendations,
-        "content_gaps":     content_gaps,
-        "trend_forecast":   trend_forecast,
-        "gemini_generated_at": (insights.get("weekly_summary") or {}).get("generated_at", ""),
+        # Tier2 Gemini
+        "weekly_narrative":    weekly_narrative,
+        "anomalies":           anomalies,
+        "recommendations":     recommendations,
+        "content_gaps":        content_gaps,
+        "trend_forecast":      trend_forecast,
+        "gemini_generated_at": gemini_generated_at_ict,
 
-        # Insights từ Supabase (bổ sung cho display)
+        # Insights từ Supabase
         "insights": insights,
 
-        # Intraday (hourly data)
-        "intraday_vn_json":     json.dumps(intraday_vn,     ensure_ascii=False),
-        "intraday_global_json": json.dumps(intraday_global, ensure_ascii=False),
+        # Intraday (VN only — hourly không crawl Global)
+        "intraday_vn_json": json.dumps(intraday_vn, ensure_ascii=False),
 
         # Hot right now
         "hot_vn":     hot_vn,
@@ -697,13 +739,12 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
         "momentum_vn":     momentum_vn,
         "momentum_global": momentum_global,
 
-        # Last updated time
-        "last_updated_ts": datetime.now(timezone.utc).strftime("%H:%M UTC"),
+        # Last updated time (ICT)
+        "last_updated_ts": now_ict.strftime("%H:%M ICT"),
 
         # Top by content type
         "top_vn_video":   top_vn_video,
         "top_vn_stream":  top_vn_stream,
-        "top_vn_shorts":  top_vn_shorts,
         "top_gl_video":   top_gl_video,
         "top_gl_stream":  top_gl_stream,
 
@@ -714,7 +755,6 @@ def build_template_context(sb: Client, analysis: dict) -> dict:
         # Stream vs Video stats
         "svv_vn_json":     json.dumps(svv_vn,     ensure_ascii=False),
         "svv_global_json": json.dumps(svv_global, ensure_ascii=False),
-        # Jinja2 can't do json.loads — pass dict directly too
         "svv_vn_data":     svv_vn,
         "svv_global_data": svv_global,
     }
