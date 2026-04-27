@@ -40,18 +40,25 @@ GitHub Actions
 ## 3. FILES TRONG REPO
 
 | File | Vai trò | Ghi chú |
-|------|---------|---------|
+|------|---------|---------| 
 | `01_crawl_youtube.py` | Crawl YouTube Data API v3 | Modes: daily/hourly |
 | `02_load_supabase.py` | Upsert Supabase, tính delta, hourly snapshot | Routing theo `mode` field trong JSON |
 | `03_analyze_gemini.py` | Tier1 stats + Tier2 Gemini AI | Chỉ chạy trong daily.yml |
-| `04_generate_html.py` | Render Jinja2 template → HTML | Query Supabase trực tiếp |
+| `scripts/04_generate_html.py` | Thin orchestrator → render HTML | **Mới**: import từ fetchers/ package |
+| `scripts/fetchers/base.py` | `safe_fetch()`, `batch_video_lookup()`, helpers | **Mới**: FIX N+1 + graceful degradation |
+| `scripts/fetchers/kpi.py` | KPI cards fetcher | **Mới**: extracted từ 04_generate_html |
+| `scripts/fetchers/rankings.py` | Top videos, category leaderboard | **Mới**: N+1 fixed |
+| `scripts/fetchers/charts.py` | Trend, WoW, monthly, donut | **Mới**: extracted |
+| `scripts/fetchers/realtime.py` | Hot Right Now, momentum, intraday | **Mới**: 2-tier fallback |
+| `scripts/fetchers/insights.py` | Gemini insights fetch + merge | **Mới**: extracted |
 | `templates/dashboard.html` | Jinja2 template, Chart.js | Self-contained, không tách CSS/JS |
 | `create_supabase.sql` | Schema ban đầu | Chạy 1 lần |
 | `add_hourly_snapshot.sql` | Migration thêm hourly_snapshot | Chạy sau create_supabase |
 | `concurrent_refresh_fix.sql` | Fix CONCURRENTLY index | Chạy sau add_hourly_snapshot |
 | `refresh_all_views.sql` | Override function không dùng CONCURRENTLY | Chạy sau concurrent_refresh_fix nếu vẫn lỗi |
+| `cleanup_old_data.sql` | **Mới**: Cleanup hourly_snapshot 7d, logs 30d | Chạy 1 lần — daily pipeline tự gọi RPC |
 | `requirements.txt` | Python deps | google-api-python-client, supabase, google-generativeai, Jinja2 |
-| `.github/workflows/daily.yml` | CI daily | 4 jobs: crawl→load→analyze→publish |
+| `.github/workflows/daily.yml` | CI daily | 4 jobs: crawl→load+cleanup→analyze→publish |
 | `.github/workflows/hourly.yml` | CI hourly | 3 jobs: crawl→load→publish |
 
 ---

@@ -121,6 +121,21 @@ jobs:
           PIPELINE_RUN_ID:      ${{ needs.crawl.outputs.run_id }}
         run: python 02_load_supabase.py
 
+      - name: "🧹 Cleanup old data (hourly_snapshot 7d, logs 30d)"
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python -c "
+          import os
+          from supabase import create_client
+          sb = create_client(os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_KEY'])
+          res = sb.rpc('cleanup_old_data', {}).execute()
+          for row in (res.data or []):
+              print(f\"  {row['table_name']}: {row['rows_deleted']} rows deleted\")
+          "
+        continue-on-error: true
+
       - uses: actions/upload-artifact@v4
         with:
           name: daily-load-summary-${{ needs.crawl.outputs.run_id }}
@@ -212,7 +227,7 @@ jobs:
           OUTPUT_DIR:           ${{ env.OUTPUT_DIR }}
           DOCS_DIR:             ${{ env.DOCS_DIR }}
           TEMPLATE_DIR:         ${{ env.TEMPLATE_DIR }}
-        run: python 04_generate_html.py
+        run: python scripts/04_generate_html.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

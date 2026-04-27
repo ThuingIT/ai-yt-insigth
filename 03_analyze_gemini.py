@@ -127,9 +127,31 @@ def save_insight(sb: Client, insight_type: str, scope: str, payload: dict,
 # TẦNG 1: THỐNG KÊ THUẦN
 # ============================================================
 
+def _batch_video_lookup(sb: Client, video_ids: list[str]) -> dict:
+    """
+    Batch fetch video metadata — FIX N+1.
+    Trả về dict[video_id → video row].
+    """
+    if not video_ids:
+        return {}
+    try:
+        res = (
+            sb.table("videos")
+            .select("id, title, channel_id, likes, views, comments_count, category_name")
+            .in_("id", video_ids)
+            .execute()
+        )
+        return {row["id"]: row for row in (res.data or [])}
+    except Exception as e:
+        log.warning(f"batch_video_lookup failed: {e!r}")
+        return {}
+
+
 def t1_top_videos_by_gain(sb: Client, stream: str, top_n: int = 10) -> list:
-    """Top N video có views_gain cao nhất hôm nay."""
-    # FIX Day 1: bỏ filter NOT NULL, sort theo views_total
+    """
+    Top N video có views_gain cao nhất hôm nay.
+    FIX N+1: dùng batch lookup thay vì query từng video.
+    """
     res = (
         sb.table("daily_delta")
         .select("video_id, views_gain, likes_gain, comments_gain, views_total, content_type, region")
@@ -141,25 +163,22 @@ def t1_top_videos_by_gain(sb: Client, stream: str, top_n: int = 10) -> list:
     )
     rows = res.data or []
 
+    # 1 batch query thay vì N queries trong vòng lặp
+    video_map = _batch_video_lookup(sb, [r["video_id"] for r in rows])
+
     enriched = []
     for row in rows:
-        vid = sb.table("videos").select(
-            "title, channel_id, likes, views, comments_count, category_name"
-        ).eq("id", row["video_id"]).maybe_single().execute()
-
+        v = video_map.get(row["video_id"]) or {}
         er = 0.0
-        if vid.data and vid.data.get("views", 0) > 0:
-            er = round(
-                (vid.data.get("likes", 0) + vid.data.get("comments_count", 0))
-                / vid.data["views"] * 100, 2
-            )
+        if v.get("views", 0) > 0:
+            er = round((v.get("likes", 0) + v.get("comments_count", 0)) / v["views"] * 100, 2)
 
         disp_gain = row["views_gain"] if row["views_gain"] is not None else (row.get("views_total") or 0)
         enriched.append({
             "video_id":      row["video_id"],
-            "title":         vid.data.get("title", "") if vid.data else "",
-            "channel_id":    vid.data.get("channel_id", "") if vid.data else "",
-            "category":      vid.data.get("category_name", "") if vid.data else "",
+            "title":         v.get("title", ""),
+            "channel_id":    v.get("channel_id", ""),
+            "category":      v.get("category_name", ""),
             "content_type":  row["content_type"],
             "region":        row.get("region"),
             "views_gain":    disp_gain,
@@ -227,7 +246,8 @@ def t1_virality_index(sb: Client, stream: str) -> list:
     for r in (baseline_res.data or []):
         sums.setdefault(r["video_id"], []).append(r["views_gain"])
 
-    viral = []
+    # Tính virality index cho tất cả videos trước
+    viral_candidates = []
     for vid_id, gain_today in today_gains.items():
         baseline_vals = sums.get(vid_id, [])
         if not baseline_vals:
@@ -237,17 +257,23 @@ def t1_virality_index(sb: Client, stream: str) -> list:
             continue
         vi = round(gain_today / avg, 2)
         if vi >= VIRAL_THRESHOLD:
-            title_res = sb.table("videos").select(
-                "title, category_name"
-            ).eq("id", vid_id).maybe_single().execute()
-            viral.append({
-                "video_id":       vid_id,
-                "title":          title_res.data.get("title", "") if title_res.data else "",
-                "category":       title_res.data.get("category_name", "") if title_res.data else "",
-                "views_gain":     gain_today,
-                "avg_baseline":   round(avg, 0),
-                "virality_index": vi,
-            })
+            viral_candidates.append((vid_id, gain_today, avg, vi))
+
+    # FIX N+1: batch fetch titles cho tất cả viral videos cùng lúc
+    viral_ids   = [v[0] for v in viral_candidates]
+    viral_vmap  = _batch_video_lookup(sb, viral_ids) if viral_ids else {}
+
+    viral = []
+    for vid_id, gain_today, avg, vi in viral_candidates:
+        v = viral_vmap.get(vid_id) or {}
+        viral.append({
+            "video_id":       vid_id,
+            "title":          v.get("title", ""),
+            "category":       v.get("category_name", ""),
+            "views_gain":     gain_today,
+            "avg_baseline":   round(avg, 0),
+            "virality_index": vi,
+        })
 
     viral.sort(key=lambda x: x["virality_index"], reverse=True)
     log.info(f"  [T1] virality({stream}): {len(viral)} viral videos")

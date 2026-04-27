@@ -171,7 +171,7 @@ jobs:
           OUTPUT_DIR:           ${{ env.OUTPUT_DIR }}
           DOCS_DIR:             ${{ env.DOCS_DIR }}
           TEMPLATE_DIR:         ${{ env.TEMPLATE_DIR }}
-        run: python 04_generate_html.py
+        run: python scripts/04_generate_html.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
