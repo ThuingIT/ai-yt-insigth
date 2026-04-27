@@ -359,11 +359,19 @@ def load_stream(sb: Client, json_path: str) -> dict:
     now_ts = datetime.now(timezone.utc).isoformat()
 
     try:
-        # ── 1. Channels ─────────────────────────────────────
+        # ── 1. Channels (Phase 2.1: include subscriber stats) ──────
         channel_rows = [
             {
                 "id":              ch["id"],
                 "name":            ch.get("name", ""),
+                "description":     (ch.get("description") or "")[:300],
+                "custom_url":      ch.get("custom_url", ""),
+                "country":         ch.get("country", ""),
+                "thumbnail_url":   ch.get("thumbnail_url"),
+                # Subscriber stats — populated by crawl_channel_stats()
+                "subscribers":     ch.get("subscribers", 0),
+                "total_views":     ch.get("total_views", 0),
+                "video_count":     ch.get("video_count", 0),
                 "stream":          ch.get("stream", stream),
                 "last_updated_at": now_ts,
             }

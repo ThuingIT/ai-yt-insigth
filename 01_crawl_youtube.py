@@ -141,9 +141,11 @@ def detect_content_type(item: dict) -> str:
     """
     Phân loại video thành 'video', 'stream', hoặc 'shorts'.
 
-    Logic:
+    Logic (Phase 2.4 — cải tiến):
     - Có liveStreamingDetails → stream (live đã kết thúc)
-    - duration ≤ 60s VÀ có #shorts trong tags/description → shorts
+    - duration > 3 phút → chắc chắn là video (YouTube Shorts tối đa 3 phút từ 2024)
+    - URL hint: .shorts/ID trong description hoặc có 'shorts' trong snippet.url
+    - duration ≤ 180s VÀ (#shorts tag hoặc description có #shorts) → shorts
     - Còn lại → video thường
     """
     live_details = item.get("liveStreamingDetails", {})
@@ -154,15 +156,31 @@ def detect_content_type(item: dict) -> str:
     duration_str    = content_details.get("duration", "PT0S")
     duration_secs   = parse_iso8601_duration(duration_str)
 
+    # Video dài hơn 3 phút chắc chắn không phải Shorts
+    if duration_secs > 180:
+        return "video"
+
     snippet     = item.get("snippet", {})
     tags        = snippet.get("tags", [])
-    description = snippet.get("description", "")
+    description = snippet.get("description", "")[:200]
+    title       = snippet.get("title", "")
     tags_lower  = " ".join(tags).lower()
+    desc_lower  = description.lower()
+    title_lower = title.lower()
 
-    if duration_secs <= 60 and (
+    # Hint mạnh: có #shorts trong tags hoặc description
+    has_shorts_tag = (
         "#shorts" in tags_lower or
-        "#shorts" in description.lower()
-    ):
+        "#shorts" in desc_lower or
+        "#short" in tags_lower or   # số ít gõ thiếu chữ s
+        "#short" in desc_lower
+    )
+
+    if duration_secs <= 180 and has_shorts_tag:
+        return "shorts"
+
+    # Duration cực ngắn (<=60s) → khả năng cao là shorts dù không có tag
+    if duration_secs <= 60:
         return "shorts"
 
     return "video"
@@ -308,6 +326,49 @@ def get_top_comments(youtube, video_id: str, max_results: int = 20) -> list[dict
         raise
 
 
+def crawl_channel_stats(youtube, channel_ids: list[str]) -> dict[str, dict]:
+    """
+    Phase 2.1: Lấy statistics của các channels (subscribers, totalViews, videoCount).
+    Quota: 1 unit per 50 channels.
+    
+    Returns: dict[channel_id → {subscribers, total_views, video_count}]
+    """
+    if not channel_ids:
+        return {}
+
+    result = {}
+    for i in range(0, len(channel_ids), 50):
+        batch = channel_ids[i : i + 50]
+        try:
+            resp = api_call_with_retry(
+                youtube.channels().list,
+                part="snippet,statistics,brandingSettings",
+                id=",".join(batch),
+            )
+            for item in (resp.get("items", []) if resp else []):
+                cid   = item["id"]
+                stats = item.get("statistics", {})
+                snip  = item.get("snippet", {})
+                result[cid] = {
+                    "description":  snip.get("description", "")[:300],
+                    "custom_url":   snip.get("customUrl", ""),
+                    "country":      snip.get("country", ""),
+                    "thumbnail_url": (
+                        snip.get("thumbnails", {}).get("medium", {}).get("url") or
+                        snip.get("thumbnails", {}).get("default", {}).get("url")
+                    ),
+                    "subscribers":  safe_int(stats.get("subscriberCount")),
+                    "total_views":  safe_int(stats.get("viewCount")),
+                    "video_count":  safe_int(stats.get("videoCount")),
+                    "hidden_subscribers": stats.get("hiddenSubscriberCount", False),
+                }
+        except Exception as e:
+            log.warning(f"crawl_channel_stats batch error: {e!r}")
+
+    log.info(f"crawl_channel_stats: enriched {len(result)}/{len(channel_ids)} channels")
+    return result
+
+
 def process_video_item(item: dict, stream: str, region: str) -> tuple[dict, dict | None, dict | None]:
     """
     Xử lý một YouTube video item thành format chuẩn cho pipeline.
@@ -354,9 +415,17 @@ def process_video_item(item: dict, stream: str, region: str) -> tuple[dict, dict
     }
 
     channel = {
-        "id":    channel_id,
-        "name":  snippet.get("channelTitle", ""),
+        "id":     channel_id,
+        "name":   snippet.get("channelTitle", ""),
         "stream": stream,
+        # subscriber data sẽ được enrich sau bởi crawl_channel_stats()
+        "subscribers":  0,
+        "total_views":  0,
+        "video_count":  0,
+        "description":  "",
+        "custom_url":   "",
+        "country":      "",
+        "thumbnail_url": None,
     }
 
     stream_details = None
@@ -437,18 +506,26 @@ def crawl_vn(youtube) -> dict:
         except Exception as e:
             log.warning(f"[VN] Bỏ qua video {item.get('id', '?')}: {e}")
 
-    # Bước 4 (optional): Crawl comments cho top 10 videos theo views
+    # Bước 4: Crawl comments cho top 15 videos theo views
     comments = []
     if ENABLE_COMMENTS:
-        top_videos = sorted(videos, key=lambda v: v["views"], reverse=True)[:10]
+        top_videos = sorted(videos, key=lambda v: v["views"], reverse=True)[:15]
         log.info(f"[VN] Crawl comments cho top {len(top_videos)} videos...")
         for v in top_videos:
-            c = get_top_comments(youtube, v["id"], max_results=20)
+            c = get_top_comments(youtube, v["id"], max_results=30)
             comments.extend(c)
             quota_used += 1
         log.info(f"[VN] Lấy được {len(comments)} comments")
 
-    log.info(f"[VN] Kết quả: {type_count} | Channels: {len(channels_map)} | Quota: ~{quota_used}")
+    # Bước 5: Enrich channels với subscriber stats (Phase 2.1)
+    channel_stats = crawl_channel_stats(youtube, list(channels_map.keys()))
+    quota_used += max(1, len(channels_map) // 50)
+    for cid, stats in channel_stats.items():
+        if cid in channels_map:
+            channels_map[cid].update(stats)
+
+    sub_enriched = sum(1 for cid in channels_map if channels_map[cid].get("subscribers", 0) > 0)
+    log.info(f"[VN] Kết quả: {type_count} | Channels: {len(channels_map)} (subs: {sub_enriched}) | Quota: ~{quota_used}")
 
     return {
         "stream":           "VN",
@@ -540,14 +617,22 @@ def crawl_global(youtube) -> dict:
     # Optional: comments cho Global
     comments = []
     if ENABLE_COMMENTS:
-        top_videos = sorted(videos, key=lambda v: v["views"], reverse=True)[:5]
+        top_videos = sorted(videos, key=lambda v: v["views"], reverse=True)[:10]
         log.info(f"[Global] Crawl comments cho top {len(top_videos)} videos...")
         for v in top_videos:
-            c = get_top_comments(youtube, v["id"], max_results=10)
+            c = get_top_comments(youtube, v["id"], max_results=20)
             comments.extend(c)
             quota_used += 1
 
-    log.info(f"[Global] Kết quả: {type_count} | Channels: {len(channels_map)} | Quota: ~{quota_used}")
+    # Enrich channels với subscriber stats (Phase 2.1)
+    channel_stats = crawl_channel_stats(youtube, list(channels_map.keys()))
+    quota_used += max(1, len(channels_map) // 50)
+    for cid, stats in channel_stats.items():
+        if cid in channels_map:
+            channels_map[cid].update(stats)
+
+    sub_enriched = sum(1 for cid in channels_map if channels_map[cid].get("subscribers", 0) > 0)
+    log.info(f"[Global] Kết quả: {type_count} | Channels: {len(channels_map)} (subs: {sub_enriched}) | Quota: ~{quota_used}")
 
     return {
         "stream":           "Global",
