@@ -4,7 +4,7 @@ on:
   schedule:
     # Chạy đầu mỗi giờ (UTC) — 06:05, 07:05, ... ICT = UTC+7
     # Thêm 5 phút offset để tránh đụng với daily workflow lúc 23:00 UTC
-    - cron: "5 * * * *"
+    - cron: "5 */2 * * *"
   workflow_dispatch:
     inputs:
       debug_mode:
